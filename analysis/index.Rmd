@@ -12,3 +12,11 @@ editor_options:
 ## tools for longitudianl transcriptomics data
 
 * [TiSA](TiSA.html) 
+
+
+
+## run H-MAGMA 
+
+* [prepare the input files for H-MAGMA](BC_HMAGMA.html)
+
+* [call Hi-C](hic_calling.html)
