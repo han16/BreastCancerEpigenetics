@@ -400,7 +400,7 @@ aria-hidden="true"></span> </a>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2025-10-31
+<strong>Last updated:</strong> 2025-11-06
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -438,10 +438,10 @@ changes </a>
 <div id="strongRMarkdownfilestronguncommittedchanges"
 class="panel-collapse collapse">
 <div class="panel-body">
-<p>The R Markdown is untracked by Git. To know which version of the R
-Markdown file created these results, you’ll want to first commit it to
-the Git repo. If you’re still working on the analysis, you can ignore
-this warning. When you’re finished, you can run
+<p>The R Markdown file has unstaged changes. To know which version of
+the R Markdown file created these results, you’ll want to first commit
+it to the Git repo. If you’re still working on the analysis, you can
+ignore this warning. When you’re finished, you can run
 <code>wflow_publish</code> to commit the R Markdown file and build the
 HTML.</p>
 </div>
@@ -534,15 +534,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomhan16BreastCancerEpigeneticstreeb28caa5893eab67e80b9c725aa27374fbb8406batargetblankb28caa5a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomhan16BreastCancerEpigeneticstreeaf00fd6c874d5e930d3fae62b575200e20f0912dtargetblankaf00fd6a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/han16/BreastCancerEpigenetics/tree/b28caa5893eab67e80b9c725aa27374fbb8406ba" target="_blank">b28caa5</a>
+<a href="https://github.com/han16/BreastCancerEpigenetics/tree/af00fd6c874d5e930d3fae62b575200e20f0912d" target="_blank">af00fd6</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomhan16BreastCancerEpigeneticstreeb28caa5893eab67e80b9c725aa27374fbb8406batargetblankb28caa5a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomhan16BreastCancerEpigeneticstreeaf00fd6c874d5e930d3fae62b575200e20f0912dtargetblankaf00fd6a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -552,7 +552,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/han16/BreastCancerEpigenetics/tree/b28caa5893eab67e80b9c725aa27374fbb8406ba" target="_blank">b28caa5</a>.
+<a href="https://github.com/han16/BreastCancerEpigenetics/tree/af00fd6c874d5e930d3fae62b575200e20f0912d" target="_blank">af00fd6</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -566,13 +566,8 @@ depends on. Below is the status of the Git repository when the results
 were generated:
 </p>
 <pre><code>
-Untracked files:
-    Untracked:  analysis/BC_HMAGMA.Rmd
-    Untracked:  analysis/BRSTCancer.transcript.annot
-    Untracked:  analysis/hic_calling.Rmd
-
 Unstaged changes:
-    Modified:   analysis/index.Rmd
+    Modified:   analysis/BC_HMAGMA.Rmd
 
 </code></pre>
 <p>
@@ -587,10 +582,74 @@ have uncommitted changes.
 <hr>
 </div>
 <div id="versions" class="tab-pane fade">
+
 <p>
-There are no past versions. Publish this analysis with
-<code>wflow_publish()</code> to start tracking its development.
+These are the previous versions of the repository in which changes were
+made to the R Markdown (<code>analysis/BC_HMAGMA.Rmd</code>) and HTML
+(<code>docs/BC_HMAGMA.html</code>) files. If you’ve configured a remote
+Git repository (see <code>?wflow_git_remote</code>), click on the
+hyperlinks in the table below to view the files as they were in that
+past version.
 </p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/han16/BreastCancerEpigenetics/blob/af00fd6c874d5e930d3fae62b575200e20f0912d/analysis/BC_HMAGMA.Rmd" target="_blank">af00fd6</a>
+</td>
+<td>
+han
+</td>
+<td>
+2025-11-05
+</td>
+<td>
+11/5/2025
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/han16/BreastCancerEpigenetics/af00fd6c874d5e930d3fae62b575200e20f0912d/docs/BC_HMAGMA.html" target="_blank">af00fd6</a>
+</td>
+<td>
+han
+</td>
+<td>
+2025-11-05
+</td>
+<td>
+11/5/2025
+</td>
+</tr>
+</tbody>
+</table>
+</div>
 <hr>
 </div>
 </div>
@@ -600,12 +659,16 @@ There are no past versions. Publish this analysis with
 href="https://www.nature.com/articles/s41596-022-00745-z">Annotating
 genetic variants to target genes using H-MAGMA</a>.</li>
 </ul>
+<div id="prepare-libraries-and-directory-timing-5-min"
+class="section level2">
+<h2>Prepare libraries and directory ● Timing 5 min</h2>
 <pre class="r"><code>rm(list=ls())
 set.seed(123)
 options(stringsAsFactors=F)
 library(GenomicRanges)
 library(biomaRt)
 library(dplyr)</code></pre>
+</div>
 <div
 id="create-genomicranges-granges-objects-for-exon-and-promoter-coordinates-timing-5-min"
 class="section level2">
@@ -617,8 +680,12 @@ path2=&quot;C:\\han\\Projects\\2025_03_breast_cancer\\HMAGMA\\&quot;
 path3=&quot;C:\\han\\Projects\\2025_03_breast_cancer\\data_for_hmagma\\&quot;
 
 
-exon &lt;- read.table(paste(path, &quot;Gencode26_exon.bed&quot;, sep=&quot;&quot;))
-exon$V1 &lt;- sub(&quot;^&quot;, &quot;chr&quot;, exon$V1)
+exon &lt;- read.table(paste0(path, &quot;Gencode26_exon.bed&quot;), header = FALSE)
+dim(exon)</code></pre>
+<pre><code>[1] 324422      4</code></pre>
+<pre class="r"><code>file.exists(paste0(path, &quot;Gencode26_exon.bed&quot;)) # check if the file exists </code></pre>
+<pre><code>[1] TRUE</code></pre>
+<pre class="r"><code>exon$V1 &lt;- sub(&quot;^&quot;, &quot;chr&quot;, exon$V1)
 promoter &lt;- read.table(paste(path, &quot;Gencode26_promoter.bed&quot;, sep=&quot;&quot;))
 promoter$V1 &lt;- sub(&quot;^&quot;, &quot;chr&quot;, promoter$V1)
 
@@ -627,7 +694,54 @@ exonranges &lt;- GRanges(exon[,1],IRanges(exon[,2],exon[,3]),gene=exon[,4])
 promoterranges &lt;- GRanges(promoter[,1], IRanges(promoter[,2], promoter[,3]), gene=promoter[,4])
 
 # 5 Save exon and promoter GRanges objects as a .rda ﬁle for future use.
-#save(exonranges, promoterranges, file=paste(path2, &quot;exon_promoranges.rda&quot;, sep=&quot;&quot;))</code></pre>
+#save(exonranges, promoterranges, file=paste(path2, &quot;exon_promoranges.rda&quot;, sep=&quot;&quot;))
+
+exonranges</code></pre>
+<pre><code>GRanges object with 324422 ranges and 1 metadata column:
+           seqnames            ranges strand |            gene
+              &lt;Rle&gt;         &lt;IRanges&gt;  &lt;Rle&gt; |     &lt;character&gt;
+       [1]     chrX 99883667-99884983      * | ENSG00000000003
+       [2]     chrX 99885756-99885863      * | ENSG00000000003
+       [3]     chrX 99887482-99887565      * | ENSG00000000003
+       [4]     chrX 99888402-99888536      * | ENSG00000000003
+       [5]     chrX 99888928-99889026      * | ENSG00000000003
+       ...      ...               ...    ... .             ...
+  [324418]     chrY 59355683-59355884      * | ENSGR0000270726
+  [324419]     chrY 59355973-59356131      * | ENSGR0000270726
+  [324420]     chrY 59356791-59356943      * | ENSGR0000270726
+  [324421]     chrY 59357703-59357771      * | ENSGR0000270726
+  [324422]     chrY 59357912-59358305      * | ENSGR0000270726
+  -------
+  seqinfo: 25 sequences from an unspecified genome; no seqlengths</code></pre>
+<pre class="r"><code>promoterranges</code></pre>
+<pre><code>GRanges object with 179237 ranges and 1 metadata column:
+           seqnames            ranges strand |            gene
+              &lt;Rle&gt;         &lt;IRanges&gt;  &lt;Rle&gt; |     &lt;character&gt;
+       [1]     chr1        9869-11869      * | ENSG00000223972
+       [2]     chr1        9872-11872      * | ENSG00000223972
+       [3]     chr1        9874-11874      * | ENSG00000223972
+       [4]     chr1       10010-12010      * | ENSG00000223972
+       [5]     chr1       24886-26886      * | ENSG00000227232
+       ...      ...               ...    ... .             ...
+  [179233]     chrY 59354038-59356038      * | ENSGR0000182484
+  [179234]     chrY 59354495-59356495      * | ENSGR0000182484
+  [179235]     chrY 59354742-59356742      * | ENSGR0000182484
+  [179236]     chrY 59360548-59362548      * | ENSGR0000227159
+  [179237]     chrY 59360854-59362854      * | ENSGR0000227159
+  -------
+  seqinfo: 25 sequences from an unspecified genome; no seqlengths</code></pre>
+<ul>
+<li>“Obtain gene and exon coordinates from Gencode version 26 by using
+the <a
+href="https://www.%20gencodegenes.org/human/release_26lift37.html">following
+link</a>. We downloaded the GFT ﬁle for basic gene annotation and
+converted them to .bed ﬁles. Promoters were deﬁned as 2 kb upstream to
+every transcription start site. Gene, exon and promoter coordinate ﬁles
+are listed as Gencode26_gene.bed, Gencode26_exon.bed and
+Gencode26_promoter.bed, respectively, in the Zenodo repository. Columns
+for these ﬁles are deﬁned as [chromosome, start, end, gene].”
+<strong>Genome assembly hg19 was used</strong>.</li>
+</ul>
 </div>
 <div id="generate-a-granges-object-for-snp-coordinates-timing-5-min"
 class="section level2">
@@ -644,7 +758,28 @@ snps$chr &lt;- sub(&quot;^&quot;, &quot;chr&quot;, snps$chr)
 snps &lt;- GRanges(snps$chr, IRanges(snps$Position, snps$Position), rsid=
 snps$SNP)
 #8 Save the SNP GRanges object as a .rda ﬁle for future use.
-#save(snps,file=paste(path2, &quot;snps.rda&quot;, sep=&quot;&quot;))</code></pre>
+#save(snps,file=paste(path2, &quot;snps.rda&quot;, sep=&quot;&quot;))
+snps</code></pre>
+<pre><code>GRanges object with 9822123 ranges and 1 metadata column:
+            seqnames    ranges strand |        rsid
+               &lt;Rle&gt; &lt;IRanges&gt;  &lt;Rle&gt; | &lt;character&gt;
+        [1]     chr1     10177      * | rs367896724
+        [2]     chr1     10352      * | rs555500075
+        [3]     chr1     10616      * | rs376342519
+        [4]     chr1     11008      * | rs575272151
+        [5]     chr1     11012      * | rs544419019
+        ...      ...       ...    ... .         ...
+  [9822119]    chr22  51236013      * | rs200507571
+  [9822120]    chr22  51237063      * |   rs3896457
+  [9822121]    chr22  51237364      * | rs200607599
+  [9822122]    chr22  51237712      * | rs370652263
+  [9822123]    chr22  51240820      * | rs202228854
+  -------
+  seqinfo: 22 sequences from an unspecified genome; no seqlengths</code></pre>
+<ul>
+<li>reference genome, <code>EUR.bim</code> is from European
+ancestry</li>
+</ul>
 </div>
 <div
 id="assign-snps-to-genes-by-overlapping-snps-with-exons-and-promoters-timing-1015-min"
@@ -668,6 +803,10 @@ snpro &lt;- snpro[seqnames(snpro)!=&quot;chrX&quot;]
 
 #11 Save SNPs overlapping with exons and promoters as a .rda ﬁle.
 #save(snpro, snpexon, file=paste(path3, &quot;snp_locating_in_exon_promoter_transcript_level.rda&quot;, sep=&quot;&quot;))</code></pre>
+<ul>
+<li>“Find SNPs that fall inside any exon, attach the exon’s annotation
+(like gene ID) to those SNPs, and remove SNPs on chromosome X.”</li>
+</ul>
 </div>
 <div
 id="assign-unmapped-snps-to-genes-on-the-basis-of-hi-c-interaction-data-timing"
@@ -683,8 +822,24 @@ class="section level2">
 snpranges &lt;- snps[!(snps$rsid %in% snpexon$rsid),]
 snpranges &lt;- snpranges[!(snpranges$rsid %in% snpro$rsid),]
 
-
-#13 Save unmapped SNPs as a .rda ﬁle.
+snpranges</code></pre>
+<pre><code>GRanges object with 8916368 ranges and 1 metadata column:
+            seqnames    ranges strand |        rsid
+               &lt;Rle&gt; &lt;IRanges&gt;  &lt;Rle&gt; | &lt;character&gt;
+        [1]     chr1     13110      * | rs540538026
+        [2]     chr1     13116      * |  rs62635286
+        [3]     chr1     13118      * | rs200579949
+        [4]     chr1     14930      * |  rs75454623
+        [5]     chr1     14933      * | rs199856693
+        ...      ...       ...    ... .         ...
+  [8916364]    chr22  51233347      * |  rs62240044
+  [8916365]    chr22  51233666      * |  rs11091014
+  [8916366]    chr22  51234343      * | rs374867791
+  [8916367]    chr22  51234799      * | rs191117135
+  [8916368]    chr22  51240820      * | rs202228854
+  -------
+  seqinfo: 22 sequences from an unspecified genome; no seqlengths</code></pre>
+<pre class="r"><code>#13 Save unmapped SNPs as a .rda ﬁle.
 #save(snpranges, file=paste(path2, &quot;non_exonic_promoter_snp.rda&quot;, sep=&quot;&quot;))</code></pre>
 <pre class="r"><code>#14 Read in adult brain Hi-C data. The ﬁrst three columns represent genomic coordinates [chr, start,
 #end] of loop anchor 1, and the last three columns represent genomic coordinates of loop anchor 2.
@@ -692,7 +847,7 @@ snpranges &lt;- snpranges[!(snpranges$rsid %in% snpro$rsid),]
 #Hi-C datasets from the tissue or cell type associated with the disease/trait of interest can be used
 #instead.
 #hic &lt;- read.table(paste(path, &quot;adultbrain_hic.bedpe&quot;, sep=&quot;&quot;), header=T)
-hic &lt;- read.table(&quot;C:\\han\\Projects\\2025_03_breast_cancer\\data_for_hmagma\\merged_loops_first6columns.bedpe&quot;, header=F)
+hic &lt;- read.table(paste0(path3, &quot;PT12345_mapped_5000bp_loops_5000bp_6col.bedpe&quot;))
 
 
 #15 Restructure Hi-C data to account for both anchors 1 and 2 by using the command below.
@@ -700,38 +855,164 @@ hic.int1 &lt;- hic[,1:6]
 hic.int2 &lt;- hic[,c(4:6,1:3)]
 colnames(hic.int1) = colnames(hic.int2) = c(&quot;chrom1&quot;, &quot;start1&quot;, &quot;end1&quot;, &quot;chrom2&quot;, &quot;start2&quot;, &quot;end2&quot;)
 hic.comb &lt;- rbind(hic.int1, hic.int2)
+hic.comb=hic.comb[-1,]
+head(hic.comb)</code></pre>
+<pre><code>  chrom1  start1    end1 chrom2  start2    end2
+2   chr1 5510000 5515000   chr1 5745000 5750000
+3   chr1 6250000 6255000   chr1 6340000 6345000
+4   chr1 6790000 6795000   chr1 6890000 6895000
+5   chr1 7665000 7670000   chr1 7750000 7755000
+6   chr1 8035000 8040000   chr1 8310000 8315000
+7   chr1 8560000 8565000   chr1 8670000 8675000</code></pre>
+<pre class="r"><code>########### check if  hic.comb has NA or non-numeric values and remove them 
+sum(is.na(hic.comb$start1))</code></pre>
+<pre><code>[1] 0</code></pre>
+<pre class="r"><code>sum(is.na(hic.comb$end1))</code></pre>
+<pre><code>[1] 0</code></pre>
+<pre class="r"><code>sum(is.na(hic.comb$start2))</code></pre>
+<pre><code>[1] 0</code></pre>
+<pre class="r"><code>sum(is.na(hic.comb$end2))</code></pre>
+<pre><code>[1] 0</code></pre>
+<pre class="r"><code>bad_rows &lt;- !grepl(&quot;^[0-9]+$&quot;, hic.comb$start1) | !grepl(&quot;^[0-9]+$&quot;, hic.comb$end1)
+sum(bad_rows)</code></pre>
+<pre><code>[1] 1</code></pre>
+<pre class="r"><code>hic.comb[bad_rows, ]</code></pre>
+<pre><code>     chrom1 start1 end1 chrom2 start2 end2
+2405 chrom2 start2 end2 chrom1 start1 end1</code></pre>
+<pre class="r"><code>hic.comb=hic.comb[-which(bad_rows==T),]
 
-#16 Generate a GRanges object for the adult brain Hi-C data by using the command below.
+#16 Generate a GRanges object for Hi-C data by using the command below.
 hicranges &lt;- GRanges(hic.comb$chrom1, IRanges(as.numeric(hic.comb$start1), as.numeric(hic.comb$end1)), int1=hic.comb$start2,int2=hic.comb$end2)
-
-#17 Identify promoter-anchored interactions by overlapping loop anchor 1 with promoters.
+hicranges</code></pre>
+<pre><code>GRanges object with 4806 ranges and 2 metadata columns:
+         seqnames              ranges strand |        int1        int2
+            &lt;Rle&gt;           &lt;IRanges&gt;  &lt;Rle&gt; | &lt;character&gt; &lt;character&gt;
+     [1]     chr1     5510000-5515000      * |     5745000     5750000
+     [2]     chr1     6250000-6255000      * |     6340000     6345000
+     [3]     chr1     6790000-6795000      * |     6890000     6895000
+     [4]     chr1     7665000-7670000      * |     7750000     7755000
+     [5]     chr1     8035000-8040000      * |     8310000     8315000
+     ...      ...                 ...    ... .         ...         ...
+  [4802]     chrX 129725000-129730000      * |   129635000   129640000
+  [4803]     chrX 130190000-130195000      * |   130075000   130080000
+  [4804]     chrX 130915000-130920000      * |   130390000   130395000
+  [4805]     chrX 136925000-136930000      * |   136710000   136715000
+  [4806]     chrX 151085000-151090000      * |   150770000   150775000
+  -------
+  seqinfo: 23 sequences from an unspecified genome; no seqlengths</code></pre>
+<ul>
+<li>the original code only used the first anchor of Hi-C loops,
+<strong>why don’t use the second anchor information or both
+anchors</strong></li>
+</ul>
+<pre class="r"><code>#17 Identify promoter-anchored interactions by overlapping loop anchor 1 with promoters.
 olap &lt;- findOverlaps(hicranges,promoterranges)
 generanges &lt;- hicranges[queryHits(olap)]
 mcols(generanges) &lt;- cbind(mcols(hicranges[queryHits(olap)]), mcols(promoterranges[subjectHits(olap)]))
-
-
-#18 Reverse the order of the GRanges object from Step 17. The generanges object created in Step 17
+generanges</code></pre>
+<pre><code>GRanges object with 2625 ranges and 3 metadata columns:
+         seqnames              ranges strand |        int1        int2
+            &lt;Rle&gt;           &lt;IRanges&gt;  &lt;Rle&gt; | &lt;character&gt; &lt;character&gt;
+     [1]     chr1     9105000-9110000      * |     9195000     9200000
+     [2]     chr1   10505000-10510000      * |    10865000    10870000
+     [3]     chr1   10505000-10510000      * |    10865000    10870000
+     [4]     chr1   20210000-20215000      * |    20490000    20495000
+     [5]     chr1   22105000-22110000      * |    22415000    22420000
+     ...      ...                 ...    ... .         ...         ...
+  [2621]     chrX 130190000-130195000      * |   130075000   130080000
+  [2622]     chrX 151085000-151090000      * |   150770000   150775000
+  [2623]     chrX 151085000-151090000      * |   150770000   150775000
+  [2624]     chrX 151085000-151090000      * |   150770000   150775000
+  [2625]     chrX 151085000-151090000      * |   150770000   150775000
+                    gene
+             &lt;character&gt;
+     [1] ENSG00000142583
+     [2] ENSG00000241563
+     [3] ENSG00000241563
+     [4] ENSG00000169914
+     [5] ENSG00000090686
+     ...             ...
+  [2621] ENSG00000228659
+  [2622] ENSG00000147381
+  [2623] ENSG00000147381
+  [2624] ENSG00000147381
+  [2625] ENSG00000147381
+  -------
+  seqinfo: 23 sequences from an unspecified genome; no seqlengths</code></pre>
+<ul>
+<li><strong>only anchor 1 was used to interact with
+promoters</strong></li>
+</ul>
+<pre class="r"><code>#18 Reverse the order of the GRanges object from Step 17. The generanges object created in Step 17
 #is in a format of loop anchor 1, loop anchor 2, gene name. We reverse the order of loop
 #anchors so that the resulting genebed object has a format of loop anchor 2, loop anchor 1,
 #gene name.
 genebed &lt;- data.frame(chr=seqnames(generanges), snp.start=generanges$int1, snp.end=generanges$int2, gene.start=start(generanges), gene.end=start(generanges)+width(generanges)-1, ensg=generanges$gene)
 genebed &lt;- unique(genebed)
-
+str(genebed)</code></pre>
+<pre><code>&#39;data.frame&#39;:   1290 obs. of  6 variables:
+ $ chr       : Factor w/ 23 levels &quot;chr1&quot;,&quot;chr10&quot;,..: 1 1 1 1 1 1 1 1 1 1 ...
+ $ snp.start : chr  &quot;9195000&quot; &quot;10865000&quot; &quot;20490000&quot; &quot;22415000&quot; ...
+ $ snp.end   : chr  &quot;9200000&quot; &quot;10870000&quot; &quot;20495000&quot; &quot;22420000&quot; ...
+ $ gene.start: int  9105000 10505000 20210000 22105000 22970000 23095000 26035000 28880000 28880000 54405000 ...
+ $ gene.end  : num  9110000 10510000 20215000 22110000 22975000 ...
+ $ ensg      : chr  &quot;ENSG00000142583&quot; &quot;ENSG00000241563&quot; &quot;ENSG00000169914&quot; &quot;ENSG00000090686&quot; ...</code></pre>
+<pre class="r"><code>head(genebed)</code></pre>
+<pre><code>    chr snp.start  snp.end gene.start gene.end            ensg
+1  chr1   9195000  9200000    9105000  9110000 ENSG00000142583
+2  chr1  10865000 10870000   10505000 10510000 ENSG00000241563
+4  chr1  20490000 20495000   20210000 20215000 ENSG00000169914
+5  chr1  22415000 22420000   22105000 22110000 ENSG00000090686
+10 chr1  23180000 23185000   22970000 22975000 ENSG00000159189
+13 chr1  23185000 23190000   23095000 23100000 ENSG00000133216</code></pre>
+<pre class="r"><code>genebed$snp.start &lt;- as.numeric(as.character(genebed$snp.start))
+genebed$snp.end   &lt;- as.numeric(as.character(genebed$snp.end))
 
 #19 Create a GRanges object from Step 18.
 genesnpranges &lt;- GRanges(genebed$chr, IRanges(genebed$snp.start,genebed$snp.end), ensg=genebed$ensg)
-
-
-#20 Overlap unmapped SNPs from Step 12 with loop anchor 2 from Step 19. This step assigns
+genesnpranges</code></pre>
+<pre><code>GRanges object with 1290 ranges and 1 metadata column:
+         seqnames              ranges strand |            ensg
+            &lt;Rle&gt;           &lt;IRanges&gt;  &lt;Rle&gt; |     &lt;character&gt;
+     [1]     chr1     9195000-9200000      * | ENSG00000142583
+     [2]     chr1   10865000-10870000      * | ENSG00000241563
+     [3]     chr1   20490000-20495000      * | ENSG00000169914
+     [4]     chr1   22415000-22420000      * | ENSG00000090686
+     [5]     chr1   23180000-23185000      * | ENSG00000159189
+     ...      ...                 ...    ... .             ...
+  [1286]     chrX   53310000-53315000      * | ENSG00000072501
+  [1287]     chrX   74385000-74390000      * | ENSG00000232186
+  [1288]     chrX 130075000-130080000      * | ENSG00000147256
+  [1289]     chrX 130075000-130080000      * | ENSG00000228659
+  [1290]     chrX 150770000-150775000      * | ENSG00000147381
+  -------
+  seqinfo: 23 sequences from an unspecified genome; no seqlengths</code></pre>
+<pre class="r"><code>#20 Overlap unmapped SNPs from Step 12 with loop anchor 2 from Step 19. This step assigns
 #SNPs (located at loop anchor 2) to the genes with which they interact (located at loop
 #anchor 1).
 olap &lt;- findOverlaps(snpranges,genesnpranges)
 snpint &lt;- snpranges[queryHits(olap)]
 mcols(snpint) &lt;- cbind(mcols(snpranges[queryHits(olap)]), mcols(genesnpranges[subjectHits(olap)]))
-#save(snpint, file=paste(path3, &quot;Hi-C_transcript_interacting_snp.rda&quot;, sep=&quot;&quot;))
-
-
-#21 Integrate SNP-gene relationships derived from exons, promoters and Hi-C interaction data.
+snpint</code></pre>
+<pre><code>GRanges object with 18430 ranges and 2 metadata columns:
+          seqnames    ranges strand |        rsid            ensg
+             &lt;Rle&gt; &lt;IRanges&gt;  &lt;Rle&gt; | &lt;character&gt;     &lt;character&gt;
+      [1]     chr1   6790510      * | rs567387472 ENSG00000227950
+      [2]     chr1   6790946      * |  rs11122122 ENSG00000227950
+      [3]     chr1   6791296      * |  rs34164411 ENSG00000227950
+      [4]     chr1   6791386      * |  rs11122123 ENSG00000227950
+      [5]     chr1   6792636      * | rs188107119 ENSG00000227950
+      ...      ...       ...    ... .         ...             ...
+  [18426]    chr22  46542325      * | rs139373282 ENSG00000188064
+  [18427]    chr22  46542393      * |  rs58863484 ENSG00000188064
+  [18428]    chr22  46542398      * |   rs4991147 ENSG00000188064
+  [18429]    chr22  46542403      * |   rs3885584 ENSG00000188064
+  [18430]    chr22  46543485      * |    rs135556 ENSG00000188064
+  -------
+  seqinfo: 22 sequences from an unspecified genome; no seqlengths</code></pre>
+<pre class="r"><code>#save(snpint, file=paste(path3, &quot;PT_Hi-C_transcript_interacting_snp.rda&quot;, sep=&quot;&quot;))</code></pre>
+<hr />
+<pre class="r"><code>#21 Integrate SNP-gene relationships derived from exons, promoters and Hi-C interaction data.
 load(paste(path3, &quot;Hi-C_transcript_interacting_snp.rda&quot;, sep=&quot;&quot;))
 load(paste(path3, &quot;snp_locating_in_exon_promoter_transcript_level.rda&quot;, sep=&quot;&quot;))
 snpdat &lt;- data.frame(chr=seqnames(snpint),
@@ -875,8 +1156,8 @@ other attached packages:
 
 loaded via a namespace (and not attached):
  [1] KEGGREST_1.44.0         xfun_0.43               bslib_0.7.0            
- [4] httr2_1.0.1             Biobase_2.64.0          vctrs_0.6.5            
- [7] tools_4.4.0             generics_0.1.3          curl_5.2.1             
+ [4] httr2_1.0.1             Biobase_2.64.0          generics_0.1.3         
+ [7] vctrs_0.6.5             tools_4.4.0             curl_5.2.1             
 [10] tibble_3.2.1            fansi_1.0.6             AnnotationDbi_1.66.0   
 [13] RSQLite_2.3.6           blob_1.2.4              pkgconfig_2.0.3        
 [16] dbplyr_2.5.0            lifecycle_1.0.4         GenomeInfoDbData_1.2.12
@@ -884,19 +1165,20 @@ loaded via a namespace (and not attached):
 [22] Biostrings_2.72.0       progress_1.2.3          httpuv_1.6.15          
 [25] htmltools_0.5.8.1       sass_0.4.9              yaml_2.3.8             
 [28] later_1.3.2             pillar_1.9.0            crayon_1.5.2           
-[31] jquerylib_0.1.4         cachem_1.0.8            tidyselect_1.2.1       
-[34] digest_0.6.35           stringi_1.8.4           purrr_1.0.2            
-[37] rprojroot_2.0.4         fastmap_1.1.1           cli_3.6.2              
-[40] magrittr_2.0.3          utf8_1.2.4              withr_3.0.0            
-[43] filelock_1.0.3          prettyunits_1.2.0       UCSC.utils_1.0.0       
-[46] promises_1.3.0          rappdirs_0.3.3          bit64_4.0.5            
-[49] rmarkdown_2.26          XVector_0.44.0          httr_1.4.7             
-[52] bit_4.0.5               workflowr_1.7.1         png_0.1-8              
-[55] hms_1.1.3               memoise_2.0.1           evaluate_0.23          
-[58] knitr_1.46              BiocFileCache_2.12.0    rlang_1.1.3            
-[61] Rcpp_1.0.12             glue_1.7.0              DBI_1.2.3              
-[64] xml2_1.3.6              rstudioapi_0.16.0       jsonlite_1.8.8         
-[67] R6_2.5.1                fs_1.6.4                zlibbioc_1.50.0        </code></pre>
+[31] jquerylib_0.1.4         whisker_0.4.1           cachem_1.0.8           
+[34] tidyselect_1.2.1        digest_0.6.35           stringi_1.8.4          
+[37] purrr_1.0.2             rprojroot_2.0.4         fastmap_1.1.1          
+[40] cli_3.6.2               magrittr_2.0.3          utf8_1.2.4             
+[43] withr_3.0.0             filelock_1.0.3          prettyunits_1.2.0      
+[46] UCSC.utils_1.0.0        promises_1.3.0          rappdirs_0.3.3         
+[49] bit64_4.0.5             rmarkdown_2.26          XVector_0.44.0         
+[52] httr_1.4.7              bit_4.0.5               workflowr_1.7.1        
+[55] png_0.1-8               hms_1.1.3               memoise_2.0.1          
+[58] evaluate_0.23           knitr_1.46              BiocFileCache_2.12.0   
+[61] rlang_1.1.3             Rcpp_1.0.12             glue_1.7.0             
+[64] DBI_1.2.3               xml2_1.3.6              rstudioapi_0.16.0      
+[67] jsonlite_1.8.8          R6_2.5.1                fs_1.6.4               
+[70] zlibbioc_1.50.0        </code></pre>
 </div>
 </div>
 
