@@ -400,7 +400,7 @@ aria-hidden="true"></span> </a>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2025-11-06
+<strong>Last updated:</strong> 2025-11-07
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -534,15 +534,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomhan16BreastCancerEpigeneticstreeaf00fd6c874d5e930d3fae62b575200e20f0912dtargetblankaf00fd6a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomhan16BreastCancerEpigeneticstree37dac692a2fd82871fb0459ab4a5ac5aadcd584ftargetblank37dac69a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/han16/BreastCancerEpigenetics/tree/af00fd6c874d5e930d3fae62b575200e20f0912d" target="_blank">af00fd6</a>
+<a href="https://github.com/han16/BreastCancerEpigenetics/tree/37dac692a2fd82871fb0459ab4a5ac5aadcd584f" target="_blank">37dac69</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomhan16BreastCancerEpigeneticstreeaf00fd6c874d5e930d3fae62b575200e20f0912dtargetblankaf00fd6a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomhan16BreastCancerEpigeneticstree37dac692a2fd82871fb0459ab4a5ac5aadcd584ftargetblank37dac69a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -552,7 +552,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/han16/BreastCancerEpigenetics/tree/af00fd6c874d5e930d3fae62b575200e20f0912d" target="_blank">af00fd6</a>.
+<a href="https://github.com/han16/BreastCancerEpigenetics/tree/37dac692a2fd82871fb0459ab4a5ac5aadcd584f" target="_blank">37dac69</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -613,6 +613,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/han16/BreastCancerEpigenetics/blob/37dac692a2fd82871fb0459ab4a5ac5aadcd584f/analysis/BC_HMAGMA.Rmd" target="_blank">37dac69</a>
+</td>
+<td>
+han
+</td>
+<td>
+2025-11-06
+</td>
+<td>
+11/6/2025
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/han16/BreastCancerEpigenetics/37dac692a2fd82871fb0459ab4a5ac5aadcd584f/docs/BC_HMAGMA.html" target="_blank">37dac69</a>
+</td>
+<td>
+han
+</td>
+<td>
+2025-11-06
+</td>
+<td>
+11/6/2025
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -683,6 +717,14 @@ path3=&quot;C:\\han\\Projects\\2025_03_breast_cancer\\data_for_hmagma\\&quot;
 exon &lt;- read.table(paste0(path, &quot;Gencode26_exon.bed&quot;), header = FALSE)
 dim(exon)</code></pre>
 <pre><code>[1] 324422      4</code></pre>
+<pre class="r"><code>head(exon)</code></pre>
+<pre><code>  V1       V2       V3              V4
+1  X 99883667 99884983 ENSG00000000003
+2  X 99885756 99885863 ENSG00000000003
+3  X 99887482 99887565 ENSG00000000003
+4  X 99888402 99888536 ENSG00000000003
+5  X 99888928 99889026 ENSG00000000003
+6  X 99890175 99890249 ENSG00000000003</code></pre>
 <pre class="r"><code>file.exists(paste0(path, &quot;Gencode26_exon.bed&quot;)) # check if the file exists </code></pre>
 <pre><code>[1] TRUE</code></pre>
 <pre class="r"><code>exon$V1 &lt;- sub(&quot;^&quot;, &quot;chr&quot;, exon$V1)
@@ -782,10 +824,10 @@ ancestry</li>
 </ul>
 </div>
 <div
-id="assign-snps-to-genes-by-overlapping-snps-with-exons-and-promoters-timing-1015-min"
+id="assign-snps-in-eur.bim-to-genes-by-overlapping-snps-with-exons-and-promoters-timing-1015-min"
 class="section level2">
-<h2>Assign SNPs to genes by overlapping SNPs with exons and promoters ●
-Timing 10–15 min</h2>
+<h2>Assign SNPs (in EUR.bim) to genes by overlapping SNPs with exons and
+promoters ● Timing 10–15 min</h2>
 <pre class="r"><code>#9 Identify genes that map to SNPs residing in exons by overlapping the GRanges object for SNPs with
 #the GRanges object for exons.
 olap &lt;- findOverlaps(snps,exonranges)
@@ -809,10 +851,10 @@ snpro &lt;- snpro[seqnames(snpro)!=&quot;chrX&quot;]
 </ul>
 </div>
 <div
-id="assign-unmapped-snps-to-genes-on-the-basis-of-hi-c-interaction-data-timing"
+id="assign-unmapped-snps-in-eur.bim-to-genes-on-the-basis-of-hi-c-interaction-data-timing"
 class="section level2">
-<h2>Assign unmapped SNPs to genes on the basis of Hi-C interaction data
-● Timing</h2>
+<h2>Assign unmapped SNPs (in EUR.bim) to genes on the basis of Hi-C
+interaction data ● Timing</h2>
 <p>30–45 min</p>
 <pre class="r"><code># 12 After identiﬁcation of SNPs that reside in exons and/or promoters, there will be a subset of SNPs
 # that do not overlap with either (e.g., intergenic or intronic SNPs). In the following steps, we match
@@ -841,6 +883,9 @@ snpranges</code></pre>
   seqinfo: 22 sequences from an unspecified genome; no seqlengths</code></pre>
 <pre class="r"><code>#13 Save unmapped SNPs as a .rda ﬁle.
 #save(snpranges, file=paste(path2, &quot;non_exonic_promoter_snp.rda&quot;, sep=&quot;&quot;))</code></pre>
+<ul>
+<li>a majority of SNPs are unmapped (8916368/9822123=90.78%).</li>
+</ul>
 <pre class="r"><code>#14 Read in adult brain Hi-C data. The ﬁrst three columns represent genomic coordinates [chr, start,
 #end] of loop anchor 1, and the last three columns represent genomic coordinates of loop anchor 2.
 #CRITICAL STEP Although we use a Hi-C dataset from the adult human brain for this protocol,
@@ -947,7 +992,8 @@ promoters</strong></li>
 #is in a format of loop anchor 1, loop anchor 2, gene name. We reverse the order of loop
 #anchors so that the resulting genebed object has a format of loop anchor 2, loop anchor 1,
 #gene name.
-genebed &lt;- data.frame(chr=seqnames(generanges), snp.start=generanges$int1, snp.end=generanges$int2, gene.start=start(generanges), gene.end=start(generanges)+width(generanges)-1, ensg=generanges$gene)
+genebed &lt;- data.frame(chr=seqnames(generanges), snp.start=generanges$int1, snp.end=generanges$int2, gene.start=start(generanges), gene.end=start(generanges)+width(generanges)-1, ensg=generanges$gene)  # anchor 2 information of int 1,2 are used.  
+
 genebed &lt;- unique(genebed)
 str(genebed)</code></pre>
 <pre><code>&#39;data.frame&#39;:   1290 obs. of  6 variables:
@@ -969,7 +1015,7 @@ str(genebed)</code></pre>
 genebed$snp.end   &lt;- as.numeric(as.character(genebed$snp.end))
 
 #19 Create a GRanges object from Step 18.
-genesnpranges &lt;- GRanges(genebed$chr, IRanges(genebed$snp.start,genebed$snp.end), ensg=genebed$ensg)
+genesnpranges &lt;- GRanges(genebed$chr, IRanges(genebed$snp.start,genebed$snp.end), ensg=genebed$ensg)  # anchor 2 information is used 
 genesnpranges</code></pre>
 <pre><code>GRanges object with 1290 ranges and 1 metadata column:
          seqnames              ranges strand |            ensg
@@ -987,6 +1033,9 @@ genesnpranges</code></pre>
   [1290]     chrX 150770000-150775000      * | ENSG00000147381
   -------
   seqinfo: 23 sequences from an unspecified genome; no seqlengths</code></pre>
+<ul>
+<li><strong>why step 18 is necessary??</strong></li>
+</ul>
 <pre class="r"><code>#20 Overlap unmapped SNPs from Step 12 with loop anchor 2 from Step 19. This step assigns
 #SNPs (located at loop anchor 2) to the genes with which they interact (located at loop
 #anchor 1).
@@ -1010,17 +1059,32 @@ snpint</code></pre>
   [18430]    chr22  46543485      * |    rs135556 ENSG00000188064
   -------
   seqinfo: 22 sequences from an unspecified genome; no seqlengths</code></pre>
-<pre class="r"><code>#save(snpint, file=paste(path3, &quot;PT_Hi-C_transcript_interacting_snp.rda&quot;, sep=&quot;&quot;))</code></pre>
-<hr />
+<pre class="r"><code>#save(snpint, file=paste(path3, &quot;PT_Hi-C_transcript_interacting_snp.rda&quot;, sep=&quot;&quot;))
+#file.exists(paste0(path3, &quot;PT_Hi-C_transcript_interacting_snp.rda&quot;))</code></pre>
 <pre class="r"><code>#21 Integrate SNP-gene relationships derived from exons, promoters and Hi-C interaction data.
-load(paste(path3, &quot;Hi-C_transcript_interacting_snp.rda&quot;, sep=&quot;&quot;))
+load(paste(path3, &quot;PT_Hi-C_transcript_interacting_snp.rda&quot;, sep=&quot;&quot;))
 load(paste(path3, &quot;snp_locating_in_exon_promoter_transcript_level.rda&quot;, sep=&quot;&quot;))
-snpdat &lt;- data.frame(chr=seqnames(snpint),
-bp=start(snpint), rsid=snpint$rsid, ensg=snpint$ensg)
-snpromat &lt;- unique(data.frame(rsid=snpro$rsid, ensg=snpro$gene))
+snpdat &lt;- data.frame(chr=seqnames(snpint),cbp=start(snpint), rsid=snpint$rsid, ensg=snpint$ensg)
+head(snpdat)</code></pre>
+<pre><code>   chr     cbp        rsid            ensg
+1 chr1 6790510 rs567387472 ENSG00000227950
+2 chr1 6790946  rs11122122 ENSG00000227950
+3 chr1 6791296  rs34164411 ENSG00000227950
+4 chr1 6791386  rs11122123 ENSG00000227950
+5 chr1 6792636 rs188107119 ENSG00000227950
+6 chr1 6792660  rs12146050 ENSG00000227950</code></pre>
+<pre class="r"><code>snpromat &lt;- unique(data.frame(rsid=snpro$rsid, ensg=snpro$gene))
 snpexonmat &lt;- unique(data.frame(rsid=snpexon$rsid, ensg=snpexon$gene))
 snpcomb &lt;- unique(rbind(snpdat[,3:4], snpromat, snpexonmat))
-#save(snpcomb, file=paste(path3, &quot;SNP_to_transcript_comb.rda&quot;, sep=&quot;&quot;))</code></pre>
+head(snpcomb)</code></pre>
+<pre><code>         rsid            ensg
+1 rs567387472 ENSG00000227950
+2  rs11122122 ENSG00000227950
+3  rs34164411 ENSG00000227950
+4  rs11122123 ENSG00000227950
+5 rs188107119 ENSG00000227950
+6  rs12146050 ENSG00000227950</code></pre>
+<pre class="r"><code>#save(snpcomb, file=paste(path3, &quot;SNP_to_transcript_comb.rda&quot;, sep=&quot;&quot;))</code></pre>
 <pre class="r"><code>#22 Aggregate SNP-gene relationships to generate the variant-gene annotation ﬁle compatible
 #with MAGMA.
 snpagg &lt;- aggregate(snpcomb, list(snpcomb$ensg), unique)

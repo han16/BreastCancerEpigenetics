@@ -39,6 +39,12 @@ path3="C:\\han\\Projects\\2025_03_breast_cancer\\data_for_hmagma\\"
 
 exon <- read.table(paste0(path, "Gencode26_exon.bed"), header = FALSE)
 dim(exon)
+head(exon)
+```
+
+
+
+```{r, message=F, warning=F}
 
 file.exists(paste0(path, "Gencode26_exon.bed")) # check if the file exists 
 
@@ -95,7 +101,7 @@ snps
 
 
 
-## Assign SNPs to genes by overlapping SNPs with exons and promoters ● Timing 10–15 min
+## Assign SNPs (in EUR.bim) to genes by overlapping SNPs with exons and promoters ● Timing 10–15 min
 
 ```{r, message=F, warning=F}
 #9 Identify genes that map to SNPs residing in exons by overlapping the GRanges object for SNPs with
@@ -121,7 +127,7 @@ snpro <- snpro[seqnames(snpro)!="chrX"]
 * “Find SNPs that fall inside any exon, attach the exon’s annotation (like gene ID) to those SNPs, and remove SNPs on chromosome X.”
 
 
-## Assign unmapped SNPs to genes on the basis of Hi-C interaction data ● Timing
+## Assign unmapped SNPs (in EUR.bim) to genes on the basis of Hi-C interaction data ● Timing
 30–45 min
 
 ```{r, message=F, warning=F}
@@ -139,6 +145,8 @@ snpranges
 ```
 
 
+
+* a majority of SNPs are unmapped (8916368/9822123=90.78%). 
 
 
 ```{r, message=F, warning=F, eval=T}
@@ -199,7 +207,8 @@ generanges
 #is in a format of loop anchor 1, loop anchor 2, gene name. We reverse the order of loop
 #anchors so that the resulting genebed object has a format of loop anchor 2, loop anchor 1,
 #gene name.
-genebed <- data.frame(chr=seqnames(generanges), snp.start=generanges$int1, snp.end=generanges$int2, gene.start=start(generanges), gene.end=start(generanges)+width(generanges)-1, ensg=generanges$gene)
+genebed <- data.frame(chr=seqnames(generanges), snp.start=generanges$int1, snp.end=generanges$int2, gene.start=start(generanges), gene.end=start(generanges)+width(generanges)-1, ensg=generanges$gene)  # anchor 2 information of int 1,2 are used.  
+
 genebed <- unique(genebed)
 str(genebed)
 head(genebed)
@@ -208,9 +217,11 @@ genebed$snp.start <- as.numeric(as.character(genebed$snp.start))
 genebed$snp.end   <- as.numeric(as.character(genebed$snp.end))
 
 #19 Create a GRanges object from Step 18.
-genesnpranges <- GRanges(genebed$chr, IRanges(genebed$snp.start,genebed$snp.end), ensg=genebed$ensg)
+genesnpranges <- GRanges(genebed$chr, IRanges(genebed$snp.start,genebed$snp.end), ensg=genebed$ensg)  # anchor 2 information is used 
 genesnpranges
 ```
+
+* **why step 18 is necessary??**
 
 
 
@@ -225,22 +236,25 @@ snpint <- snpranges[queryHits(olap)]
 mcols(snpint) <- cbind(mcols(snpranges[queryHits(olap)]), mcols(genesnpranges[subjectHits(olap)]))
 snpint
 #save(snpint, file=paste(path3, "PT_Hi-C_transcript_interacting_snp.rda", sep=""))
+#file.exists(paste0(path3, "PT_Hi-C_transcript_interacting_snp.rda"))
 ```
 
 
-* **
+
 
 
 
 ```{r, message=F, warning=F}
 #21 Integrate SNP-gene relationships derived from exons, promoters and Hi-C interaction data.
-load(paste(path3, "Hi-C_transcript_interacting_snp.rda", sep=""))
+load(paste(path3, "PT_Hi-C_transcript_interacting_snp.rda", sep=""))
 load(paste(path3, "snp_locating_in_exon_promoter_transcript_level.rda", sep=""))
-snpdat <- data.frame(chr=seqnames(snpint),
-bp=start(snpint), rsid=snpint$rsid, ensg=snpint$ensg)
+snpdat <- data.frame(chr=seqnames(snpint),cbp=start(snpint), rsid=snpint$rsid, ensg=snpint$ensg)
+head(snpdat)
+
 snpromat <- unique(data.frame(rsid=snpro$rsid, ensg=snpro$gene))
 snpexonmat <- unique(data.frame(rsid=snpexon$rsid, ensg=snpexon$gene))
 snpcomb <- unique(rbind(snpdat[,3:4], snpromat, snpexonmat))
+head(snpcomb)
 #save(snpcomb, file=paste(path3, "SNP_to_transcript_comb.rda", sep=""))
 
 
