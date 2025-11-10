@@ -221,6 +221,10 @@ genesnpranges <- GRanges(genebed$chr, IRanges(genebed$snp.start,genebed$snp.end)
 genesnpranges
 ```
 
+* `genesnpranges` ranges information is from anchor 2, but ensg from anchor 1  
+
+
+
 * **why step 18 is necessary??**
 
 
@@ -241,6 +245,8 @@ snpint
 
 
 
+
+##  ????????? incorporate eQTL and other regulatory information to help map SNPs to genes. 
 
 
 

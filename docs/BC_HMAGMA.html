@@ -400,7 +400,7 @@ aria-hidden="true"></span> </a>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2025-11-07
+<strong>Last updated:</strong> 2025-11-10
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -534,15 +534,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomhan16BreastCancerEpigeneticstree37dac692a2fd82871fb0459ab4a5ac5aadcd584ftargetblank37dac69a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomhan16BreastCancerEpigeneticstree8d7eb5ce8a9afda701f0cf6d547a166b7e57700atargetblank8d7eb5ca">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/han16/BreastCancerEpigenetics/tree/37dac692a2fd82871fb0459ab4a5ac5aadcd584f" target="_blank">37dac69</a>
+<a href="https://github.com/han16/BreastCancerEpigenetics/tree/8d7eb5ce8a9afda701f0cf6d547a166b7e57700a" target="_blank">8d7eb5c</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomhan16BreastCancerEpigeneticstree37dac692a2fd82871fb0459ab4a5ac5aadcd584ftargetblank37dac69a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomhan16BreastCancerEpigeneticstree8d7eb5ce8a9afda701f0cf6d547a166b7e57700atargetblank8d7eb5ca"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -552,7 +552,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/han16/BreastCancerEpigenetics/tree/37dac692a2fd82871fb0459ab4a5ac5aadcd584f" target="_blank">37dac69</a>.
+<a href="https://github.com/han16/BreastCancerEpigenetics/tree/8d7eb5ce8a9afda701f0cf6d547a166b7e57700a" target="_blank">8d7eb5c</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -613,6 +613,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/han16/BreastCancerEpigenetics/blob/8d7eb5ce8a9afda701f0cf6d547a166b7e57700a/analysis/BC_HMAGMA.Rmd" target="_blank">8d7eb5c</a>
+</td>
+<td>
+han
+</td>
+<td>
+2025-11-07
+</td>
+<td>
+11/7/2025
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/han16/BreastCancerEpigenetics/8d7eb5ce8a9afda701f0cf6d547a166b7e57700a/docs/BC_HMAGMA.html" target="_blank">8d7eb5c</a>
+</td>
+<td>
+han
+</td>
+<td>
+2025-11-07
+</td>
+<td>
+11/7/2025
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1034,7 +1068,9 @@ genesnpranges</code></pre>
   -------
   seqinfo: 23 sequences from an unspecified genome; no seqlengths</code></pre>
 <ul>
-<li><strong>why step 18 is necessary??</strong></li>
+<li><p><code>genesnpranges</code> ranges information is from anchor 2,
+but ensg from anchor 1</p></li>
+<li><p><strong>why step 18 is necessary??</strong></p></li>
 </ul>
 <pre class="r"><code>#20 Overlap unmapped SNPs from Step 12 with loop anchor 2 from Step 19. This step assigns
 #SNPs (located at loop anchor 2) to the genes with which they interact (located at loop
@@ -1061,6 +1097,12 @@ snpint</code></pre>
   seqinfo: 22 sequences from an unspecified genome; no seqlengths</code></pre>
 <pre class="r"><code>#save(snpint, file=paste(path3, &quot;PT_Hi-C_transcript_interacting_snp.rda&quot;, sep=&quot;&quot;))
 #file.exists(paste0(path3, &quot;PT_Hi-C_transcript_interacting_snp.rda&quot;))</code></pre>
+</div>
+<div
+id="incorporate-eqtl-and-other-regulatory-information-to-help-map-snps-to-genes."
+class="section level2">
+<h2>????????? incorporate eQTL and other regulatory information to help
+map SNPs to genes.</h2>
 <pre class="r"><code>#21 Integrate SNP-gene relationships derived from exons, promoters and Hi-C interaction data.
 load(paste(path3, &quot;PT_Hi-C_transcript_interacting_snp.rda&quot;, sep=&quot;&quot;))
 load(paste(path3, &quot;snp_locating_in_exon_promoter_transcript_level.rda&quot;, sep=&quot;&quot;))
