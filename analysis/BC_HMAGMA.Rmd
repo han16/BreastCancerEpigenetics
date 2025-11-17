@@ -35,6 +35,7 @@ library(dplyr)
 path="C:\\han\\Dataset\\20250221_PMID_32152537_hmagma\\6382668\\HMAGMA_Protocol_v1.02\\HMAGMA_Protocol\\"
 path2="C:\\han\\Projects\\2025_03_breast_cancer\\HMAGMA\\"
 path3="C:\\han\\Projects\\2025_03_breast_cancer\\data_for_hmagma\\"
+path4="C:\\han\\Dataset\\20251106_PancanQTL_v2\\BRCA.eQTL-GWAS.xls\\"
 
 
 exon <- read.table(paste0(path, "Gencode26_exon.bed"), header = FALSE)
@@ -183,7 +184,7 @@ hicranges <- GRanges(hic.comb$chrom1, IRanges(as.numeric(hic.comb$start1), as.nu
 hicranges
 ```
 
-* the original code only used the first anchor of Hi-C loops, **why don't use the second anchor information or both anchors**  
+* the original code only used the first anchor of Hi-C loops, **why don't use the second anchor information or both anchors**  second anchor was used in the next step. 
 
 
 
@@ -261,7 +262,7 @@ snpromat <- unique(data.frame(rsid=snpro$rsid, ensg=snpro$gene))
 snpexonmat <- unique(data.frame(rsid=snpexon$rsid, ensg=snpexon$gene))
 snpcomb <- unique(rbind(snpdat[,3:4], snpromat, snpexonmat))
 head(snpcomb)
-#save(snpcomb, file=paste(path3, "SNP_to_transcript_comb.rda", sep=""))
+#save(snpcomb, file=paste(path3, "PT12345_Hi-C_SNP_to_transcript_comb.rda", sep=""))
 
 
 
@@ -301,19 +302,19 @@ snpannot <- snpagg[,c("ensg", "index", "rsid")]
 
 #28 Save the variant-gene annotation ﬁle in an executable format.
 writable <- format(snpannot)
-write.table(writable, file=paste(path3, "SNP_aggregate_transcript.txt", sep=""), quote=F, row.names=F, col.names=F, sep="\t")
+write.table(writable, file=paste(path3, "PT12345_SNP_aggregate_transcript.txt", sep=""), quote=F, row.names=F, col.names=F, sep="\t")
 
 #system(paste0("sed -e `s/, /\t/g` < SNP_aggregate_transcript",".txt >","Adultbrain.transcript.annot"))
-system("sed -e `s/, /\\t/g` < SNP_aggregate_transcript.txt > BRSTCancer.transcript.annot")
+system("sed -e `s/, /\\t/g` < PT12345_SNP_aggregate_transcript.txt > PT12345_BRSTCancer.transcript.annot")
 
 
 ```
 
 
 ```{r, message=F, warning=F, eval=F}
-txt <- readLines(paste0(path3, "SNP_aggregate_transcript.txt"))
+txt <- readLines(paste0(path3, "PT12345_SNP_aggregate_transcript.txt"))
 txt <- gsub(", ", "\t", txt)
-writeLines(txt, paste0(path3,"BRSTCancer.transcript.annot"))
+writeLines(txt, paste0(path3,"PT12345_BRSTCancer.transcript.annot"))
 ```
 
 
@@ -323,44 +324,27 @@ writeLines(txt, paste0(path3,"BRSTCancer.transcript.annot"))
 ### check p values 
 
 ```{r, message=F, warning=F}
-BRCA_GWAS_eQTL=read.table(paste0(path3, "BRCA_GWAS_eQTL.txt"), header=T, sep = "\t", fill = TRUE, quote = "")
+BRCA_GWAS_eQTL=read.table(paste0(path4, "BRCA.eQTL-GWAS.xls"), header=T, sep = "\t", fill = TRUE, quote = "")
 
+head(BRCA_GWAS_eQTL)
 # 1. Is the column numeric?
-is.numeric(BRCA_GWAS_eQTL$p.value)
+is.numeric(BRCA_GWAS_eQTL$P_value)
 
 # 2. Are there any NAs, NaNs, or Infs?
-sum(is.na(BRCA_GWAS_eQTL$p.value))
-sum(is.nan(BRCA_GWAS_eQTL$p.value))
-sum(is.infinite(BRCA_GWAS_eQTL$p.value))
+sum(is.na(BRCA_GWAS_eQTL$P_value))
+sum(is.nan(BRCA_GWAS_eQTL$P_value))
+sum(is.infinite(BRCA_GWAS_eQTL$P_value))
 
 # 3. Are all p-values between 0 and 1?
-range(BRCA_GWAS_eQTL$p.value, na.rm = TRUE)
+range(BRCA_GWAS_eQTL$P_value, na.rm = TRUE)
 
+sum(BRCA_GWAS_eQTL$P_value>1)
+head(BRCA_GWAS_eQTL[which(BRCA_GWAS_eQTL$P_value>1),])
 ```
 
-### check builds 
+* why so many rows with `P_value` >1? 
 
-```{r, message=F, warning=F}
-library(biomaRt)
 
-ensembl37 <- useEnsembl(biomart = "ENSEMBL_MART_SNP",
-                        dataset = "hsapiens_snp",
-                        GRCh = 37)
-
-ensembl38 <- useEnsembl(biomart = "ENSEMBL_MART_SNP",
-                        dataset = "hsapiens_snp",
-                        GRCh = 38)
-
-snps <- c("rs2910686", "rs2548224", "rs4360063", "rs1363974", "rs3797796", "rs7731592")
-
-pos37 <- getBM(attributes = c("refsnp_id", "chr_name", "chrom_start"),
-               filters = "snp_filter", values = snps, mart = ensembl37)
-pos38 <- getBM(attributes = c("refsnp_id", "chr_name", "chrom_start"),
-               filters = "snp_filter", values = snps, mart = ensembl38)
-
-pos37
-pos38
-```
 
 
 ## run MAGMA

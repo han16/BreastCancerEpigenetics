@@ -400,7 +400,7 @@ aria-hidden="true"></span> </a>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2025-11-10
+<strong>Last updated:</strong> 2025-11-17
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -534,15 +534,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomhan16BreastCancerEpigeneticstree8d7eb5ce8a9afda701f0cf6d547a166b7e57700atargetblank8d7eb5ca">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomhan16BreastCancerEpigeneticstreea610e466ec89b3d1fb960c8f9d094b2f22bd2118targetblanka610e46a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/han16/BreastCancerEpigenetics/tree/8d7eb5ce8a9afda701f0cf6d547a166b7e57700a" target="_blank">8d7eb5c</a>
+<a href="https://github.com/han16/BreastCancerEpigenetics/tree/a610e466ec89b3d1fb960c8f9d094b2f22bd2118" target="_blank">a610e46</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomhan16BreastCancerEpigeneticstree8d7eb5ce8a9afda701f0cf6d547a166b7e57700atargetblank8d7eb5ca"
+id="strongRepositoryversionstrongahrefhttpsgithubcomhan16BreastCancerEpigeneticstreea610e466ec89b3d1fb960c8f9d094b2f22bd2118targetblanka610e46a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -552,7 +552,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/han16/BreastCancerEpigenetics/tree/8d7eb5ce8a9afda701f0cf6d547a166b7e57700a" target="_blank">8d7eb5c</a>.
+<a href="https://github.com/han16/BreastCancerEpigenetics/tree/a610e466ec89b3d1fb960c8f9d094b2f22bd2118" target="_blank">a610e46</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -613,6 +613,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/han16/BreastCancerEpigenetics/blob/a610e466ec89b3d1fb960c8f9d094b2f22bd2118/analysis/BC_HMAGMA.Rmd" target="_blank">a610e46</a>
+</td>
+<td>
+han
+</td>
+<td>
+2025-11-10
+</td>
+<td>
+11/10/2025
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/han16/BreastCancerEpigenetics/a610e466ec89b3d1fb960c8f9d094b2f22bd2118/docs/BC_HMAGMA.html" target="_blank">a610e46</a>
+</td>
+<td>
+han
+</td>
+<td>
+2025-11-10
+</td>
+<td>
+11/10/2025
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -746,6 +780,7 @@ coordinates ● Timing ~5 min</h2>
 path=&quot;C:\\han\\Dataset\\20250221_PMID_32152537_hmagma\\6382668\\HMAGMA_Protocol_v1.02\\HMAGMA_Protocol\\&quot;
 path2=&quot;C:\\han\\Projects\\2025_03_breast_cancer\\HMAGMA\\&quot;
 path3=&quot;C:\\han\\Projects\\2025_03_breast_cancer\\data_for_hmagma\\&quot;
+path4=&quot;C:\\han\\Dataset\\20251106_PancanQTL_v2\\BRCA.eQTL-GWAS.xls\\&quot;
 
 
 exon &lt;- read.table(paste0(path, &quot;Gencode26_exon.bed&quot;), header = FALSE)
@@ -982,7 +1017,7 @@ hicranges</code></pre>
 <ul>
 <li>the original code only used the first anchor of Hi-C loops,
 <strong>why don’t use the second anchor information or both
-anchors</strong></li>
+anchors</strong> second anchor was used in the next step.</li>
 </ul>
 <pre class="r"><code>#17 Identify promoter-anchored interactions by overlapping loop anchor 1 with promoters.
 olap &lt;- findOverlaps(hicranges,promoterranges)
@@ -1126,7 +1161,7 @@ head(snpcomb)</code></pre>
 4  rs11122123 ENSG00000227950
 5 rs188107119 ENSG00000227950
 6  rs12146050 ENSG00000227950</code></pre>
-<pre class="r"><code>#save(snpcomb, file=paste(path3, &quot;SNP_to_transcript_comb.rda&quot;, sep=&quot;&quot;))</code></pre>
+<pre class="r"><code>#save(snpcomb, file=paste(path3, &quot;PT12345_Hi-C_SNP_to_transcript_comb.rda&quot;, sep=&quot;&quot;))</code></pre>
 <pre class="r"><code>#22 Aggregate SNP-gene relationships to generate the variant-gene annotation ﬁle compatible
 #with MAGMA.
 snpagg &lt;- aggregate(snpcomb, list(snpcomb$ensg), unique)
@@ -1156,69 +1191,82 @@ snpannot &lt;- snpagg[,c(&quot;ensg&quot;, &quot;index&quot;, &quot;rsid&quot;)]
 
 #28 Save the variant-gene annotation ﬁle in an executable format.
 writable &lt;- format(snpannot)
-write.table(writable, file=paste(path3, &quot;SNP_aggregate_transcript.txt&quot;, sep=&quot;&quot;), quote=F, row.names=F, col.names=F, sep=&quot;\t&quot;)
+write.table(writable, file=paste(path3, &quot;PT12345_SNP_aggregate_transcript.txt&quot;, sep=&quot;&quot;), quote=F, row.names=F, col.names=F, sep=&quot;\t&quot;)
 
 #system(paste0(&quot;sed -e `s/, /\t/g` &lt; SNP_aggregate_transcript&quot;,&quot;.txt &gt;&quot;,&quot;Adultbrain.transcript.annot&quot;))
-system(&quot;sed -e `s/, /\\t/g` &lt; SNP_aggregate_transcript.txt &gt; BRSTCancer.transcript.annot&quot;)</code></pre>
-<pre class="r"><code>txt &lt;- readLines(paste0(path3, &quot;SNP_aggregate_transcript.txt&quot;))
+system(&quot;sed -e `s/, /\\t/g` &lt; PT12345_SNP_aggregate_transcript.txt &gt; PT12345_BRSTCancer.transcript.annot&quot;)</code></pre>
+<pre class="r"><code>txt &lt;- readLines(paste0(path3, &quot;PT12345_SNP_aggregate_transcript.txt&quot;))
 txt &lt;- gsub(&quot;, &quot;, &quot;\t&quot;, txt)
-writeLines(txt, paste0(path3,&quot;BRSTCancer.transcript.annot&quot;))</code></pre>
+writeLines(txt, paste0(path3,&quot;PT12345_BRSTCancer.transcript.annot&quot;))</code></pre>
 </div>
 <div id="check-snp-summary-data-format" class="section level2">
 <h2>Check SNP summary data format</h2>
 <div id="check-p-values" class="section level3">
 <h3>check p values</h3>
-<pre class="r"><code>BRCA_GWAS_eQTL=read.table(paste0(path3, &quot;BRCA_GWAS_eQTL.txt&quot;), header=T, sep = &quot;\t&quot;, fill = TRUE, quote = &quot;&quot;)
+<pre class="r"><code>BRCA_GWAS_eQTL=read.table(paste0(path4, &quot;BRCA.eQTL-GWAS.xls&quot;), header=T, sep = &quot;\t&quot;, fill = TRUE, quote = &quot;&quot;)
 
-# 1. Is the column numeric?
-is.numeric(BRCA_GWAS_eQTL$p.value)</code></pre>
+head(BRCA_GWAS_eQTL)</code></pre>
+<pre><code>  CancerType eGene  eQTL_SNP eQTL_SNP_pos  GWAS_SNP GWAS_SNP_pos       R2
+1       BRCA  RPL9 rs1458255   4:39446549 rs4975018   4:39476926 0.541319
+2       BRCA  RPL9 rs2608824   4:39447779 rs4975018   4:39476926 0.541319
+3       BRCA  RPL9 rs2687967   4:39449824 rs4975018   4:39476926 0.539980
+4       BRCA  RPL9 rs2687969   4:39452499 rs4975018   4:39476926 0.539980
+5       BRCA  RPL9 rs2608828   4:39453730 rs4975018   4:39476926 0.539980
+6       BRCA  RPL9 rs6531717   4:39454321 rs4975018   4:39476926 0.539980
+  RISK_ALLELE OR_or_BETA P_value
+1           A        0.6   2e-19
+2           A        0.6   2e-19
+3           A        0.6   2e-19
+4           A        0.6   2e-19
+5           A        0.6   2e-19
+6           A        0.6   2e-19
+                                                                         Trait_or_Disease
+1 Beta-klotho level in Chronic kidney disease with hypertension and no diabetes (19557_3)
+2 Beta-klotho level in Chronic kidney disease with hypertension and no diabetes (19557_3)
+3 Beta-klotho level in Chronic kidney disease with hypertension and no diabetes (19557_3)
+4 Beta-klotho level in Chronic kidney disease with hypertension and no diabetes (19557_3)
+5 Beta-klotho level in Chronic kidney disease with hypertension and no diabetes (19557_3)
+6 Beta-klotho level in Chronic kidney disease with hypertension and no diabetes (19557_3)
+  PUBMEDID
+1 35870639
+2 35870639
+3 35870639
+4 35870639
+5 35870639
+6 35870639</code></pre>
+<pre class="r"><code># 1. Is the column numeric?
+is.numeric(BRCA_GWAS_eQTL$P_value)</code></pre>
 <pre><code>[1] TRUE</code></pre>
 <pre class="r"><code># 2. Are there any NAs, NaNs, or Infs?
-sum(is.na(BRCA_GWAS_eQTL$p.value))</code></pre>
+sum(is.na(BRCA_GWAS_eQTL$P_value))</code></pre>
 <pre><code>[1] 0</code></pre>
-<pre class="r"><code>sum(is.nan(BRCA_GWAS_eQTL$p.value))</code></pre>
+<pre class="r"><code>sum(is.nan(BRCA_GWAS_eQTL$P_value))</code></pre>
 <pre><code>[1] 0</code></pre>
-<pre class="r"><code>sum(is.infinite(BRCA_GWAS_eQTL$p.value))</code></pre>
+<pre class="r"><code>sum(is.infinite(BRCA_GWAS_eQTL$P_value))</code></pre>
 <pre><code>[1] 0</code></pre>
 <pre class="r"><code># 3. Are all p-values between 0 and 1?
-range(BRCA_GWAS_eQTL$p.value, na.rm = TRUE)</code></pre>
-<pre><code>[1] 2.23e-308  7.73e-04</code></pre>
-</div>
-<div id="check-builds" class="section level3">
-<h3>check builds</h3>
-<pre class="r"><code>library(biomaRt)
-
-ensembl37 &lt;- useEnsembl(biomart = &quot;ENSEMBL_MART_SNP&quot;,
-                        dataset = &quot;hsapiens_snp&quot;,
-                        GRCh = 37)
-
-ensembl38 &lt;- useEnsembl(biomart = &quot;ENSEMBL_MART_SNP&quot;,
-                        dataset = &quot;hsapiens_snp&quot;,
-                        GRCh = 38)
-
-snps &lt;- c(&quot;rs2910686&quot;, &quot;rs2548224&quot;, &quot;rs4360063&quot;, &quot;rs1363974&quot;, &quot;rs3797796&quot;, &quot;rs7731592&quot;)
-
-pos37 &lt;- getBM(attributes = c(&quot;refsnp_id&quot;, &quot;chr_name&quot;, &quot;chrom_start&quot;),
-               filters = &quot;snp_filter&quot;, values = snps, mart = ensembl37)
-pos38 &lt;- getBM(attributes = c(&quot;refsnp_id&quot;, &quot;chr_name&quot;, &quot;chrom_start&quot;),
-               filters = &quot;snp_filter&quot;, values = snps, mart = ensembl38)
-
-pos37</code></pre>
-<pre><code>  refsnp_id chr_name chrom_start
-1 rs1363974        5    96293816
-2 rs2548224        5    96272420
-3 rs2910686        5    96252589
-4 rs3797796        5    96316758
-5 rs4360063        5    96293153
-6 rs7731592        5    96288960</code></pre>
-<pre class="r"><code>pos38</code></pre>
-<pre><code>  refsnp_id chr_name chrom_start
-1 rs1363974        5    96958112
-2 rs2548224        5    96936716
-3 rs2910686        5    96916885
-4 rs3797796        5    96981054
-5 rs4360063        5    96957449
-6 rs7731592        5    96953256</code></pre>
+range(BRCA_GWAS_eQTL$P_value, na.rm = TRUE)</code></pre>
+<pre><code>[1] 0e+00 6e+12</code></pre>
+<pre class="r"><code>sum(BRCA_GWAS_eQTL$P_value&gt;1)</code></pre>
+<pre><code>[1] 369</code></pre>
+<pre class="r"><code>head(BRCA_GWAS_eQTL[which(BRCA_GWAS_eQTL$P_value&gt;1),])</code></pre>
+<pre><code>       CancerType eGene   eQTL_SNP eQTL_SNP_pos GWAS_SNP GWAS_SNP_pos       R2
+259457       BRCA  UQCC  rs1570004  20:33958253 rs224329  20:34019579 0.969144
+266055       BRCA  UQCC  rs6060373  20:33914208 rs224329  20:34019579 0.937025
+300444       BRCA  UQCC rs62211529  20:33959315 rs224329  20:34019579 0.965348
+310026       BRCA  UQCC  rs6142353  20:33942685 rs224329  20:34019579 0.961569
+310194       BRCA  UQCC   rs735531  20:33947730 rs224329  20:34019579 0.961569
+311130       BRCA  UQCC  rs4911492  20:33951799 rs224329  20:34019579 0.965348
+       RISK_ALLELE OR_or_BETA P_value              Trait_or_Disease PUBMEDID
+259457           T      0.918   6e+12 End-stage knee osteoarthritis 36000784
+266055           T      0.918   6e+12 End-stage knee osteoarthritis 36000784
+300444           T      0.918   6e+12 End-stage knee osteoarthritis 36000784
+310026           T      0.918   6e+12 End-stage knee osteoarthritis 36000784
+310194           T      0.918   6e+12 End-stage knee osteoarthritis 36000784
+311130           T      0.918   6e+12 End-stage knee osteoarthritis 36000784</code></pre>
+<ul>
+<li>why so many rows with <code>P_value</code> &gt;1?</li>
+</ul>
 </div>
 </div>
 <div id="run-magma" class="section level2">
@@ -1273,18 +1321,17 @@ loaded via a namespace (and not attached):
 [28] later_1.3.2             pillar_1.9.0            crayon_1.5.2           
 [31] jquerylib_0.1.4         whisker_0.4.1           cachem_1.0.8           
 [34] tidyselect_1.2.1        digest_0.6.35           stringi_1.8.4          
-[37] purrr_1.0.2             rprojroot_2.0.4         fastmap_1.1.1          
-[40] cli_3.6.2               magrittr_2.0.3          utf8_1.2.4             
-[43] withr_3.0.0             filelock_1.0.3          prettyunits_1.2.0      
-[46] UCSC.utils_1.0.0        promises_1.3.0          rappdirs_0.3.3         
-[49] bit64_4.0.5             rmarkdown_2.26          XVector_0.44.0         
-[52] httr_1.4.7              bit_4.0.5               workflowr_1.7.1        
-[55] png_0.1-8               hms_1.1.3               memoise_2.0.1          
-[58] evaluate_0.23           knitr_1.46              BiocFileCache_2.12.0   
-[61] rlang_1.1.3             Rcpp_1.0.12             glue_1.7.0             
-[64] DBI_1.2.3               xml2_1.3.6              rstudioapi_0.16.0      
-[67] jsonlite_1.8.8          R6_2.5.1                fs_1.6.4               
-[70] zlibbioc_1.50.0        </code></pre>
+[37] rprojroot_2.0.4         fastmap_1.1.1           cli_3.6.2              
+[40] magrittr_2.0.3          utf8_1.2.4              filelock_1.0.3         
+[43] prettyunits_1.2.0       UCSC.utils_1.0.0        promises_1.3.0         
+[46] rappdirs_0.3.3          bit64_4.0.5             rmarkdown_2.26         
+[49] XVector_0.44.0          httr_1.4.7              bit_4.0.5              
+[52] workflowr_1.7.1         png_0.1-8               hms_1.1.3              
+[55] memoise_2.0.1           evaluate_0.23           knitr_1.46             
+[58] BiocFileCache_2.12.0    rlang_1.1.3             Rcpp_1.0.12            
+[61] glue_1.7.0              DBI_1.2.3               xml2_1.3.6             
+[64] rstudioapi_0.16.0       jsonlite_1.8.8          R6_2.5.1               
+[67] fs_1.6.4                zlibbioc_1.50.0        </code></pre>
 </div>
 </div>
 
