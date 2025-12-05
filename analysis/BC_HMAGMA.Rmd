@@ -340,10 +340,87 @@ range(BRCA_GWAS_eQTL$P_value, na.rm = TRUE)
 
 sum(BRCA_GWAS_eQTL$P_value>1)
 head(BRCA_GWAS_eQTL[which(BRCA_GWAS_eQTL$P_value>1),])
+
+BRCA_GWAS_eQTL2=BRCA_GWAS_eQTL %>% filter(P_value<1) 
+BRCA_GWAS_eQTL2$P_value[BRCA_GWAS_eQTL2$P_value==0]=1e-100
+
+sum(is.na(BRCA_GWAS_eQTL2$P_value))
+
+
+
+# 1. Select and rename the required columns (SNP ID and P-value)
+magma_input <- BRCA_GWAS_eQTL2[c("GWAS_SNP", "P_value")]
+
+# 2. **CRITICAL STEP: Rename the columns to MAGMA's expected names**
+colnames(magma_input) <- c("SNP", "P")
+
+
+
+# Write MAGMA-compatible tab-delimited file
+write.table(magma_input,
+            file = paste0(path3, "BRCA_GWAS_eQTL_PancanQTL_20251201.txt"),
+            sep = " ",
+            quote = FALSE,
+            row.names = FALSE, 
+            col.names = TRUE)
+
 ```
+
 
 * why so many rows with `P_value` >1? 
 
+
+
+```{r, message=F, warning=F, eval=F}
+df <- BRCA_GWAS_eQTL2  
+
+# Extract chromosome and base pair from GWAS_SNP_pos
+library(tidyr)
+df <- df %>%
+  separate(eQTL_SNP_pos, into = c("CHR", "BP"), sep = ":", convert = TRUE)
+
+# Select required columns for MAGMA: SNP, CHR, BP, P
+fuma_df <- df[, c( "CHR", "GWAS_SNP",  "P_value")]
+
+# Replace 0 p-values with tiny positive number
+fuma_df$P_value[fuma_df$P_value == 0] <- 1e-300
+
+
+########
+
+
+
+# Write MAGMA-compatible tab-delimited file
+#write.table(fuma_df,
+#            file = paste0("C:\\han\\Projects\\2025_03_breast_cancer\\data_for_FUMA\\", "BRCA_GWAS_eQTL_PancanQTL.txt"),
+#            sep = "\t",
+#            quote = FALSE,
+#            row.names = FALSE,
+#            col.names = TRUE)
+
+```
+
+
+
+```{r, message=F, warning=F}
+df_test <- read.table(paste0(path3, "BRCA_GWAS_eQTL_PancanQTL.txt"), header=TRUE, sep="\t", stringsAsFactors=FALSE)
+str(df_test)
+```
+
+
+```{r, message=F, warning=F}
+df <- read.delim(paste0(path3, "BRCA_GWAS_eQTL_PancanQTL.txt"), header=TRUE)
+
+df$SNP <- trimws(df$SNP)
+df$P <- trimws(df$P)
+
+df <- df[grepl("^[0-9eE.-]+$", df$P), ]   # keep only valid numeric P
+
+write.table(df, file = paste0(path3, "BRCA_GWAS_eQTL_PancanQTL2.txt"),
+            sep="\t", row.names=FALSE, quote=FALSE)
+
+#pd_summary=read.table("C:\\han\\Dataset\\20250221_PMID_32152537_hmagma\\6382668\\HMAGMA_Protocol_v1.02\\HMAGMA_Protocol\\PD.summary.stat.txt", header=T)
+```
 
 
 
@@ -351,5 +428,5 @@ head(BRCA_GWAS_eQTL[which(BRCA_GWAS_eQTL$P_value>1),])
 
 ```{r, message=F, warn=F, eval=F}
 # run MAGMA
-magma --bfile C:\\han\\Dataset\\20250221_PMID_32152537_hmagma\\g1000_eur\\g1000_eur --pval C:\\han\\Projects\\2025_03_breast_cancer\\data_for_hmagma\\BRCA_GWAS_eQTL.txt use=tag_SNP, p-value ncol=1000 --gene-annot C:\\han\\Projects\\2025_03_breast_cancer\\data_for_hmagma\\BRSTCancer.transcript.annot --out C:\\han\\Projects\\2025_03_breast_cancer\\data_for_hmagma\\magma_output\\
+magma --bfile C:\\han\\Dataset\\20250221_PMID_32152537_hmagma\\g1000_eur\\g1000_eur --pval C:\\han\\Projects\\2025_03_breast_cancer\\data_for_hmagma\\BRCA_GWAS_eQTL.txt use=tag_SNP, p-value ncol=1092 --gene-annot C:\\han\\Projects\\2025_03_breast_cancer\\data_for_hmagma\\BRSTCancer.transcript.annot --out C:\\han\\Projects\\2025_03_breast_cancer\\data_for_hmagma\\magma_output\\
 ```

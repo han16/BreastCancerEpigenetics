@@ -20,3 +20,8 @@ editor_options:
 * [prepare the input files for H-MAGMA](BC_HMAGMA.html)
 
 * [call Hi-C](hic_calling.html)
+
+
+## run FUMA 
+
+* [prepare the input files for FUMA](BC_fuma.html)

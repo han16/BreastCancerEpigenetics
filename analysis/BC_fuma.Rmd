@@ -1,0 +1,121 @@
+---
+title: "prepare input files for FUMA"
+output:
+  workflowr::wflow_html:
+    code_folding: hide
+    toc: true
+date: "2025-12-02"
+---
+
+
+
+```{r, message=F, warning=F}
+rm(list=ls())
+set.seed(123)
+options(stringsAsFactors=F)
+library(GenomicRanges)
+library(biomaRt)
+library(dplyr)
+```
+
+
+
+```{r, message=F, warning=F}
+path4="C:\\han\\Dataset\\20251106_PancanQTL_v2\\BRCA.eQTL-GWAS.xls\\"
+path3="C:\\han\\Projects\\2025_03_breast_cancer\\data_for_FUMA\\"
+```
+
+
+
+##  SNP summary data
+
+
+### check p values 
+
+```{r, message=F, warning=F, eval=F}
+BRCA_GWAS_eQTL=read.table(paste0(path4, "BRCA.eQTL-GWAS.xls"), header=T, sep = "\t", fill = TRUE, quote = "")
+
+head(BRCA_GWAS_eQTL)
+# 1. Is the column numeric?
+is.numeric(BRCA_GWAS_eQTL$P_value)
+
+# 2. Are there any NAs, NaNs, or Infs?
+sum(is.na(BRCA_GWAS_eQTL$P_value))
+sum(is.nan(BRCA_GWAS_eQTL$P_value))
+sum(is.infinite(BRCA_GWAS_eQTL$P_value))
+
+# 3. Are all p-values between 0 and 1?
+range(BRCA_GWAS_eQTL$P_value, na.rm = TRUE)
+
+sum(BRCA_GWAS_eQTL$P_value>1)
+head(BRCA_GWAS_eQTL[which(BRCA_GWAS_eQTL$P_value>1),])
+
+BRCA_GWAS_eQTL$P_value <- ifelse(
+  BRCA_GWAS_eQTL$P_value > 1,
+  1 / BRCA_GWAS_eQTL$P_value,
+  BRCA_GWAS_eQTL$P_value
+)
+
+sum(BRCA_GWAS_eQTL$P_value>1)
+
+BRCA_GWAS_eQTL$P_value[BRCA_GWAS_eQTL$P_value==0]=1e-300
+
+sum(is.na(BRCA_GWAS_eQTL$P_value))
+
+BRCA_GWAS_eQTL <- BRCA_GWAS_eQTL %>%
+  separate(eQTL_SNP_pos, into = c("CHR", "BP"), sep = ":", convert = TRUE)
+
+# Select required columns for MAGMA: SNP, CHR, BP, P
+BRCA_GWAS_eQTL_fuma <- BRCA_GWAS_eQTL[, c( "CHR", "GWAS_SNP",  "P_value")]
+
+BRCA_GWAS_eQTL_fuma=distinct(BRCA_GWAS_eQTL_fuma) # keep unique rows 
+
+
+#write.table(BRCA_GWAS_eQTL_fuma,
+#            file = paste0(path3, "BRCA_GWAS_eQTL_PancanQTL.txt"),
+#            sep = " ",
+#            quote = FALSE,
+#            row.names = FALSE, 
+#            col.names = TRUE)
+
+```
+
+
+
+## Hi-C data 
+
+```{r, message=F, warning=F, eval=T}
+NT12_HiC <- read.delim(paste0(path3, "NT12_mapped_5000bp_loops_5000bp.bedpe"), header = TRUE, sep = "\t")
+PT12345_HiC <- read.delim(paste0(path3, "PT12345_mapped_5000bp_loops_5000bp.bedpe"), header = TRUE, sep = "\t")
+RT12345_HiC <- read.delim(paste0(path3, "RT12345_mapped_5000bp_loops_5000bp.bedpe"), header = TRUE, sep = "\t")
+
+add_minFDR <- function(df) {
+  df$FDR_min <- pmin(
+    10^(-df$la_exp.donut.qval),
+    10^(-df$la_exp.vertical.qval),
+    10^(-df$la_exp.horizontal.qval),
+    10^(-df$la_exp.lowleft.qval),
+    na.rm = TRUE
+  )
+  return(df)
+}
+
+NT12_HiC     <- add_minFDR(NT12_HiC)
+PT12345_HiC  <- add_minFDR(PT12345_HiC)
+RT12345_HiC  <- add_minFDR(RT12345_HiC)
+
+#write.table(PT12345_HiC[,c("chrom1", "start1", "end1", "chrom2", "start2", "end2", "FDR_min")],
+#            file = paste0(path3, "PT12345_HiC.txt"),
+#            sep = " ",
+#            quote = FALSE,
+#            row.names = FALSE, 
+#            col.names = TRUE)
+
+dim(PT12345_HiC)
+
+head(PT12345_HiC[,c(1:6,23)])
+```
+
+
+
+* 2403 Hi C regions; FDR seems too big 
