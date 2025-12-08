@@ -16,11 +16,12 @@ options(stringsAsFactors=F)
 library(GenomicRanges)
 library(biomaRt)
 library(dplyr)
+library("DT")
 ```
 
 
 
-```{r, message=F, warning=F}
+```{r, echo=F, message=F, warning=F}
 path4="C:\\han\\Dataset\\20251106_PancanQTL_v2\\BRCA.eQTL-GWAS.xls\\"
 path3="C:\\han\\Projects\\2025_03_breast_cancer\\data_for_FUMA\\"
 ```
@@ -114,6 +115,16 @@ RT12345_HiC  <- add_min_qvalue(RT12345_HiC)
 dim(PT12345_HiC)
 
 head(PT12345_HiC[,c(1:6,23)])
+
+
+
+PT12345_HiC[,c(1:6,23)]%>%
+datatable(extensions = 'Buttons',
+          caption = "", 
+            options = list(dom = 'Blfrtip',
+                           buttons = c('copy', 'csv', 'excel', 'pdf', 'print'),
+                           lengthMenu = list(c(10,25,50,-1),
+                                             c(10,25,50,"All"))))
 
 summary(PT12345_HiC$qval_min)
 
