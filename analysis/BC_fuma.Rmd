@@ -89,22 +89,22 @@ NT12_HiC <- read.delim(paste0(path3, "NT12_mapped_5000bp_loops_5000bp.bedpe"), h
 PT12345_HiC <- read.delim(paste0(path3, "PT12345_mapped_5000bp_loops_5000bp.bedpe"), header = TRUE, sep = "\t")
 RT12345_HiC <- read.delim(paste0(path3, "RT12345_mapped_5000bp_loops_5000bp.bedpe"), header = TRUE, sep = "\t")
 
-add_minFDR <- function(df) {
-  df$FDR_min <- pmin(
-    10^(-df$la_exp.donut.qval),
-    10^(-df$la_exp.vertical.qval),
-    10^(-df$la_exp.horizontal.qval),
-    10^(-df$la_exp.lowleft.qval),
+add_min_qvalue <- function(df) {
+  df$qval_min <- pmin(
+    (df$la_exp.donut.qval),
+    (df$la_exp.vertical.qval),
+    (df$la_exp.horizontal.qval),
+    (df$la_exp.lowleft.qval),
     na.rm = TRUE
   )
   return(df)
 }
 
-NT12_HiC     <- add_minFDR(NT12_HiC)
-PT12345_HiC  <- add_minFDR(PT12345_HiC)
-RT12345_HiC  <- add_minFDR(RT12345_HiC)
+NT12_HiC     <- add_min_qvalue(NT12_HiC)
+PT12345_HiC  <- add_min_qvalue(PT12345_HiC)
+RT12345_HiC  <- add_min_qvalue(RT12345_HiC)
 
-#write.table(PT12345_HiC[,c("chrom1", "start1", "end1", "chrom2", "start2", "end2", "FDR_min")],
+#write.table(PT12345_HiC[,c("chrom1", "start1", "end1", "chrom2", "start2", "end2", "qval_min")],
 #            file = paste0(path3, "PT12345_HiC.txt"),
 #            sep = " ",
 #            quote = FALSE,
@@ -114,8 +114,12 @@ RT12345_HiC  <- add_minFDR(RT12345_HiC)
 dim(PT12345_HiC)
 
 head(PT12345_HiC[,c(1:6,23)])
+
+summary(PT12345_HiC$qval_min)
+
+hist(PT12345_HiC$qval_min)
 ```
 
 
 
-* 2403 Hi C regions; FDR seems too big 
+* 2403 Hi C regions; 
