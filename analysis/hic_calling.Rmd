@@ -9,4 +9,28 @@ date: "2025-05-28"
 
 
 
+
+
+
+## procedures of Hi-C calling 
+
+
+* step 1:  combine fastq files into NT, PT, RT
+
+* step 2: convert combined fastq files into bam file (hg19 should be used as reference) [here are the details](https://dovetail-analysis.readthedocs.io/en/latest/data_processing/fastq_to_bam.html)
+
+* step 3: from .pairs to Hi-C or cooler 
+
+
 * [reference-Micro-C](https://micro-c.readthedocs.io/en/latest/)
+
+
+## use FitHiC2 for Hi-C calling 
+
+
+* [reference-FitHiC2](https://github.com/ay-lab/fithic)
+
+
+
+
+

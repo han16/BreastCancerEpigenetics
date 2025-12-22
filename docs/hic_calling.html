@@ -400,7 +400,7 @@ aria-hidden="true"></span> </a>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2025-05-28
+<strong>Last updated:</strong> 2025-12-22
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -438,10 +438,10 @@ changes </a>
 <div id="strongRMarkdownfilestronguncommittedchanges"
 class="panel-collapse collapse">
 <div class="panel-body">
-<p>The R Markdown is untracked by Git. To know which version of the R
-Markdown file created these results, you’ll want to first commit it to
-the Git repo. If you’re still working on the analysis, you can ignore
-this warning. When you’re finished, you can run
+<p>The R Markdown file has unstaged changes. To know which version of
+the R Markdown file created these results, you’ll want to first commit
+it to the Git repo. If you’re still working on the analysis, you can
+ignore this warning. When you’re finished, you can run
 <code>wflow_publish</code> to commit the R Markdown file and build the
 HTML.</p>
 </div>
@@ -450,15 +450,15 @@ HTML.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomhan16BreastCancerEpigeneticstreeb28caa5893eab67e80b9c725aa27374fbb8406batargetblankb28caa5a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomhan16BreastCancerEpigeneticstree6f0a190068fbd64d8491a8bef5156d42de68bae6targetblank6f0a190a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/han16/BreastCancerEpigenetics/tree/b28caa5893eab67e80b9c725aa27374fbb8406ba" target="_blank">b28caa5</a>
+<a href="https://github.com/han16/BreastCancerEpigenetics/tree/6f0a190068fbd64d8491a8bef5156d42de68bae6" target="_blank">6f0a190</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomhan16BreastCancerEpigeneticstreeb28caa5893eab67e80b9c725aa27374fbb8406batargetblankb28caa5a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomhan16BreastCancerEpigeneticstree6f0a190068fbd64d8491a8bef5156d42de68bae6targetblank6f0a190a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -468,7 +468,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/han16/BreastCancerEpigenetics/tree/b28caa5893eab67e80b9c725aa27374fbb8406ba" target="_blank">b28caa5</a>.
+<a href="https://github.com/han16/BreastCancerEpigenetics/tree/6f0a190068fbd64d8491a8bef5156d42de68bae6" target="_blank">6f0a190</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -482,12 +482,10 @@ depends on. Below is the status of the Git repository when the results
 were generated:
 </p>
 <pre><code>
-Untracked files:
-    Untracked:  analysis/BC_HMAGMA.Rmd
-    Untracked:  analysis/hic_calling.Rmd
-
 Unstaged changes:
-    Modified:   analysis/index.Rmd
+    Modified:   analysis/BC_HMAGMA.Rmd
+    Modified:   analysis/BC_fuma.Rmd
+    Modified:   analysis/hic_calling.Rmd
 
 </code></pre>
 <p>
@@ -502,18 +500,98 @@ have uncommitted changes.
 <hr>
 </div>
 <div id="versions" class="tab-pane fade">
+
 <p>
-There are no past versions. Publish this analysis with
-<code>wflow_publish()</code> to start tracking its development.
+These are the previous versions of the repository in which changes were
+made to the R Markdown (<code>analysis/hic_calling.Rmd</code>) and HTML
+(<code>docs/hic_calling.html</code>) files. If you’ve configured a
+remote Git repository (see <code>?wflow_git_remote</code>), click on the
+hyperlinks in the table below to view the files as they were in that
+past version.
 </p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/han16/BreastCancerEpigenetics/blob/af00fd6c874d5e930d3fae62b575200e20f0912d/analysis/hic_calling.Rmd" target="_blank">af00fd6</a>
+</td>
+<td>
+han
+</td>
+<td>
+2025-11-05
+</td>
+<td>
+11/5/2025
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/han16/BreastCancerEpigenetics/af00fd6c874d5e930d3fae62b575200e20f0912d/docs/hic_calling.html" target="_blank">af00fd6</a>
+</td>
+<td>
+han
+</td>
+<td>
+2025-11-05
+</td>
+<td>
+11/5/2025
+</td>
+</tr>
+</tbody>
+</table>
+</div>
 <hr>
 </div>
 </div>
 </div>
+<div id="procedures-of-hi-c-calling" class="section level2">
+<h2>procedures of Hi-C calling</h2>
+<ul>
+<li><p>step 1: combine fastq files into NT, PT, RT</p></li>
+<li><p>step 2: convert combined fastq files into bam file (hg19 should
+be used as reference) <a
+href="https://dovetail-analysis.readthedocs.io/en/latest/data_processing/fastq_to_bam.html">here
+are the details</a></p></li>
+<li><p>step 3: from .pairs to Hi-C or cooler</p></li>
+<li><p><a
+href="https://micro-c.readthedocs.io/en/latest/">reference-Micro-C</a></p></li>
+</ul>
+</div>
+<div id="use-fithic2-for-hi-c-calling" class="section level2">
+<h2>use FitHiC2 for Hi-C calling</h2>
 <ul>
 <li><a
-href="https://micro-c.readthedocs.io/en/latest/">reference-Micro-C</a></li>
+href="https://github.com/ay-lab/fithic">reference-FitHiC2</a></li>
 </ul>
+</div>
 
 
 <!-- Adjust MathJax settings so that all math formulae are shown using

@@ -9,7 +9,7 @@ date: "2025-12-02"
 
 
 
-```{r, message=F, warning=F}
+```{r, echo=F, message=F, warning=F}
 rm(list=ls())
 set.seed(123)
 options(stringsAsFactors=F)

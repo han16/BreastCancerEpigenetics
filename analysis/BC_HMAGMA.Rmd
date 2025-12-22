@@ -341,25 +341,28 @@ range(BRCA_GWAS_eQTL$P_value, na.rm = TRUE)
 sum(BRCA_GWAS_eQTL$P_value>1)
 head(BRCA_GWAS_eQTL[which(BRCA_GWAS_eQTL$P_value>1),])
 
-BRCA_GWAS_eQTL2=BRCA_GWAS_eQTL %>% filter(P_value<1) 
-BRCA_GWAS_eQTL2$P_value[BRCA_GWAS_eQTL2$P_value==0]=1e-100
 
-sum(is.na(BRCA_GWAS_eQTL2$P_value))
+BRCA_GWAS_eQTL$P_value <- ifelse(
+  BRCA_GWAS_eQTL$P_value > 1,
+  1 / BRCA_GWAS_eQTL$P_value,
+  BRCA_GWAS_eQTL$P_value
+)
+sum(BRCA_GWAS_eQTL$P_value>1)
+
+BRCA_GWAS_eQTL$P_value[BRCA_GWAS_eQTL$P_value<1e-300]=1e-300
+
+sum(is.na(BRCA_GWAS_eQTL$P_value))
 
 
+BRCA_GWAS_eQTL$n=rep(1092, nrow(BRCA_GWAS_eQTL))
 
-# 1. Select and rename the required columns (SNP ID and P-value)
-magma_input <- BRCA_GWAS_eQTL2[c("GWAS_SNP", "P_value")]
-
-# 2. **CRITICAL STEP: Rename the columns to MAGMA's expected names**
-colnames(magma_input) <- c("SNP", "P")
-
+BRCA_GWAS_eQTL=BRCA_GWAS_eQTL %>% select("eQTL_SNP", "P_value", "n") %>% distinct()
 
 
 # Write MAGMA-compatible tab-delimited file
-write.table(magma_input,
-            file = paste0(path3, "BRCA_GWAS_eQTL_PancanQTL_20251201.txt"),
-            sep = " ",
+write.table(BRCA_GWAS_eQTL,
+            file = paste0(path3, "BRCA_GWAS_eQTL_PancanQTL.txt"),
+            sep = "\t",
             quote = FALSE,
             row.names = FALSE, 
             col.names = TRUE)
@@ -383,7 +386,7 @@ df <- df %>%
 fuma_df <- df[, c( "CHR", "GWAS_SNP",  "P_value")]
 
 # Replace 0 p-values with tiny positive number
-fuma_df$P_value[fuma_df$P_value == 0] <- 1e-300
+fuma_df$P_value[fuma_df$P_value < 1e-300] <- 1e-300
 
 
 ########
@@ -429,4 +432,8 @@ write.table(df, file = paste0(path3, "BRCA_GWAS_eQTL_PancanQTL2.txt"),
 ```{r, message=F, warn=F, eval=F}
 # run MAGMA
 magma --bfile C:\\han\\Dataset\\20250221_PMID_32152537_hmagma\\g1000_eur\\g1000_eur --pval C:\\han\\Projects\\2025_03_breast_cancer\\data_for_hmagma\\BRCA_GWAS_eQTL.txt use=tag_SNP, p-value ncol=1092 --gene-annot C:\\han\\Projects\\2025_03_breast_cancer\\data_for_hmagma\\BRSTCancer.transcript.annot --out C:\\han\\Projects\\2025_03_breast_cancer\\data_for_hmagma\\magma_output\\
+
+
+magma --bfile C:\\han\\Dataset\\20250221_PMID_32152537_hmagma\\g1000_eur\\g1000_eur --pval C:\\han\\Projects\\2025_03_breast_cancer\\data_for_hmagma\\BRCA_GWAS_eQTL_PancanQTL.txt use=rs, p ncol=1092 --gene-annot C:\\han\\Projects\\2025_03_breast_cancer\\data_for_hmagma\\BRSTCancer.transcript.annot --out C:\\han\\Projects\\2025_03_breast_cancer\\data_for_hmagma\\magma_output\\
+
 ```
