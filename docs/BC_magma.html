@@ -10,9 +10,9 @@
 
 
 
-<meta name="date" content="2025-05-14" />
+<meta name="date" content="2026-03-30" />
 
-<title>prepare input files for H-MAGMA</title>
+<title>run magma on GWAS summary data only</title>
 
 <script src="site_libs/header-attrs-2.26/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -370,8 +370,8 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">prepare input files for H-MAGMA</h1>
-<h4 class="date">2025-05-14</h4>
+<h1 class="title toc-ignore">run magma on GWAS summary data only</h1>
+<h4 class="date">2026-03-30</h4>
 
 </div>
 
@@ -400,7 +400,7 @@ aria-hidden="true"></span> </a>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2026-03-26
+<strong>Last updated:</strong> 2026-04-07
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -438,10 +438,10 @@ changes </a>
 <div id="strongRMarkdownfilestronguncommittedchanges"
 class="panel-collapse collapse">
 <div class="panel-body">
-<p>The R Markdown file has unstaged changes. To know which version of
-the R Markdown file created these results, you’ll want to first commit
-it to the Git repo. If you’re still working on the analysis, you can
-ignore this warning. When you’re finished, you can run
+<p>The R Markdown is untracked by Git. To know which version of the R
+Markdown file created these results, you’ll want to first commit it to
+the Git repo. If you’re still working on the analysis, you can ignore
+this warning. When you’re finished, you can run
 <code>wflow_publish</code> to commit the R Markdown file and build the
 HTML.</p>
 </div>
@@ -566,8 +566,13 @@ depends on. Below is the status of the Git repository when the results
 were generated:
 </p>
 <pre><code>
+Untracked files:
+    Untracked:  analysis/BC_magma.Rmd
+    Untracked:  analysis/BC_magma_hic.Rmd
+
 Unstaged changes:
     Modified:   analysis/BC_HMAGMA.Rmd
+    Modified:   analysis/index.Rmd
 
 </code></pre>
 <p>
@@ -582,253 +587,14 @@ have uncommitted changes.
 <hr>
 </div>
 <div id="versions" class="tab-pane fade">
-
 <p>
-These are the previous versions of the repository in which changes were
-made to the R Markdown (<code>analysis/BC_HMAGMA.Rmd</code>) and HTML
-(<code>docs/BC_HMAGMA.html</code>) files. If you’ve configured a remote
-Git repository (see <code>?wflow_git_remote</code>), click on the
-hyperlinks in the table below to view the files as they were in that
-past version.
+There are no past versions. Publish this analysis with
+<code>wflow_publish()</code> to start tracking its development.
 </p>
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-File
-</th>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-<th>
-Message
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-Rmd
-</td>
-<td>
-<a href="https://github.com/han16/BreastCancerEpigenetics/blob/443091416826ed3bd3ffe879bc1cac0286618864/analysis/BC_HMAGMA.Rmd" target="_blank">4430914</a>
-</td>
-<td>
-han
-</td>
-<td>
-2025-12-22
-</td>
-<td>
-12/22/2025
-</td>
-</tr>
-<tr>
-<td>
-Rmd
-</td>
-<td>
-<a href="https://github.com/han16/BreastCancerEpigenetics/blob/a2d6fca4510e87e1c31da94b0d1c2658fe2f40ca/analysis/BC_HMAGMA.Rmd" target="_blank">a2d6fca</a>
-</td>
-<td>
-han
-</td>
-<td>
-2025-12-05
-</td>
-<td>
-12/5/2025
-</td>
-</tr>
-<tr>
-<td>
-Rmd
-</td>
-<td>
-<a href="https://github.com/han16/BreastCancerEpigenetics/blob/ea5f45374717691329f6f5edec81924fc8497e73/analysis/BC_HMAGMA.Rmd" target="_blank">ea5f453</a>
-</td>
-<td>
-han
-</td>
-<td>
-2025-11-17
-</td>
-<td>
-11/17/2025
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/han16/BreastCancerEpigenetics/ea5f45374717691329f6f5edec81924fc8497e73/docs/BC_HMAGMA.html" target="_blank">ea5f453</a>
-</td>
-<td>
-han
-</td>
-<td>
-2025-11-17
-</td>
-<td>
-11/17/2025
-</td>
-</tr>
-<tr>
-<td>
-Rmd
-</td>
-<td>
-<a href="https://github.com/han16/BreastCancerEpigenetics/blob/a610e466ec89b3d1fb960c8f9d094b2f22bd2118/analysis/BC_HMAGMA.Rmd" target="_blank">a610e46</a>
-</td>
-<td>
-han
-</td>
-<td>
-2025-11-10
-</td>
-<td>
-11/10/2025
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/han16/BreastCancerEpigenetics/a610e466ec89b3d1fb960c8f9d094b2f22bd2118/docs/BC_HMAGMA.html" target="_blank">a610e46</a>
-</td>
-<td>
-han
-</td>
-<td>
-2025-11-10
-</td>
-<td>
-11/10/2025
-</td>
-</tr>
-<tr>
-<td>
-Rmd
-</td>
-<td>
-<a href="https://github.com/han16/BreastCancerEpigenetics/blob/8d7eb5ce8a9afda701f0cf6d547a166b7e57700a/analysis/BC_HMAGMA.Rmd" target="_blank">8d7eb5c</a>
-</td>
-<td>
-han
-</td>
-<td>
-2025-11-07
-</td>
-<td>
-11/7/2025
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/han16/BreastCancerEpigenetics/8d7eb5ce8a9afda701f0cf6d547a166b7e57700a/docs/BC_HMAGMA.html" target="_blank">8d7eb5c</a>
-</td>
-<td>
-han
-</td>
-<td>
-2025-11-07
-</td>
-<td>
-11/7/2025
-</td>
-</tr>
-<tr>
-<td>
-Rmd
-</td>
-<td>
-<a href="https://github.com/han16/BreastCancerEpigenetics/blob/37dac692a2fd82871fb0459ab4a5ac5aadcd584f/analysis/BC_HMAGMA.Rmd" target="_blank">37dac69</a>
-</td>
-<td>
-han
-</td>
-<td>
-2025-11-06
-</td>
-<td>
-11/6/2025
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/han16/BreastCancerEpigenetics/37dac692a2fd82871fb0459ab4a5ac5aadcd584f/docs/BC_HMAGMA.html" target="_blank">37dac69</a>
-</td>
-<td>
-han
-</td>
-<td>
-2025-11-06
-</td>
-<td>
-11/6/2025
-</td>
-</tr>
-<tr>
-<td>
-Rmd
-</td>
-<td>
-<a href="https://github.com/han16/BreastCancerEpigenetics/blob/af00fd6c874d5e930d3fae62b575200e20f0912d/analysis/BC_HMAGMA.Rmd" target="_blank">af00fd6</a>
-</td>
-<td>
-han
-</td>
-<td>
-2025-11-05
-</td>
-<td>
-11/5/2025
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/han16/BreastCancerEpigenetics/af00fd6c874d5e930d3fae62b575200e20f0912d/docs/BC_HMAGMA.html" target="_blank">af00fd6</a>
-</td>
-<td>
-han
-</td>
-<td>
-2025-11-05
-</td>
-<td>
-11/5/2025
-</td>
-</tr>
-</tbody>
-</table>
-</div>
 <hr>
 </div>
 </div>
 </div>
-<ul>
-<li>the codes are from nature protocol paper <a
-href="https://www.nature.com/articles/s41596-022-00745-z">Annotating
-genetic variants to target genes using H-MAGMA</a>.</li>
-</ul>
 <div id="prepare-libraries-and-directory-timing-5-min"
 class="section level2">
 <h2>Prepare libraries and directory ● Timing 5 min</h2>
@@ -846,9 +612,9 @@ class="section level2">
 coordinates ● Timing ~5 min</h2>
 <pre class="r"><code># 3 Read in exonic and promoter coordinate ﬁles by entering the following commands
 path=&quot;C:\\han\\Dataset\\20250221_PMID_32152537_hmagma\\6382668\\HMAGMA_Protocol_v1.02\\HMAGMA_Protocol\\&quot;
-path2=&quot;C:\\han\\Projects\\2025_03_breast_cancer\\HMAGMA\\&quot;
-path3=&quot;C:\\han\\Projects\\2025_03_breast_cancer\\data_for_hmagma\\&quot;
-path4=&quot;C:\\han\\Dataset\\20251106_PancanQTL_v2\\BRCA.eQTL-GWAS.xls\\&quot;
+path2=&quot;C:\\han\\Projects\\2025_03_breast_cancer\\Run_MAGMA_on_GWAS_Only\\&quot;
+#path3=&quot;C:\\han\\Projects\\2025_03_breast_cancer\\data_for_hmagma\\&quot;
+#path4=&quot;C:\\han\\Dataset\\20251106_PancanQTL_v2\\BRCA.eQTL-GWAS.xls\\&quot;
 
 
 exon &lt;- read.table(paste0(path, &quot;Gencode26_exon.bed&quot;), header = FALSE)
@@ -955,10 +721,6 @@ snps</code></pre>
   [9822123]    chr22  51240820      * | rs202228854
   -------
   seqinfo: 22 sequences from an unspecified genome; no seqlengths</code></pre>
-<ul>
-<li>reference genome, <code>EUR.bim</code> is from European
-ancestry</li>
-</ul>
 </div>
 <div
 id="assign-snps-in-eur.bim-to-genes-by-overlapping-snps-with-exons-and-promoters-timing-1015-min"
@@ -981,258 +743,29 @@ mcols(snpro) &lt;- cbind(mcols(snpro),mcols(promoterranges[subjectHits(olap)]))
 snpro &lt;- snpro[seqnames(snpro)!=&quot;chrX&quot;]
 
 #11 Save SNPs overlapping with exons and promoters as a .rda ﬁle.
-#save(snpro, snpexon, file=paste(path3, &quot;snp_locating_in_exon_promoter_transcript_level.rda&quot;, sep=&quot;&quot;))</code></pre>
+#save(snpro, snpexon, file=paste(path2, &quot;snp_locating_in_exon_promoter_transcript_level.rda&quot;, sep=&quot;&quot;))</code></pre>
 <ul>
 <li>“Find SNPs that fall inside any exon, attach the exon’s annotation
 (like gene ID) to those SNPs, and remove SNPs on chromosome X.”</li>
 </ul>
-</div>
-<div
-id="assign-unmapped-snps-in-eur.bim-to-genes-on-the-basis-of-hi-c-interaction-data-timing"
-class="section level2">
-<h2>Assign unmapped SNPs (in EUR.bim) to genes on the basis of Hi-C
-interaction data ● Timing</h2>
-<p>30–45 min</p>
-<pre class="r"><code># 12 After identiﬁcation of SNPs that reside in exons and/or promoters, there will be a subset of SNPs
-# that do not overlap with either (e.g., intergenic or intronic SNPs). In the following steps, we match
-# those SNPs to cognate genes on the basis of Hi-C interaction data. Identify unmapped SNPs by
-#using the code below.
-
-snpranges &lt;- snps[!(snps$rsid %in% snpexon$rsid),]
-snpranges &lt;- snpranges[!(snpranges$rsid %in% snpro$rsid),]
-
-snpranges</code></pre>
-<pre><code>GRanges object with 8916368 ranges and 1 metadata column:
-            seqnames    ranges strand |        rsid
-               &lt;Rle&gt; &lt;IRanges&gt;  &lt;Rle&gt; | &lt;character&gt;
-        [1]     chr1     13110      * | rs540538026
-        [2]     chr1     13116      * |  rs62635286
-        [3]     chr1     13118      * | rs200579949
-        [4]     chr1     14930      * |  rs75454623
-        [5]     chr1     14933      * | rs199856693
-        ...      ...       ...    ... .         ...
-  [8916364]    chr22  51233347      * |  rs62240044
-  [8916365]    chr22  51233666      * |  rs11091014
-  [8916366]    chr22  51234343      * | rs374867791
-  [8916367]    chr22  51234799      * | rs191117135
-  [8916368]    chr22  51240820      * | rs202228854
-  -------
-  seqinfo: 22 sequences from an unspecified genome; no seqlengths</code></pre>
-<pre class="r"><code>#13 Save unmapped SNPs as a .rda ﬁle.
-#save(snpranges, file=paste(path2, &quot;non_exonic_promoter_snp.rda&quot;, sep=&quot;&quot;))</code></pre>
-<ul>
-<li>a majority of SNPs are unmapped (8916368/9822123=90.78%).</li>
-</ul>
-<pre class="r"><code>#14 Read in adult brain Hi-C data. The ﬁrst three columns represent genomic coordinates [chr, start,
-#end] of loop anchor 1, and the last three columns represent genomic coordinates of loop anchor 2.
-#CRITICAL STEP Although we use a Hi-C dataset from the adult human brain for this protocol,
-#Hi-C datasets from the tissue or cell type associated with the disease/trait of interest can be used
-#instead.
-#hic &lt;- read.table(paste(path, &quot;adultbrain_hic.bedpe&quot;, sep=&quot;&quot;), header=T)
-hic &lt;- read.table(paste0(path3, &quot;PT12345_mapped_5000bp_loops_5000bp_6col.bedpe&quot;))
-
-
-#15 Restructure Hi-C data to account for both anchors 1 and 2 by using the command below.
-hic.int1 &lt;- hic[,1:6]
-hic.int2 &lt;- hic[,c(4:6,1:3)]
-colnames(hic.int1) = colnames(hic.int2) = c(&quot;chrom1&quot;, &quot;start1&quot;, &quot;end1&quot;, &quot;chrom2&quot;, &quot;start2&quot;, &quot;end2&quot;)
-hic.comb &lt;- rbind(hic.int1, hic.int2)
-hic.comb=hic.comb[-1,]
-head(hic.comb)</code></pre>
-<pre><code>  chrom1  start1    end1 chrom2  start2    end2
-2   chr1 5510000 5515000   chr1 5745000 5750000
-3   chr1 6250000 6255000   chr1 6340000 6345000
-4   chr1 6790000 6795000   chr1 6890000 6895000
-5   chr1 7665000 7670000   chr1 7750000 7755000
-6   chr1 8035000 8040000   chr1 8310000 8315000
-7   chr1 8560000 8565000   chr1 8670000 8675000</code></pre>
-<pre class="r"><code>########### check if  hic.comb has NA or non-numeric values and remove them 
-sum(is.na(hic.comb$start1))</code></pre>
-<pre><code>[1] 0</code></pre>
-<pre class="r"><code>sum(is.na(hic.comb$end1))</code></pre>
-<pre><code>[1] 0</code></pre>
-<pre class="r"><code>sum(is.na(hic.comb$start2))</code></pre>
-<pre><code>[1] 0</code></pre>
-<pre class="r"><code>sum(is.na(hic.comb$end2))</code></pre>
-<pre><code>[1] 0</code></pre>
-<pre class="r"><code>bad_rows &lt;- !grepl(&quot;^[0-9]+$&quot;, hic.comb$start1) | !grepl(&quot;^[0-9]+$&quot;, hic.comb$end1)
-sum(bad_rows)</code></pre>
-<pre><code>[1] 1</code></pre>
-<pre class="r"><code>hic.comb[bad_rows, ]</code></pre>
-<pre><code>     chrom1 start1 end1 chrom2 start2 end2
-2405 chrom2 start2 end2 chrom1 start1 end1</code></pre>
-<pre class="r"><code>hic.comb=hic.comb[-which(bad_rows==T),]
-
-#16 Generate a GRanges object for Hi-C data by using the command below.
-hicranges &lt;- GRanges(hic.comb$chrom1, IRanges(as.numeric(hic.comb$start1), as.numeric(hic.comb$end1)), int1=hic.comb$start2,int2=hic.comb$end2)
-hicranges</code></pre>
-<pre><code>GRanges object with 4806 ranges and 2 metadata columns:
-         seqnames              ranges strand |        int1        int2
-            &lt;Rle&gt;           &lt;IRanges&gt;  &lt;Rle&gt; | &lt;character&gt; &lt;character&gt;
-     [1]     chr1     5510000-5515000      * |     5745000     5750000
-     [2]     chr1     6250000-6255000      * |     6340000     6345000
-     [3]     chr1     6790000-6795000      * |     6890000     6895000
-     [4]     chr1     7665000-7670000      * |     7750000     7755000
-     [5]     chr1     8035000-8040000      * |     8310000     8315000
-     ...      ...                 ...    ... .         ...         ...
-  [4802]     chrX 129725000-129730000      * |   129635000   129640000
-  [4803]     chrX 130190000-130195000      * |   130075000   130080000
-  [4804]     chrX 130915000-130920000      * |   130390000   130395000
-  [4805]     chrX 136925000-136930000      * |   136710000   136715000
-  [4806]     chrX 151085000-151090000      * |   150770000   150775000
-  -------
-  seqinfo: 23 sequences from an unspecified genome; no seqlengths</code></pre>
-<ul>
-<li>the original code only used the first anchor of Hi-C loops,
-<strong>why don’t use the second anchor information or both
-anchors</strong> second anchor was used in the next step.</li>
-</ul>
-<pre class="r"><code>#17 Identify promoter-anchored interactions by overlapping loop anchor 1 with promoters.
-olap &lt;- findOverlaps(hicranges,promoterranges)
-generanges &lt;- hicranges[queryHits(olap)]
-mcols(generanges) &lt;- cbind(mcols(hicranges[queryHits(olap)]), mcols(promoterranges[subjectHits(olap)]))
-generanges</code></pre>
-<pre><code>GRanges object with 2625 ranges and 3 metadata columns:
-         seqnames              ranges strand |        int1        int2
-            &lt;Rle&gt;           &lt;IRanges&gt;  &lt;Rle&gt; | &lt;character&gt; &lt;character&gt;
-     [1]     chr1     9105000-9110000      * |     9195000     9200000
-     [2]     chr1   10505000-10510000      * |    10865000    10870000
-     [3]     chr1   10505000-10510000      * |    10865000    10870000
-     [4]     chr1   20210000-20215000      * |    20490000    20495000
-     [5]     chr1   22105000-22110000      * |    22415000    22420000
-     ...      ...                 ...    ... .         ...         ...
-  [2621]     chrX 130190000-130195000      * |   130075000   130080000
-  [2622]     chrX 151085000-151090000      * |   150770000   150775000
-  [2623]     chrX 151085000-151090000      * |   150770000   150775000
-  [2624]     chrX 151085000-151090000      * |   150770000   150775000
-  [2625]     chrX 151085000-151090000      * |   150770000   150775000
-                    gene
-             &lt;character&gt;
-     [1] ENSG00000142583
-     [2] ENSG00000241563
-     [3] ENSG00000241563
-     [4] ENSG00000169914
-     [5] ENSG00000090686
-     ...             ...
-  [2621] ENSG00000228659
-  [2622] ENSG00000147381
-  [2623] ENSG00000147381
-  [2624] ENSG00000147381
-  [2625] ENSG00000147381
-  -------
-  seqinfo: 23 sequences from an unspecified genome; no seqlengths</code></pre>
-<ul>
-<li><strong>only anchor 1 was used to interact with
-promoters</strong></li>
-</ul>
-<pre class="r"><code>#18 Reverse the order of the GRanges object from Step 17. The generanges object created in Step 17
-#is in a format of loop anchor 1, loop anchor 2, gene name. We reverse the order of loop
-#anchors so that the resulting genebed object has a format of loop anchor 2, loop anchor 1,
-#gene name.
-genebed &lt;- data.frame(chr=seqnames(generanges), snp.start=generanges$int1, snp.end=generanges$int2, gene.start=start(generanges), gene.end=start(generanges)+width(generanges)-1, ensg=generanges$gene)  # anchor 2 information of int 1,2 are used.  
-
-genebed &lt;- unique(genebed)
-str(genebed)</code></pre>
-<pre><code>&#39;data.frame&#39;:   1290 obs. of  6 variables:
- $ chr       : Factor w/ 23 levels &quot;chr1&quot;,&quot;chr10&quot;,..: 1 1 1 1 1 1 1 1 1 1 ...
- $ snp.start : chr  &quot;9195000&quot; &quot;10865000&quot; &quot;20490000&quot; &quot;22415000&quot; ...
- $ snp.end   : chr  &quot;9200000&quot; &quot;10870000&quot; &quot;20495000&quot; &quot;22420000&quot; ...
- $ gene.start: int  9105000 10505000 20210000 22105000 22970000 23095000 26035000 28880000 28880000 54405000 ...
- $ gene.end  : num  9110000 10510000 20215000 22110000 22975000 ...
- $ ensg      : chr  &quot;ENSG00000142583&quot; &quot;ENSG00000241563&quot; &quot;ENSG00000169914&quot; &quot;ENSG00000090686&quot; ...</code></pre>
-<pre class="r"><code>head(genebed)</code></pre>
-<pre><code>    chr snp.start  snp.end gene.start gene.end            ensg
-1  chr1   9195000  9200000    9105000  9110000 ENSG00000142583
-2  chr1  10865000 10870000   10505000 10510000 ENSG00000241563
-4  chr1  20490000 20495000   20210000 20215000 ENSG00000169914
-5  chr1  22415000 22420000   22105000 22110000 ENSG00000090686
-10 chr1  23180000 23185000   22970000 22975000 ENSG00000159189
-13 chr1  23185000 23190000   23095000 23100000 ENSG00000133216</code></pre>
-<pre class="r"><code>genebed$snp.start &lt;- as.numeric(as.character(genebed$snp.start))
-genebed$snp.end   &lt;- as.numeric(as.character(genebed$snp.end))
-
-#19 Create a GRanges object from Step 18.
-genesnpranges &lt;- GRanges(genebed$chr, IRanges(genebed$snp.start,genebed$snp.end), ensg=genebed$ensg)  # anchor 2 information is used 
-genesnpranges</code></pre>
-<pre><code>GRanges object with 1290 ranges and 1 metadata column:
-         seqnames              ranges strand |            ensg
-            &lt;Rle&gt;           &lt;IRanges&gt;  &lt;Rle&gt; |     &lt;character&gt;
-     [1]     chr1     9195000-9200000      * | ENSG00000142583
-     [2]     chr1   10865000-10870000      * | ENSG00000241563
-     [3]     chr1   20490000-20495000      * | ENSG00000169914
-     [4]     chr1   22415000-22420000      * | ENSG00000090686
-     [5]     chr1   23180000-23185000      * | ENSG00000159189
-     ...      ...                 ...    ... .             ...
-  [1286]     chrX   53310000-53315000      * | ENSG00000072501
-  [1287]     chrX   74385000-74390000      * | ENSG00000232186
-  [1288]     chrX 130075000-130080000      * | ENSG00000147256
-  [1289]     chrX 130075000-130080000      * | ENSG00000228659
-  [1290]     chrX 150770000-150775000      * | ENSG00000147381
-  -------
-  seqinfo: 23 sequences from an unspecified genome; no seqlengths</code></pre>
-<ul>
-<li><p><code>genesnpranges</code> ranges information is from anchor 2,
-but ensg from anchor 1</p></li>
-<li><p><strong>why step 18 is necessary??</strong></p></li>
-</ul>
-<pre class="r"><code>#20 Overlap unmapped SNPs from Step 12 with loop anchor 2 from Step 19. This step assigns
-#SNPs (located at loop anchor 2) to the genes with which they interact (located at loop
-#anchor 1).
-olap &lt;- findOverlaps(snpranges,genesnpranges)
-snpint &lt;- snpranges[queryHits(olap)]
-mcols(snpint) &lt;- cbind(mcols(snpranges[queryHits(olap)]), mcols(genesnpranges[subjectHits(olap)]))
-snpint</code></pre>
-<pre><code>GRanges object with 18430 ranges and 2 metadata columns:
-          seqnames    ranges strand |        rsid            ensg
-             &lt;Rle&gt; &lt;IRanges&gt;  &lt;Rle&gt; | &lt;character&gt;     &lt;character&gt;
-      [1]     chr1   6790510      * | rs567387472 ENSG00000227950
-      [2]     chr1   6790946      * |  rs11122122 ENSG00000227950
-      [3]     chr1   6791296      * |  rs34164411 ENSG00000227950
-      [4]     chr1   6791386      * |  rs11122123 ENSG00000227950
-      [5]     chr1   6792636      * | rs188107119 ENSG00000227950
-      ...      ...       ...    ... .         ...             ...
-  [18426]    chr22  46542325      * | rs139373282 ENSG00000188064
-  [18427]    chr22  46542393      * |  rs58863484 ENSG00000188064
-  [18428]    chr22  46542398      * |   rs4991147 ENSG00000188064
-  [18429]    chr22  46542403      * |   rs3885584 ENSG00000188064
-  [18430]    chr22  46543485      * |    rs135556 ENSG00000188064
-  -------
-  seqinfo: 22 sequences from an unspecified genome; no seqlengths</code></pre>
-<pre class="r"><code>#save(snpint, file=paste(path3, &quot;PT_Hi-C_transcript_interacting_snp.rda&quot;, sep=&quot;&quot;))
-#file.exists(paste0(path3, &quot;PT_Hi-C_transcript_interacting_snp.rda&quot;))</code></pre>
-</div>
-<div
-id="incorporate-eqtl-and-other-regulatory-information-to-help-map-snps-to-genes."
-class="section level2">
-<h2>????????? incorporate eQTL and other regulatory information to help
-map SNPs to genes.</h2>
 <pre class="r"><code>#21 Integrate SNP-gene relationships derived from exons, promoters and Hi-C interaction data.
-load(paste(path3, &quot;PT_Hi-C_transcript_interacting_snp.rda&quot;, sep=&quot;&quot;))
-load(paste(path3, &quot;snp_locating_in_exon_promoter_transcript_level.rda&quot;, sep=&quot;&quot;))
-snpdat &lt;- data.frame(chr=seqnames(snpint),cbp=start(snpint), rsid=snpint$rsid, ensg=snpint$ensg)
-head(snpdat)</code></pre>
-<pre><code>   chr     cbp        rsid            ensg
-1 chr1 6790510 rs567387472 ENSG00000227950
-2 chr1 6790946  rs11122122 ENSG00000227950
-3 chr1 6791296  rs34164411 ENSG00000227950
-4 chr1 6791386  rs11122123 ENSG00000227950
-5 chr1 6792636 rs188107119 ENSG00000227950
-6 chr1 6792660  rs12146050 ENSG00000227950</code></pre>
-<pre class="r"><code>snpromat &lt;- unique(data.frame(rsid=snpro$rsid, ensg=snpro$gene))
+load(paste(path2, &quot;snp_locating_in_exon_promoter_transcript_level.rda&quot;, sep=&quot;&quot;))
+
+
+snpromat &lt;- unique(data.frame(rsid=snpro$rsid, ensg=snpro$gene))
 snpexonmat &lt;- unique(data.frame(rsid=snpexon$rsid, ensg=snpexon$gene))
-snpcomb &lt;- unique(rbind(snpdat[,3:4], snpromat, snpexonmat))
-head(snpcomb)</code></pre>
+head(snpexonmat)</code></pre>
 <pre><code>         rsid            ensg
-1 rs567387472 ENSG00000227950
-2  rs11122122 ENSG00000227950
-3  rs34164411 ENSG00000227950
-4  rs11122123 ENSG00000227950
-5 rs188107119 ENSG00000227950
-6  rs12146050 ENSG00000227950</code></pre>
-<pre class="r"><code>#save(snpcomb, file=paste(path3, &quot;PT12345_Hi-C_SNP_to_transcript_comb.rda&quot;, sep=&quot;&quot;))</code></pre>
+1 rs531730856 ENSG00000223972
+2 rs554008981 ENSG00000223972
+3 rs546169444 ENSG00000227232
+4 rs531646671 ENSG00000227232
+5 rs541940975 ENSG00000227232
+6   rs2691315 ENSG00000227232</code></pre>
+<pre class="r"><code>#save(snpexonmat, file=paste(path2, &quot;SNP_to_transcript_comb.rda&quot;, sep=&quot;&quot;))</code></pre>
 <pre class="r"><code>#22 Aggregate SNP-gene relationships to generate the variant-gene annotation ﬁle compatible
 #with MAGMA.
-snpagg &lt;- aggregate(snpcomb, list(snpcomb$ensg), unique)
+snpagg &lt;- aggregate(snpexonmat, list(snpexonmat$ensg), unique)
 
 
 #23 Read in the gene deﬁnition ﬁle.
@@ -1259,156 +792,41 @@ snpannot &lt;- snpagg[,c(&quot;ensg&quot;, &quot;index&quot;, &quot;rsid&quot;)]
 
 #28 Save the variant-gene annotation ﬁle in an executable format.
 writable &lt;- format(snpannot)
-write.table(writable, file=paste(path3, &quot;PT12345_SNP_aggregate_transcript.txt&quot;, sep=&quot;&quot;), quote=F, row.names=F, col.names=F, sep=&quot;\t&quot;)
+write.table(writable, file=paste(path2, &quot;SNP_aggregate_transcript.txt&quot;, sep=&quot;&quot;), quote=F, row.names=F, col.names=F, sep=&quot;\t&quot;)
 
 #system(paste0(&quot;sed -e `s/, /\t/g` &lt; SNP_aggregate_transcript&quot;,&quot;.txt &gt;&quot;,&quot;Adultbrain.transcript.annot&quot;))
-system(&quot;sed -e `s/, /\\t/g` &lt; PT12345_SNP_aggregate_transcript.txt &gt; PT12345_BRSTCancer.transcript.annot&quot;)</code></pre>
-<pre class="r"><code>txt &lt;- readLines(paste0(path3, &quot;PT12345_SNP_aggregate_transcript.txt&quot;))
+system(&quot;sed -e `s/, /\\t/g` &lt; SNP_aggregate_transcript.txt &gt; transcript.annot&quot;)</code></pre>
+<pre class="r"><code>txt &lt;- readLines(paste0(path2, &quot;SNP_aggregate_transcript.txt&quot;))
 txt &lt;- gsub(&quot;, &quot;, &quot;\t&quot;, txt)
-writeLines(txt, paste0(path3,&quot;PT12345_BRSTCancer.transcript.annot&quot;))</code></pre>
-</div>
-<div id="check-snp-summary-data-format" class="section level2">
-<h2>Check SNP summary data format</h2>
-<div id="check-p-values" class="section level3">
-<h3>check p values</h3>
-<pre class="r"><code>BRCA_GWAS_eQTL=read.table(paste0(path4, &quot;BRCA.eQTL-GWAS.xls&quot;), header=T, sep = &quot;\t&quot;, fill = TRUE, quote = &quot;&quot;)
+writeLines(txt, paste0(path2,&quot;transcript.annot&quot;))</code></pre>
+<pre class="r"><code>CGS03_gwas_summary=as_tibble(read.table(&quot;C:\\han\\Dataset\\20260326_TCGD\\CGS03.gwas_summary.txt&quot;, header=T))
+head(CGS03_gwas_summary)
+summary(CGS03_gwas_summary$p.value)
+sum(is.na(CGS03_gwas_summary))
 
-head(BRCA_GWAS_eQTL)</code></pre>
-<pre><code>  CancerType eGene  eQTL_SNP eQTL_SNP_pos  GWAS_SNP GWAS_SNP_pos       R2
-1       BRCA  RPL9 rs1458255   4:39446549 rs4975018   4:39476926 0.541319
-2       BRCA  RPL9 rs2608824   4:39447779 rs4975018   4:39476926 0.541319
-3       BRCA  RPL9 rs2687967   4:39449824 rs4975018   4:39476926 0.539980
-4       BRCA  RPL9 rs2687969   4:39452499 rs4975018   4:39476926 0.539980
-5       BRCA  RPL9 rs2608828   4:39453730 rs4975018   4:39476926 0.539980
-6       BRCA  RPL9 rs6531717   4:39454321 rs4975018   4:39476926 0.539980
-  RISK_ALLELE OR_or_BETA P_value
-1           A        0.6   2e-19
-2           A        0.6   2e-19
-3           A        0.6   2e-19
-4           A        0.6   2e-19
-5           A        0.6   2e-19
-6           A        0.6   2e-19
-                                                                         Trait_or_Disease
-1 Beta-klotho level in Chronic kidney disease with hypertension and no diabetes (19557_3)
-2 Beta-klotho level in Chronic kidney disease with hypertension and no diabetes (19557_3)
-3 Beta-klotho level in Chronic kidney disease with hypertension and no diabetes (19557_3)
-4 Beta-klotho level in Chronic kidney disease with hypertension and no diabetes (19557_3)
-5 Beta-klotho level in Chronic kidney disease with hypertension and no diabetes (19557_3)
-6 Beta-klotho level in Chronic kidney disease with hypertension and no diabetes (19557_3)
-  PUBMEDID
-1 35870639
-2 35870639
-3 35870639
-4 35870639
-5 35870639
-6 35870639</code></pre>
-<pre class="r"><code># 1. Is the column numeric?
-is.numeric(BRCA_GWAS_eQTL$P_value)</code></pre>
-<pre><code>[1] TRUE</code></pre>
-<pre class="r"><code># 2. Are there any NAs, NaNs, or Infs?
-sum(is.na(BRCA_GWAS_eQTL$P_value))</code></pre>
-<pre><code>[1] 0</code></pre>
-<pre class="r"><code>sum(is.nan(BRCA_GWAS_eQTL$P_value))</code></pre>
-<pre><code>[1] 0</code></pre>
-<pre class="r"><code>sum(is.infinite(BRCA_GWAS_eQTL$P_value))</code></pre>
-<pre><code>[1] 0</code></pre>
-<pre class="r"><code># 3. Are all p-values between 0 and 1?
-range(BRCA_GWAS_eQTL$P_value, na.rm = TRUE)</code></pre>
-<pre><code>[1] 0e+00 6e+12</code></pre>
-<pre class="r"><code>sum(BRCA_GWAS_eQTL$P_value&gt;1)</code></pre>
-<pre><code>[1] 369</code></pre>
-<pre class="r"><code>head(BRCA_GWAS_eQTL[which(BRCA_GWAS_eQTL$P_value&gt;1),])</code></pre>
-<pre><code>       CancerType eGene   eQTL_SNP eQTL_SNP_pos GWAS_SNP GWAS_SNP_pos       R2
-259457       BRCA  UQCC  rs1570004  20:33958253 rs224329  20:34019579 0.969144
-266055       BRCA  UQCC  rs6060373  20:33914208 rs224329  20:34019579 0.937025
-300444       BRCA  UQCC rs62211529  20:33959315 rs224329  20:34019579 0.965348
-310026       BRCA  UQCC  rs6142353  20:33942685 rs224329  20:34019579 0.961569
-310194       BRCA  UQCC   rs735531  20:33947730 rs224329  20:34019579 0.961569
-311130       BRCA  UQCC  rs4911492  20:33951799 rs224329  20:34019579 0.965348
-       RISK_ALLELE OR_or_BETA P_value              Trait_or_Disease PUBMEDID
-259457           T      0.918   6e+12 End-stage knee osteoarthritis 36000784
-266055           T      0.918   6e+12 End-stage knee osteoarthritis 36000784
-300444           T      0.918   6e+12 End-stage knee osteoarthritis 36000784
-310026           T      0.918   6e+12 End-stage knee osteoarthritis 36000784
-310194           T      0.918   6e+12 End-stage knee osteoarthritis 36000784
-311130           T      0.918   6e+12 End-stage knee osteoarthritis 36000784</code></pre>
-<pre class="r"><code>BRCA_GWAS_eQTL$P_value &lt;- ifelse(
-  BRCA_GWAS_eQTL$P_value &gt; 1,
-  1 / BRCA_GWAS_eQTL$P_value,
-  BRCA_GWAS_eQTL$P_value
-)
-sum(BRCA_GWAS_eQTL$P_value&gt;1)</code></pre>
-<pre><code>[1] 0</code></pre>
-<pre class="r"><code>BRCA_GWAS_eQTL$P_value[BRCA_GWAS_eQTL$P_value&lt;1e-300]=1e-300
+CGS03_gwas_summary$p.value[CGS03_gwas_summary$p.value == 0]=1e-100
+summary(CGS03_gwas_summary$p.value)
+#write.table(CGS03_gwas_summary, file=&quot;C:\\han\\Dataset\\20260326_TCGD\\CGS03.gwas_summary_for_magma.txt&quot;)
 
-sum(is.na(BRCA_GWAS_eQTL$P_value))</code></pre>
-<pre><code>[1] 0</code></pre>
-<pre class="r"><code>BRCA_GWAS_eQTL$n=rep(1092, nrow(BRCA_GWAS_eQTL))
+CGS03_gwas_summary_for_magma=as_tibble(read.table(&quot;C:\\han\\Dataset\\20260326_TCGD\\CGS03.gwas_summary_for_magma.txt&quot;, header=T))
 
-BRCA_GWAS_eQTL=BRCA_GWAS_eQTL %&gt;% select(&quot;eQTL_SNP&quot;, &quot;P_value&quot;, &quot;n&quot;) %&gt;% distinct()
+# Ensure it&#39;s a data.table for clean export
+setDT(CGS03_gwas_summary_for_magma)
+# 1. Create a minimal table with ONLY the columns MAGMA needs
+magma_input &lt;- CGS03_gwas_summary_for_magma[, .(rsid, p.value)]
+# 2. Write it to a file WITHOUT quotes and with a simple TAB separator
+fwrite(magma_input, &quot;C:\\han\\Dataset\\20260326_TCGD\\Breast_Cancer_Clean_MAGMA.txt&quot;, 
+       sep = &quot;\t&quot;, 
+       quote = FALSE, 
+       row.names = FALSE)</code></pre>
+<pre class="r"><code>############# pan-ukbb
+library(data.table)
+phenotype_manifest=fread(&quot;C:\\han\\Dataset\\pan_ukbb\\phenotype_manifest.tsv&quot;)
+phenotype_manifest %&gt;% filter(category==&quot;Breast&quot;)
 
-
-# Write MAGMA-compatible tab-delimited file
-#write.table(BRCA_GWAS_eQTL,
-#            file = paste0(path3, &quot;BRCA_GWAS_eQTL_PancanQTL.txt&quot;),
-#            sep = &quot;\t&quot;,
-#            quote = FALSE,
-#            row.names = FALSE, 
-#            col.names = TRUE)</code></pre>
-<ul>
-<li>why so many rows with <code>P_value</code> &gt;1?</li>
-</ul>
-<pre class="r"><code>df &lt;- BRCA_GWAS_eQTL2  
-
-# Extract chromosome and base pair from GWAS_SNP_pos
-library(tidyr)
-df &lt;- df %&gt;%
-  separate(eQTL_SNP_pos, into = c(&quot;CHR&quot;, &quot;BP&quot;), sep = &quot;:&quot;, convert = TRUE)
-
-# Select required columns for MAGMA: SNP, CHR, BP, P
-fuma_df &lt;- df[, c( &quot;CHR&quot;, &quot;GWAS_SNP&quot;,  &quot;P_value&quot;)]
-
-# Replace 0 p-values with tiny positive number
-fuma_df$P_value[fuma_df$P_value &lt; 1e-300] &lt;- 1e-300
-
-
-########
-
-
-
-# Write MAGMA-compatible tab-delimited file
-#write.table(fuma_df,
-#            file = paste0(&quot;C:\\han\\Projects\\2025_03_breast_cancer\\data_for_FUMA\\&quot;, &quot;BRCA_GWAS_eQTL_PancanQTL.txt&quot;),
-#            sep = &quot;\t&quot;,
-#            quote = FALSE,
-#            row.names = FALSE,
-#            col.names = TRUE)</code></pre>
-<pre class="r"><code>df_test &lt;- read.table(paste0(path3, &quot;BRCA_GWAS_eQTL_PancanQTL.txt&quot;), header=TRUE, sep=&quot;\t&quot;, stringsAsFactors=FALSE)
-str(df_test)</code></pre>
-<pre><code>&#39;data.frame&#39;:   2684175 obs. of  3 variables:
- $ eQTL_SNP: chr  &quot;rs1458255&quot; &quot;rs2608824&quot; &quot;rs2687967&quot; &quot;rs2687969&quot; ...
- $ P_value : num  2e-19 2e-19 2e-19 2e-19 2e-19 ...
- $ n       : int  1092 1092 1092 1092 1092 1092 1092 1092 1092 1092 ...</code></pre>
-<pre class="r"><code>df &lt;- read.delim(paste0(path3, &quot;BRCA_GWAS_eQTL_PancanQTL.txt&quot;), header=TRUE)
-
-df$SNP &lt;- trimws(df$SNP)
-df$P &lt;- trimws(df$P)
-
-df &lt;- df[grepl(&quot;^[0-9eE.-]+$&quot;, df$P), ]   # keep only valid numeric P
-
-write.table(df, file = paste0(path3, &quot;BRCA_GWAS_eQTL_PancanQTL2.txt&quot;),
-            sep=&quot;\t&quot;, row.names=FALSE, quote=FALSE)
-
-#pd_summary=read.table(&quot;C:\\han\\Dataset\\20250221_PMID_32152537_hmagma\\6382668\\HMAGMA_Protocol_v1.02\\HMAGMA_Protocol\\PD.summary.stat.txt&quot;, header=T)</code></pre>
-</div>
-</div>
-<div id="run-magma" class="section level2">
-<h2>run MAGMA</h2>
+phenotype_manifest %&gt;% filter(phenocode==&quot;174.1&quot;) %&gt;% select(aws_path)</code></pre>
 <pre class="r"><code># run MAGMA
-magma --bfile C:\\han\\Dataset\\20250221_PMID_32152537_hmagma\\g1000_eur\\g1000_eur --pval C:\\han\\Projects\\2025_03_breast_cancer\\data_for_hmagma\\BRCA_GWAS_eQTL.txt use=tag_SNP, p-value ncol=1092 --gene-annot C:\\han\\Projects\\2025_03_breast_cancer\\data_for_hmagma\\BRSTCancer.transcript.annot --out C:\\han\\Projects\\2025_03_breast_cancer\\data_for_hmagma\\magma_output\\
-
-
-magma --bfile C:\\han\\Dataset\\20250221_PMID_32152537_hmagma\\g1000_eur\\g1000_eur --pval C:\\han\\Projects\\2025_03_breast_cancer\\data_for_hmagma\\BRCA_GWAS_eQTL_PancanQTL.txt use=rs, p ncol=1092 --gene-annot C:\\han\\Projects\\2025_03_breast_cancer\\data_for_hmagma\\BRSTCancer.transcript.annot --out C:\\han\\Projects\\2025_03_breast_cancer\\data_for_hmagma\\magma_output\\</code></pre>
+magma --bfile C:\\han\\Dataset\\20250221_PMID_32152537_hmagma\\g1000_eur\\g1000_eur --pval C:\\han\\Dataset\\20260326_TCGD\\Breast_Cancer_Clean_MAGMA.txt use=rsid, p.value N=139274 --gene-annot C:\\han\\Projects\\2025_03_breast_cancer\\Run_MAGMA_on_GWAS_Only\\transcript.annot --out C:\\han\\Projects\\2025_03_breast_cancer\\Run_MAGMA_on_GWAS_Only\\magma_output\\</code></pre>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -1446,8 +864,8 @@ other attached packages:
 
 loaded via a namespace (and not attached):
  [1] KEGGREST_1.44.0         xfun_0.43               bslib_0.7.0            
- [4] httr2_1.0.1             Biobase_2.64.0          generics_0.1.3         
- [7] vctrs_0.6.5             tools_4.4.0             curl_5.2.1             
+ [4] httr2_1.0.1             Biobase_2.64.0          vctrs_0.6.5            
+ [7] tools_4.4.0             generics_0.1.3          curl_5.2.1             
 [10] tibble_3.2.1            fansi_1.0.6             AnnotationDbi_1.66.0   
 [13] RSQLite_2.3.6           blob_1.2.4              pkgconfig_2.0.3        
 [16] dbplyr_2.5.0            lifecycle_1.0.4         GenomeInfoDbData_1.2.12
@@ -1455,19 +873,19 @@ loaded via a namespace (and not attached):
 [22] Biostrings_2.72.0       progress_1.2.3          httpuv_1.6.15          
 [25] htmltools_0.5.8.1       sass_0.4.9              yaml_2.3.8             
 [28] later_1.3.2             pillar_1.9.0            crayon_1.5.2           
-[31] jquerylib_0.1.4         whisker_0.4.1           cachem_1.0.8           
-[34] tidyselect_1.2.1        digest_0.6.35           stringi_1.8.4          
-[37] rprojroot_2.0.4         fastmap_1.1.1           cli_3.6.2              
-[40] magrittr_2.0.3          utf8_1.2.4              withr_3.0.0            
-[43] filelock_1.0.3          prettyunits_1.2.0       UCSC.utils_1.0.0       
-[46] promises_1.3.0          rappdirs_0.3.3          bit64_4.0.5            
-[49] rmarkdown_2.26          XVector_0.44.0          httr_1.4.7             
-[52] bit_4.0.5               workflowr_1.7.1         png_0.1-8              
-[55] hms_1.1.3               memoise_2.0.1           evaluate_0.23          
-[58] knitr_1.46              BiocFileCache_2.12.0    rlang_1.1.3            
-[61] Rcpp_1.0.12             glue_1.7.0              DBI_1.2.3              
-[64] xml2_1.3.6              rstudioapi_0.16.0       jsonlite_1.8.8         
-[67] R6_2.5.1                fs_1.6.4                zlibbioc_1.50.0        </code></pre>
+[31] jquerylib_0.1.4         cachem_1.0.8            tidyselect_1.2.1       
+[34] digest_0.6.35           stringi_1.8.4           rprojroot_2.0.4        
+[37] fastmap_1.1.1           cli_3.6.2               magrittr_2.0.3         
+[40] utf8_1.2.4              filelock_1.0.3          prettyunits_1.2.0      
+[43] UCSC.utils_1.0.0        promises_1.3.0          rappdirs_0.3.3         
+[46] bit64_4.0.5             rmarkdown_2.26          XVector_0.44.0         
+[49] httr_1.4.7              bit_4.0.5               workflowr_1.7.1        
+[52] png_0.1-8               hms_1.1.3               memoise_2.0.1          
+[55] evaluate_0.23           knitr_1.46              BiocFileCache_2.12.0   
+[58] rlang_1.1.3             Rcpp_1.0.12             glue_1.7.0             
+[61] DBI_1.2.3               xml2_1.3.6              rstudioapi_0.16.0      
+[64] jsonlite_1.8.8          R6_2.5.1                fs_1.6.4               
+[67] zlibbioc_1.50.0        </code></pre>
 </div>
 </div>
 

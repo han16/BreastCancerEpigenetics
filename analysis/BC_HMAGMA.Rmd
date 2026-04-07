@@ -70,7 +70,9 @@ gencodegenes.org/human/release_26lift37.html). We downloaded the GFT ﬁle for b
 annotation and converted them to .bed ﬁles. Promoters were deﬁned as 2 kb upstream to every
 transcription start site. Gene, exon and promoter coordinate ﬁles are listed as Gencode26_gene.bed,
 Gencode26_exon.bed and Gencode26_promoter.bed, respectively, in the Zenodo repository. Columns
-for these ﬁles are deﬁned as [chromosome, start, end, gene]." **Genome assembly hg19 was used**. 
+for these ﬁles are deﬁned as [chromosome, start, end, gene]."
+
+**Genome assembly hg19 was used**. 
 
 
 
@@ -360,12 +362,12 @@ BRCA_GWAS_eQTL=BRCA_GWAS_eQTL %>% select("eQTL_SNP", "P_value", "n") %>% distinc
 
 
 # Write MAGMA-compatible tab-delimited file
-write.table(BRCA_GWAS_eQTL,
-            file = paste0(path3, "BRCA_GWAS_eQTL_PancanQTL.txt"),
-            sep = "\t",
-            quote = FALSE,
-            row.names = FALSE, 
-            col.names = TRUE)
+#write.table(BRCA_GWAS_eQTL,
+#            file = paste0(path3, "BRCA_GWAS_eQTL_PancanQTL.txt"),
+#            sep = "\t",
+#            quote = FALSE,
+#            row.names = FALSE, 
+#            col.names = TRUE)
 
 ```
 
@@ -411,7 +413,7 @@ str(df_test)
 ```
 
 
-```{r, message=F, warning=F}
+```{r, message=F, warning=F, eval=F}
 df <- read.delim(paste0(path3, "BRCA_GWAS_eQTL_PancanQTL.txt"), header=TRUE)
 
 df$SNP <- trimws(df$SNP)

@@ -1,0 +1,237 @@
+---
+title: "run magma on GWAS summary data only"
+output:
+  workflowr::wflow_html:
+    code_folding: hide
+    toc: true
+date: "2026-03-30"
+---
+
+
+
+
+
+## Prepare libraries and directory ● Timing 5 min
+
+
+```{r, message=F, warning=F}
+rm(list=ls())
+set.seed(123)
+options(stringsAsFactors=F)
+library(GenomicRanges)
+library(biomaRt)
+library(dplyr)
+```
+
+
+
+
+## Create GenomicRanges (GRanges) objects for exon and promoter coordinates ● Timing ~5 min
+
+```{r, message=F, warning=F}
+# 3 Read in exonic and promoter coordinate ﬁles by entering the following commands
+path="C:\\han\\Dataset\\20250221_PMID_32152537_hmagma\\6382668\\HMAGMA_Protocol_v1.02\\HMAGMA_Protocol\\"
+path2="C:\\han\\Projects\\2025_03_breast_cancer\\Run_MAGMA_on_GWAS_Only\\"
+#path3="C:\\han\\Projects\\2025_03_breast_cancer\\data_for_hmagma\\"
+#path4="C:\\han\\Dataset\\20251106_PancanQTL_v2\\BRCA.eQTL-GWAS.xls\\"
+
+
+exon <- read.table(paste0(path, "Gencode26_exon.bed"), header = FALSE)
+dim(exon)
+head(exon)
+```
+
+
+
+```{r, message=F, warning=F}
+
+file.exists(paste0(path, "Gencode26_exon.bed")) # check if the file exists 
+
+exon$V1 <- sub("^", "chr", exon$V1)
+promoter <- read.table(paste(path, "Gencode26_promoter.bed", sep=""))
+promoter$V1 <- sub("^", "chr", promoter$V1)
+
+# 4 Create a GRanges object for exon and promoter deﬁnitions.
+exonranges <- GRanges(exon[,1],IRanges(exon[,2],exon[,3]),gene=exon[,4])
+promoterranges <- GRanges(promoter[,1], IRanges(promoter[,2], promoter[,3]), gene=promoter[,4])
+
+# 5 Save exon and promoter GRanges objects as a .rda ﬁle for future use.
+#save(exonranges, promoterranges, file=paste(path2, "exon_promoranges.rda", sep=""))
+
+exonranges
+promoterranges
+```
+
+
+
+* "Obtain gene and exon coordinates from Gencode version 26 by using the [following link](https://www.
+gencodegenes.org/human/release_26lift37.html). We downloaded the GFT ﬁle for basic gene
+annotation and converted them to .bed ﬁles. Promoters were deﬁned as 2 kb upstream to every
+transcription start site. Gene, exon and promoter coordinate ﬁles are listed as Gencode26_gene.bed,
+Gencode26_exon.bed and Gencode26_promoter.bed, respectively, in the Zenodo repository. Columns
+for these ﬁles are deﬁned as [chromosome, start, end, gene]."
+
+**Genome assembly hg19 was used**. 
+
+
+
+
+
+
+
+## Generate a GRanges object for SNP coordinates ● Timing ~5 min
+
+```{r, message=F, warning=F}
+#Generate a GRanges object for SNP coordinates ● Timing ~5 min
+#6 Read in the SNP annotation ﬁle by using the following command.
+snps <- read.table(paste(path, "EUR.bim.gz", sep=""))
+snps <- snps[,c(1,2,4)]
+colnames(snps) <- c("chr","SNP","Position")
+snps$chr <- sub("^", "chr", snps$chr)
+
+
+#7 Create a GRanges object for SNP annotations.
+snps <- GRanges(snps$chr, IRanges(snps$Position, snps$Position), rsid=
+snps$SNP)
+#8 Save the SNP GRanges object as a .rda ﬁle for future use.
+#save(snps,file=paste(path2, "snps.rda", sep=""))
+snps
+```
+
+
+
+## Assign SNPs (in EUR.bim) to genes by overlapping SNPs with exons and promoters ● Timing 10–15 min
+
+```{r, message=F, warning=F}
+#9 Identify genes that map to SNPs residing in exons by overlapping the GRanges object for SNPs with
+#the GRanges object for exons.
+olap <- findOverlaps(snps,exonranges)
+snpexon <- snps[queryHits(olap)]
+mcols(snpexon) <- cbind(mcols(snpexon), mcols(exonranges[subjectHits(olap)]))
+snpexon <- snpexon[seqnames(snpexon)!="chrX"]
+
+
+#10 Overlap the GRanges object for promoters with the GRanges object for SNPs. Similar to the code
+#above, this command will identify genes that map to SNPs residing in promoter regions.
+olap <- findOverlaps(snps,promoterranges)
+snpro <- snps[queryHits(olap)]
+mcols(snpro) <- cbind(mcols(snpro),mcols(promoterranges[subjectHits(olap)]))
+snpro <- snpro[seqnames(snpro)!="chrX"]
+
+#11 Save SNPs overlapping with exons and promoters as a .rda ﬁle.
+#save(snpro, snpexon, file=paste(path2, "snp_locating_in_exon_promoter_transcript_level.rda", sep=""))
+```
+
+
+* “Find SNPs that fall inside any exon, attach the exon’s annotation (like gene ID) to those SNPs, and remove SNPs on chromosome X.”
+
+
+
+```{r, message=F, warning=F}
+#21 Integrate SNP-gene relationships derived from exons, promoters and Hi-C interaction data.
+load(paste(path2, "snp_locating_in_exon_promoter_transcript_level.rda", sep=""))
+
+
+snpromat <- unique(data.frame(rsid=snpro$rsid, ensg=snpro$gene))
+snpexonmat <- unique(data.frame(rsid=snpexon$rsid, ensg=snpexon$gene))
+head(snpexonmat)
+#save(snpexonmat, file=paste(path2, "SNP_to_transcript_comb.rda", sep=""))
+
+
+
+```
+
+
+
+
+```{r, message=F, warning=F, eval=F}
+#22 Aggregate SNP-gene relationships to generate the variant-gene annotation ﬁle compatible
+#with MAGMA.
+snpagg <- aggregate(snpexonmat, list(snpexonmat$ensg), unique)
+
+
+#23 Read in the gene deﬁnition ﬁle.
+genedef <- read.table(paste(path, "Gencode26_gene.bed", sep=""))
+colnames(genedef) <- c("chr", "start", "end", "ensg")
+
+
+#24 Create an index column from the gene deﬁnition ﬁle consisting of gene chromosomal location, start
+#and end.
+genedef <- genedef [grep("chr", genedef$chr),]
+genedef$chr <- unlist(lapply(strsplit(genedef$chr, "chr"), '[[', 2))
+genedef$index <- paste(genedef$chr, genedef$start, genedef$end, sep=":")
+
+
+#25 Attach the index column from Step 24 to the variant-gene annotation ﬁle from Step 22.
+snpagg$index <- genedef[match(snpagg$ensg, genedef$ensg),"index"]
+
+
+#26 Remove any missing values from the variant-gene annotation ﬁle.
+snpagg <- snpagg[!is.na(snpagg$index),]
+
+#27 Subset gene, gene location and SNPs from the variant-gene annotation ﬁle.
+snpannot <- snpagg[,c("ensg", "index", "rsid")]
+
+#28 Save the variant-gene annotation ﬁle in an executable format.
+writable <- format(snpannot)
+write.table(writable, file=paste(path2, "SNP_aggregate_transcript.txt", sep=""), quote=F, row.names=F, col.names=F, sep="\t")
+
+#system(paste0("sed -e `s/, /\t/g` < SNP_aggregate_transcript",".txt >","Adultbrain.transcript.annot"))
+system("sed -e `s/, /\\t/g` < SNP_aggregate_transcript.txt > transcript.annot")
+
+
+```
+
+
+```{r, message=F, warning=F, eval=F}
+txt <- readLines(paste0(path2, "SNP_aggregate_transcript.txt"))
+txt <- gsub(", ", "\t", txt)
+writeLines(txt, paste0(path2,"transcript.annot"))
+```
+
+
+```{r, message=F, warning=F, eval=F}
+CGS03_gwas_summary=as_tibble(read.table("C:\\han\\Dataset\\20260326_TCGD\\CGS03.gwas_summary.txt", header=T))
+head(CGS03_gwas_summary)
+summary(CGS03_gwas_summary$p.value)
+sum(is.na(CGS03_gwas_summary))
+
+CGS03_gwas_summary$p.value[CGS03_gwas_summary$p.value == 0]=1e-100
+summary(CGS03_gwas_summary$p.value)
+#write.table(CGS03_gwas_summary, file="C:\\han\\Dataset\\20260326_TCGD\\CGS03.gwas_summary_for_magma.txt")
+
+CGS03_gwas_summary_for_magma=as_tibble(read.table("C:\\han\\Dataset\\20260326_TCGD\\CGS03.gwas_summary_for_magma.txt", header=T))
+
+# Ensure it's a data.table for clean export
+setDT(CGS03_gwas_summary_for_magma)
+# 1. Create a minimal table with ONLY the columns MAGMA needs
+magma_input <- CGS03_gwas_summary_for_magma[, .(rsid, p.value)]
+# 2. Write it to a file WITHOUT quotes and with a simple TAB separator
+fwrite(magma_input, "C:\\han\\Dataset\\20260326_TCGD\\Breast_Cancer_Clean_MAGMA.txt", 
+       sep = "\t", 
+       quote = FALSE, 
+       row.names = FALSE)
+```
+
+
+
+
+```{r, message=F, warning=F, eval=F}
+############# pan-ukbb
+library(data.table)
+phenotype_manifest=fread("C:\\han\\Dataset\\pan_ukbb\\phenotype_manifest.tsv")
+phenotype_manifest %>% filter(category=="Breast")
+
+phenotype_manifest %>% filter(phenocode=="174.1") %>% select(aws_path)
+```
+
+
+
+
+
+
+```{r, message=F, warning=F, eval=F}
+# run MAGMA
+magma --bfile C:\\han\\Dataset\\20250221_PMID_32152537_hmagma\\g1000_eur\\g1000_eur --pval C:\\han\\Dataset\\20260326_TCGD\\Breast_Cancer_Clean_MAGMA.txt use=rsid, p.value N=139274 --gene-annot C:\\han\\Projects\\2025_03_breast_cancer\\Run_MAGMA_on_GWAS_Only\\transcript.annot --out C:\\han\\Projects\\2025_03_breast_cancer\\Run_MAGMA_on_GWAS_Only\\magma_output\\
+
+```

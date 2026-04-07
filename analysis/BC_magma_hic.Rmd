@@ -1,0 +1,9 @@
+---
+title: "GWAS and hiC"
+output:
+  workflowr::wflow_html:
+    code_folding: hide
+    toc: true
+date: "2026-04-07"
+---
+

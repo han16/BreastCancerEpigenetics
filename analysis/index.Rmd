@@ -25,3 +25,16 @@ editor_options:
 ## run FUMA 
 
 * [prepare the input files for FUMA](BC_fuma.html)
+
+
+## run MAGMA with GWAS summary data only 
+
+* [run magma on GWAS summary data only](BC_magma.html)
+
+
+## run MAGMA on GWAS and HiC 
+
+* [run magma on GWAS summary data and Hic](BC_magma_hic.html)
+
+
+
