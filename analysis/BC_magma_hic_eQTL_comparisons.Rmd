@@ -1,0 +1,341 @@
+---
+title: "4/15 2026"
+output:
+  workflowr::wflow_html:
+    code_folding: hide
+    toc: true
+date: "2026-04-15"
+---
+
+
+```{r, message=F, warning=F}
+rm(list=ls())
+set.seed(123)
+options(stringsAsFactors=F)
+library(GenomicRanges)
+library(biomaRt)
+library(dplyr)
+```
+
+
+
+
+
+## number of mapped SNPs 
+
+
+
+
+```{r, message=F, warning=F}
+# Load libraries
+library(ggplot2)
+library(scales)
+
+# 1. Create the data frame
+total_snps <- 9822123
+plot_data <- data.frame(
+  input_data = c("Exon+Promoter", 
+                 "Exon+Promoter+eQTL", 
+                 "Exon+Promoter+Chromatin Loop", 
+                 "Exon+Promoter+Chromatin Loop+eQTL"),
+  num_mapped_snps = c(905755, 934412, 4494800, 4504842)
+)
+
+# 2. Calculate proportions
+plot_data$proportion <- plot_data$num_mapped_snps / total_snps
+
+# 3. Sort the data by proportion for the plot
+plot_data <- plot_data[order(plot_data$proportion), ]
+plot_data$input_data <- factor(plot_data$input_data, levels = plot_data$input_data)
+
+# 4. Create the bar plot
+p <- ggplot(plot_data, aes(x = input_data, y = proportion, fill = input_data)) +
+  geom_bar(stat = "identity", width = 0.7, show.legend = FALSE) +
+  # Add percentage labels over the bars
+  geom_text(aes(label = percent(proportion, accuracy = 0.1)), 
+            vjust = -0.5, 
+            size = 5, 
+            fontface = "bold") +
+  # Custom aesthetic styling
+  scale_y_continuous(labels = percent_format(), expand = expansion(mult = c(0, 0.15))) +
+  scale_fill_manual(values = c("#3498db", "#9b59b6", "#f1c40f", "#e74c3c")) +
+  labs(title = "",
+       subtitle = "",
+       x = "",
+       y = "Proportion of mapped SNPs") +
+  theme_minimal(base_size = 14) +
+  theme(
+    plot.title = element_text(face = "bold", size = 16),
+    axis.text.x = element_text(angle = 15, hjust = 1),
+    panel.grid.major.x = element_blank()
+  )
+
+# View the plot
+print(p)
+
+
+# ggsave("snp_mapping_plot.png", plot = p, width = 8, height = 6, dpi = 300)
+```
+
+
+
+```{r, message=F, warning=F}
+
+library(dplyr)
+library(ggplot2)
+library(tidyr)
+
+
+path2="C:\\han\\Projects\\2025_03_breast_cancer\\Run_MAGMA_on_GWAS_HiC_eQTL\\"
+
+# 1. Define paths to your output files
+# Note: MAGMA output files usually end in .genes.out
+folders <- paste0(path2, c("magma_output_exome_promoter", 
+             "magma_output_exome_promoter_eQTL", 
+             "magma_output_exome_promoter_HiC", 
+             "magma_output_exome_promoter_HiC_eQTL"))
+
+exome_promoter_output=as_tibble(read.table(paste0(folders[1], "\\.genes.out.txt"), header = T))
+exome_promoter_eQTL_output=as_tibble(read.table(paste0(folders[2], "\\.genes.out.txt"), header = T))
+exome_promoter_HiC_output=as_tibble(read.table(paste0(folders[3], "\\.genes.out.txt"), header = T))
+exome_promoter_HiC_eQTL_output=as_tibble(read.table(paste0(folders[4], "\\.genes.out.txt"), header = T))
+
+
+```
+
+
+
+
+```{r, message=F, warning=F}
+exome_promoter_output$Strategy <- "EP"
+exome_promoter_eQTL_output$Strategy <- "EP+eQTL"
+exome_promoter_HiC_output$Strategy <- "EP+HiC"
+exome_promoter_HiC_eQTL_output$Strategy <- "EP+HiC+eQTL"
+
+# 2. Stack them on top of each other (Row bind)
+# This uses your full variable names from the previous chunk
+plot_data <- bind_rows(exome_promoter_output, 
+                       exome_promoter_eQTL_output, 
+                       exome_promoter_HiC_output, 
+                       exome_promoter_HiC_eQTL_output)
+
+# 3. Plot using GENE as the X-axis
+# Note: Ensure 'Strategy' names in scale_color_manual match the labels above
+ggplot(plot_data, aes(x = GENE, y = -log10(P), color = Strategy)) +
+  geom_point(size = 2, alpha = 0.6) +
+  scale_color_manual(values = c("EP"   = "#3498db", 
+                                "EP+HiC"  = "#f1c40f", 
+                                "EP+eQTL" = "#9b59b6", 
+                                "EP+HiC+eQTL" = "#e74c3c")) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_blank(),     # Hides the messy gene names
+    axis.ticks.x = element_blank(),    
+    panel.grid.major.x = element_blank(),
+    legend.position = "top", 
+    legend.title = element_blank(),
+    # Increase this number to make text even larger
+    legend.text = element_text(size = 14)
+  ) +
+  labs(
+    title = "",
+    x = "Genes",
+    y = expression(-log[10](P-value))
+  )
+```
+
+
+
+```{r, message=F, warning=F}
+
+# Load necessary libraries
+library(dplyr)
+library(tidyr)
+library(biomaRt) # To convert ENSG to Gene Symbols
+
+
+path2="C:\\han\\Projects\\2025_03_breast_cancer\\Run_MAGMA_on_GWAS_HiC_eQTL\\"
+
+# 1. Define paths to your output files
+# Note: MAGMA output files usually end in .genes.out
+folders <- paste0(path2, c("magma_output_exome_promoter", 
+             "magma_output_exome_promoter_eQTL", 
+             "magma_output_exome_promoter_HiC", 
+             "magma_output_exome_promoter_HiC_eQTL"))
+
+
+
+
+# 1. Load  MAGMA gene-level output files
+ep_data   <- as_tibble(read.table(paste0(folders[1], "\\.genes.out.txt"), header = T))
+hic_data  <- as_tibble(read.table(paste0(folders[3], "\\.genes.out.txt"), header = T))
+eqtl_data <- as_tibble(read.table(paste0(folders[2], "\\.genes.out.txt"), header = T))
+full_data <- as_tibble(read.table(paste0(folders[4], "\\.genes.out.txt"), header = T))
+
+# 2. Select only Gene ID and P-value, then rename P for merging
+ep_p   <- ep_data   %>% dplyr::select(GENE, P_EP = P)
+hic_p  <- hic_data  %>% dplyr::select(GENE, P_HiC = P)
+eqtl_p <- eqtl_data %>% dplyr::select(GENE, P_eQTL = P)
+full_p <- full_data %>% dplyr::select(GENE, P_Full = P)
+
+# 3. Merge all models into one comparison table
+comparison_table <- ep_p %>%
+  inner_join(hic_p,  by = "GENE") %>%
+  inner_join(eqtl_p, by = "GENE") %>%
+  inner_join(full_p, by = "GENE")
+
+comparison_table
+
+```
+
+
+
+
+```{r, message=F, warning=F}
+
+# 4. Map Ensembl IDs to Gene Symbols (Requires internet connection)
+mart <- useMart("ensembl", dataset = "hsapiens_gene_ensembl")
+gene_map <- getBM(attributes = c("ensembl_gene_id", "external_gene_name"),
+                  filters = "ensembl_gene_id",
+                  values = comparison_table$GENE,
+                  mart = mart)
+
+# Join names back to p-values
+final_results <- comparison_table %>%
+  left_join(gene_map, by = c("GENE" = "ensembl_gene_id")) %>%
+  dplyr::select(GENE, external_gene_name, everything())
+
+# 5. Example 1: Find "True Risk Genes" (Integrated Model is the most significant)
+# These are genes where adding 3D/eQTL data strengthened the signal
+true_risk <- final_results %>%
+  filter(P_Full < P_EP) %>%
+  arrange(P_Full)
+
+# 6. Example 2: Find "False Positives" (Proximity-based signal was diluted)
+# These are genes where linear proximity (EP) was significant but Full model dropped it
+diluted_signal <- final_results %>%
+  filter(P_Full > P_EP) %>%
+  arrange(desc(P_Full))
+
+# 7. Print specific genes 
+check_list <- c("ENSG00000106123", "ENSG00000183395", "ENSG00000139618")
+print(final_results %>% filter(GENE %in% check_list))
+
+# 8. Save results to CSV 
+#write.csv(final_results, "MAGMA_Model_Comparison_Pvalues.csv", row.names = FALSE)
+```
+
+
+
+## non-overlapping genes 
+
+
+```{r, message=F, warning=F}
+# 2. Use full_join to keep ALL genes from ALL files
+# This will create NA values for genes missing in a specific model
+comparison_table <- ep_p %>%
+  full_join(hic_p,  by = "GENE") %>%
+  full_join(eqtl_p, by = "GENE") %>%
+  full_join(full_p, by = "GENE")
+
+# 3. Create a helper column to count how many models each gene appeared in
+comparison_table <- comparison_table %>%
+  mutate(Model_Count = rowSums(!is.na(dplyr::select(., starts_with("P_")))))
+
+# 4. Classify genes based on your requirements
+
+# Category A: Genes unique to the Integrated (Full) Model
+# (These were NOT found by proximity/EP, only by 3D+eQTL)
+unique_to_full <- comparison_table %>% 
+  filter(!is.na(P_Full) & is.na(P_EP))
+
+# Category B: Genes unique to the Traditional (EP) Model
+# (These disappeared when you added functional data - likely false positives)
+unique_to_ep <- comparison_table %>% 
+  filter(!is.na(P_EP) & is.na(P_Full))
+
+# Category C: Genes found in exactly TWO models
+found_in_two <- comparison_table %>% 
+  filter(Model_Count == 2)
+
+# 5. Summary statistics
+print(paste("Total unique genes found across all models:", nrow(comparison_table)))
+print(paste("Genes found in all 4 models:", sum(comparison_table$Model_Count == 4)))
+print(paste("Genes found ONLY in the Integrated model:", nrow(unique_to_full)))
+
+# 6. Save the complete list (including NAs)
+#write.csv(comparison_table, "Comprehensive_Gene_Comparison.csv", row.names = FALSE)
+```
+
+
+```{r, message=F, warning=F}
+# 1. Load libraries
+# install.packages("ggvenn") # Run this if you don't have the package
+library(ggvenn)
+library(dplyr)
+library(ggplot2)
+
+# 2. Extract significant Gene IDs (P < 0.05) for each model
+# We filter each column separately to find the significant subset
+sig_list <- list(
+  EP   = comparison_table %>% filter(P_EP < 0.05) %>% pull(GENE),
+  `EP+HiC`  = comparison_table %>% filter(P_HiC < 0.05) %>% pull(GENE),
+  `EP+eQTL` = comparison_table %>% filter(P_eQTL < 0.05) %>% pull(GENE),
+  `EP+HiC+eQTL` = comparison_table %>% filter(P_Full < 0.05) %>% pull(GENE)
+)
+
+# 2. Generate the plot
+ggvenn(
+  sig_list, 
+  fill_color = c("#0073C2FF", "#EFC000FF", "#868686FF", "#CD534CFF"),
+  stroke_size = 0.5, 
+  set_name_size = 5,
+  text_size = 4,
+  show_percentage = FALSE
+) +
+  # This manually expands the X and Y scales by 20% to prevent text clipping
+  scale_x_continuous(expand = expansion(mult = 0.1)) +
+  scale_y_continuous(expand = expansion(mult = 0.1)) +
+  # Ensure the labels are allowed to be drawn outside the panel
+  coord_cartesian(clip = "off") +
+  theme(
+    plot.margin = margin(20, 20, 20, 20), # Extra space around the edges
+    plot.title = element_text(hjust = 0.5, size = 16, face = "bold")
+  ) +
+  labs(title = "")
+# 3. Save with enough dimensions to avoid squeezing
+#ggsave("Venn_Significant_Genes.png", width = 8, height = 8, dpi = 300)
+setdiff(sig_list$EP, sig_list$`EP+HiC+eQTL`)
+
+sig_list$`EP+HiC+eQTL`
+```
+
+
+
+
+```{r, message=F, warning=F}
+ #install.packages("UpSetR")
+library(UpSetR)
+library(dplyr)
+
+# 1. Prepare the data list: extract genes with valid P-values for each model
+gene_list <- list(
+  EP   = comparison_table$GENE[!is.na(comparison_table$P_EP)],
+  `EP+HiC`  = comparison_table$GENE[!is.na(comparison_table$P_HiC)],
+  `EP+eQTL` = comparison_table$GENE[!is.na(comparison_table$P_eQTL)],
+  `EP+HiC+eQTL` = comparison_table$GENE[!is.na(comparison_table$P_Full)]
+)
+
+# 2. Generate the UpSet Plot
+upset(fromList(gene_list), 
+      sets = c("EP", "EP+HiC", "EP+eQTL", "EP+HiC+eQTL"),
+      keep.order = TRUE,             # Keep the sets in the order specified
+      main.bar.color = "#2c3e50",    # Color for intersection bars
+      sets.bar.color = "#7f8c8d",    # Color for set size bars
+      matrix.color = "black",        # Color for the dots/lines
+      text.scale = 1.5,              # Increase text size for readability
+      order.by = "freq",             # Show largest intersections first
+      point.size = 4, 
+      line.size = 1.2)
+```
+

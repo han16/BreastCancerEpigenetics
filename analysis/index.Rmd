@@ -37,4 +37,11 @@ editor_options:
 * [run magma on GWAS summary data and Hic](BC_magma_hic.html)
 
 
+## run MAGMA on GWAS,  HiC  and eQTL
 
+* [run magma on GWAS summary data, Hic and eQTL](BC_magma_hic_eQTL.html)
+
+
+## comparions between GWAS, GWAS+Hi-C, GWAS+HiC+eQTL
+
+* [comparions between GWAS, GWAS+Hi-C, GWAS+HiC+eQTL](BC_magma_hic_eQTL_comparisons.html)

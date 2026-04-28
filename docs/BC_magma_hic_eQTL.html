@@ -10,9 +10,9 @@
 
 
 
-<meta name="date" content="2026-04-07" />
+<meta name="date" content="2026-04-09" />
 
-<title>GWAS and hiC</title>
+<title>4/9/2026</title>
 
 <script src="site_libs/header-attrs-2.26/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -370,8 +370,8 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">GWAS and hiC</h1>
-<h4 class="date">2026-04-07</h4>
+<h1 class="title toc-ignore">4/9/2026</h1>
+<h4 class="date">2026-04-09</h4>
 
 </div>
 
@@ -400,7 +400,7 @@ aria-hidden="true"></span> </a>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2026-04-15
+<strong>Last updated:</strong> 2026-04-16
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -438,10 +438,10 @@ changes </a>
 <div id="strongRMarkdownfilestronguncommittedchanges"
 class="panel-collapse collapse">
 <div class="panel-body">
-<p>The R Markdown file has unstaged changes. To know which version of
-the R Markdown file created these results, you’ll want to first commit
-it to the Git repo. If you’re still working on the analysis, you can
-ignore this warning. When you’re finished, you can run
+<p>The R Markdown is untracked by Git. To know which version of the R
+Markdown file created these results, you’ll want to first commit it to
+the Git repo. If you’re still working on the analysis, you can ignore
+this warning. When you’re finished, you can run
 <code>wflow_publish</code> to commit the R Markdown file and build the
 HTML.</p>
 </div>
@@ -568,6 +568,7 @@ were generated:
 <pre><code>
 Untracked files:
     Untracked:  analysis/BC_magma_hic_eQTL.Rmd
+    Untracked:  analysis/BC_magma_hic_eQTL_comparisons.Rmd
 
 Unstaged changes:
     Modified:   analysis/BC_magma.Rmd
@@ -587,74 +588,10 @@ have uncommitted changes.
 <hr>
 </div>
 <div id="versions" class="tab-pane fade">
-
 <p>
-These are the previous versions of the repository in which changes were
-made to the R Markdown (<code>analysis/BC_magma_hic.Rmd</code>) and HTML
-(<code>docs/BC_magma_hic.html</code>) files. If you’ve configured a
-remote Git repository (see <code>?wflow_git_remote</code>), click on the
-hyperlinks in the table below to view the files as they were in that
-past version.
+There are no past versions. Publish this analysis with
+<code>wflow_publish()</code> to start tracking its development.
 </p>
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-File
-</th>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-<th>
-Message
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-Rmd
-</td>
-<td>
-<a href="https://github.com/han16/BreastCancerEpigenetics/blob/d1df81c190ea1a1e278194e40dc54751914577ff/analysis/BC_magma_hic.Rmd" target="_blank">d1df81c</a>
-</td>
-<td>
-han
-</td>
-<td>
-2026-04-07
-</td>
-<td>
-4/7/2026
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/han16/BreastCancerEpigenetics/d1df81c190ea1a1e278194e40dc54751914577ff/docs/BC_magma_hic.html" target="_blank">d1df81c</a>
-</td>
-<td>
-han
-</td>
-<td>
-2026-04-07
-</td>
-<td>
-4/7/2026
-</td>
-</tr>
-</tbody>
-</table>
-</div>
 <hr>
 </div>
 </div>
@@ -676,8 +613,8 @@ class="section level2">
 coordinates ● Timing ~5 min</h2>
 <pre class="r"><code># 3 Read in exonic and promoter coordinate ﬁles by entering the following commands
 path=&quot;C:\\han\\Dataset\\20250221_PMID_32152537_hmagma\\6382668\\HMAGMA_Protocol_v1.02\\HMAGMA_Protocol\\&quot;
-path2=&quot;C:\\han\\Projects\\2025_03_breast_cancer\\Run_MAGMA_on_GWAS_HiC\\&quot;
-
+path2=&quot;C:\\han\\Projects\\2025_03_breast_cancer\\Run_MAGMA_on_GWAS_HiC_eQTL\\&quot;
+path3=&quot;C:\\han\\Dataset\\20251106_PancanQTL_v2\\BRCA.eQTL_GWAS\\&quot;
 
 exon &lt;- read.table(paste0(path, &quot;Gencode26_exon.bed&quot;), header = FALSE)
 dim(exon)</code></pre>
@@ -785,8 +722,7 @@ mcols(snpexon) &lt;- cbind(mcols(snpexon), mcols(exonranges[subjectHits(olap)]))
 snpexon &lt;- snpexon[seqnames(snpexon)!=&quot;chrX&quot;]
 
 
-#10 Overlap the GRanges object for promoters with the GRanges object for SNPs. Similar to the code
-#above, this command will identify genes that map to SNPs residing in promoter regions.
+#10 Overlap the GRanges object for promoters with the GRanges object for SNPs. Similar to the code above, this command will identify genes that map to SNPs residing in promoter regions.
 olap &lt;- findOverlaps(snps,promoterranges)
 snpro &lt;- snps[queryHits(olap)]
 mcols(snpro) &lt;- cbind(mcols(snpro),mcols(promoterranges[subjectHits(olap)]))
@@ -830,8 +766,8 @@ snpranges</code></pre>
 #save(snpranges, file=paste(path2, &quot;non_exonic_promoter_snp.rda&quot;, sep=&quot;&quot;))</code></pre>
 <pre class="r"><code>#14 Read in primary tumor Hi-C data. The ﬁrst three columns represent genomic coordinates [chr, start,
 #end] of loop anchor 1, and the last three columns represent genomic coordinates of loop anchor 
-path3=&quot;C:\\han\\Projects\\2025_03_breast_cancer\\Run_MAGMA_on_GWAS_HiC\\peaks_in_paper\\&quot;
-hic &lt;- read.table(paste0(path3, &quot;GSM8138144_PT1_loops_q0.98_filt.txt&quot;), header = T)
+path4=&quot;C:\\han\\Projects\\2025_03_breast_cancer\\Run_MAGMA_on_GWAS_HiC\\peaks_in_paper\\&quot;
+hic &lt;- read.table(paste0(path4, &quot;GSM8138144_PT1_loops_q0.98_filt.txt&quot;), header = T)
 
 
 #15 Restructure Hi-C data to account for both anchors 1 and 2 by using the command below.
@@ -989,9 +925,52 @@ snpint</code></pre>
 <pre class="r"><code>#save(snpint, file=paste(path2, &quot;PT1_Hi-C_interacting_snp.rda&quot;, sep=&quot;&quot;))
 file.exists(paste0(path2, &quot;PT1_Hi-C_interacting_snp.rda&quot;))</code></pre>
 <pre><code>[1] TRUE</code></pre>
+</div>
+<div id="assign-unmapped-snps-in-eur.bim-to-genes-based-on-eqtl"
+class="section level2">
+<h2>Assign unmapped SNPs (in EUR.bim) to genes based on eQTL</h2>
+<pre class="r"><code>#breast_cancer_eqtl=as_tibble(read.csv(paste0(path3, &quot;BRCA.eQTL_GWAS.csv&quot;, header=T)))
+breast_cancer_eqtl=as_tibble(read.csv(&quot;C:\\han\\Dataset\\20251106_PancanQTL_v2\\BRCA.eQTL_GWAS\\BRCA.eQTL_GWAS.csv&quot;, header=T))
+
+library(tidyr)
+# 1. Clean the eQTL data: Split position and handle column names
+# We use eQTL_SNP as rsid and eGene as the gene identifier
+eqtl_processed &lt;- breast_cancer_eqtl %&gt;%
+  dplyr::select(rsid = eQTL_SNP, pos_raw = eQTL_SNP_pos, gene_symbol = eGene) %&gt;%
+  separate(pos_raw, into = c(&quot;chr&quot;, &quot;pos&quot;), sep = &quot;:&quot;) %&gt;%
+  mutate(
+    chr = paste0(&quot;chr&quot;, chr), # Add &#39;chr&#39; prefix to match snpint
+    pos = as.integer(pos)
+  )
+
+# 2. Map Gene Symbols to ENSG (using an external mapping or  existing data)
+
+ library(org.Hs.eg.db)
+ mapping &lt;- select(org.Hs.eg.db, keys=unique(eqtl_processed$gene_symbol), 
+                   columns=&quot;ENSEMBL&quot;, keytype=&quot;SYMBOL&quot;)
+ eqtl_processed &lt;- eqtl_processed %&gt;% 
+   left_join(mapping, by=c(&quot;gene_symbol&quot;=&quot;SYMBOL&quot;)) %&gt;%
+   mutate(ensg = ENSEMBL) %&gt;% filter(!is.na(ensg))
+
+
+ 
+ # Create the GRanges object
+eqtl_snpint &lt;- GRanges(
+  seqnames = eqtl_processed$chr,
+  ranges = IRanges(start = eqtl_processed$pos, end = eqtl_processed$pos),
+  rsid = eqtl_processed$rsid,
+  ensg = eqtl_processed$ensg 
+)
+
+#save(eqtl_snpint, file=paste(path2, &quot;eqtl_snpint.rda&quot;, sep=&quot;&quot;))
+file.exists(paste0(path2, &quot;eqtl_snpint.rda&quot;))</code></pre>
+<pre><code>[1] TRUE</code></pre>
 <pre class="r"><code>#21 Integrate SNP-gene relationships derived from exons, promoters and Hi-C interaction data.
 load(paste(path2, &quot;PT1_Hi-C_interacting_snp.rda&quot;, sep=&quot;&quot;))
 load(paste(path2, &quot;snp_locating_in_exon_promoter.rda&quot;, sep=&quot;&quot;))
+load(paste(path2, &quot;eqtl_snpint.rda&quot;, sep=&quot;&quot;))
+
+# 1. Convert Hi-C snpint to dataframe
 snpdat &lt;- data.frame(chr=seqnames(snpint),cbp=start(snpint), rsid=snpint$rsid, ensg=snpint$ensg)
 head(snpdat)</code></pre>
 <pre><code>   chr    cbp        rsid            ensg
@@ -1001,8 +980,53 @@ head(snpdat)</code></pre>
 4 chr1 821325 rs138860880 ENSG00000188976
 5 chr1 821325 rs138860880 ENSG00000187961
 6 chr1 821325 rs138860880 ENSG00000187583</code></pre>
-<pre class="r"><code>snpromat &lt;- unique(data.frame(rsid=snpro$rsid, ensg=snpro$gene))
+<pre class="r"><code># 2. Extract Promoter and Exon matrices
+snpromat &lt;- unique(data.frame(rsid=snpro$rsid, ensg=snpro$gene))
 snpexonmat &lt;- unique(data.frame(rsid=snpexon$rsid, ensg=snpexon$gene))
+
+# 3.  Create the eQTL matrix
+snpeqtlmat &lt;- unique(data.frame(rsid = eqtl_snpint$rsid, ensg = eqtl_snpint$ensg))
+
+# 4. Combine ALL sources (Hi-C + Exon + Promoter + eQTL)
+snpcomb &lt;- unique(rbind(snpdat[,3:4], snpromat, snpexonmat, snpeqtlmat))
+head(snpcomb)</code></pre>
+<pre><code>         rsid            ensg
+1 rs529659359 ENSG00000188976
+2 rs529659359 ENSG00000187961
+3 rs529659359 ENSG00000187583
+4 rs138860880 ENSG00000188976
+5 rs138860880 ENSG00000187961
+6 rs138860880 ENSG00000187583</code></pre>
+<pre class="r"><code>#save(snpcomb, file=paste(path2, &quot;PT1_Hi-C_SNP_comb.rda&quot;, sep=&quot;&quot;))
+cat(&quot;Exon+Promoter+Hi-C+eQTL: Total mapped SNPs: &quot;, nrow(snpcomb), &quot;\n&quot;)</code></pre>
+<pre><code>Exon+Promoter+Hi-C+eQTL: Total mapped SNPs:  10853508 </code></pre>
+<pre class="r"><code># 4.  Exon + Promoter 
+snpcomb &lt;- unique(rbind(snpromat, snpexonmat))
+head(snpcomb)</code></pre>
+<pre><code>          rsid            ensg
+1  rs367896724 ENSG00000223972
+5  rs555500075 ENSG00000223972
+9  rs376342519 ENSG00000223972
+13 rs575272151 ENSG00000223972
+17 rs544419019 ENSG00000223972
+21    rs806731 ENSG00000227232</code></pre>
+<pre class="r"><code>#save(snpcomb, file=paste(path2, &quot;PT1_Hi-C_SNP_comb.rda&quot;, sep=&quot;&quot;))
+cat(&quot;Exon+Promoter: Total mapped SNPs: &quot;, nrow(snpcomb), &quot;\n&quot;)</code></pre>
+<pre><code>Exon+Promoter: Total mapped SNPs:  983847 </code></pre>
+<pre class="r"><code># 4. Exon + Promoter + eQTL
+snpcomb &lt;- unique(rbind(snpromat, snpexonmat, snpeqtlmat))
+head(snpcomb)</code></pre>
+<pre><code>          rsid            ensg
+1  rs367896724 ENSG00000223972
+5  rs555500075 ENSG00000223972
+9  rs376342519 ENSG00000223972
+13 rs575272151 ENSG00000223972
+17 rs544419019 ENSG00000223972
+21    rs806731 ENSG00000227232</code></pre>
+<pre class="r"><code>#save(snpcomb, file=paste(path2, &quot;PT1_Hi-C_SNP_comb.rda&quot;, sep=&quot;&quot;))
+cat(&quot;Exon+Promoter+eQTL: Total mapped SNPs: &quot;, nrow(snpcomb), &quot;\n&quot;)</code></pre>
+<pre><code>Exon+Promoter+eQTL: Total mapped SNPs:  1023181 </code></pre>
+<pre class="r"><code># 4. Combine ALL sources ( Exon + Promoter + HiC)
 snpcomb &lt;- unique(rbind(snpdat[,3:4], snpromat, snpexonmat))
 head(snpcomb)</code></pre>
 <pre><code>         rsid            ensg
@@ -1013,9 +1037,20 @@ head(snpcomb)</code></pre>
 5 rs138860880 ENSG00000187961
 6 rs138860880 ENSG00000187583</code></pre>
 <pre class="r"><code>#save(snpcomb, file=paste(path2, &quot;PT1_Hi-C_SNP_comb.rda&quot;, sep=&quot;&quot;))
+cat(&quot;Exon+Promoter+Hi-C: Total mapped SNPs: &quot;, nrow(snpcomb), &quot;\n&quot;)</code></pre>
+<pre><code>Exon+Promoter+Hi-C: Total mapped SNPs:  10820451 </code></pre>
+<pre class="r"><code>mapped_snps=data.frame(conditions=c(&quot;Exon+Promoter&quot;, &quot;Exon+Promoter+Hi-C&quot;, &quot;Exon+Promoter+eQTL&quot;, &quot;Exon+Promoter+Hi-C+eQTL&quot;), 
+                     num_snps=c(nrow(unique(rbind(snpromat, snpexonmat))), 
+                                nrow(unique(rbind(snpdat[,3:4], snpromat, snpexonmat))), 
+                                nrow(unique(rbind(snpromat, snpexonmat, snpeqtlmat))), 
+                                nrow(unique(rbind(snpdat[,3:4], snpromat, snpexonmat, snpeqtlmat)))))
 
-cat(&quot;Total mapped SNPs: &quot;, nrow(snpcomb), &quot;\n&quot;)</code></pre>
-<pre><code>Total mapped SNPs:  11370979 </code></pre>
+mapped_snps</code></pre>
+<pre><code>               conditions num_snps
+1           Exon+Promoter   983847
+2      Exon+Promoter+Hi-C 10820451
+3      Exon+Promoter+eQTL  1023181
+4 Exon+Promoter+Hi-C+eQTL 10853508</code></pre>
 <pre class="r"><code>#22 Aggregate SNP-gene relationships to generate the variant-gene annotation ﬁle compatible
 #with MAGMA.
 snpagg &lt;- aggregate(snpexonmat, list(snpexonmat$ensg), unique)
@@ -1048,9 +1083,7 @@ writable &lt;- format(snpannot)
 write.table(writable, file=paste(path2, &quot;SNP_aggregate_transcript.txt&quot;, sep=&quot;&quot;), quote=F, row.names=F, col.names=F, sep=&quot;\t&quot;)</code></pre>
 <pre class="r"><code>txt &lt;- readLines(paste0(path2, &quot;SNP_aggregate_transcript.txt&quot;))
 txt &lt;- gsub(&quot;, &quot;, &quot;\t&quot;, txt)
-#writeLines(txt, paste0(path2,&quot;transcript.annot&quot;))</code></pre>
-<pre class="r"><code># run MAGMA
-magma --bfile C:\\han\\Dataset\\20250221_PMID_32152537_hmagma\\g1000_eur\\g1000_eur --pval C:\\han\\Dataset\\20260326_TCGD\\Breast_Cancer_Clean_MAGMA.txt use=rsid, p.value N=139274 --gene-annot C:\\han\\Projects\\2025_03_breast_cancer\\Run_MAGMA_on_GWAS_HiC\\transcript.annot --out C:\\han\\Projects\\2025_03_breast_cancer\\Run_MAGMA_on_GWAS_HiC\\magma_output\\</code></pre>
+writeLines(txt, paste0(path2,&quot;transcript.annot&quot;))</code></pre>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -1082,34 +1115,35 @@ attached base packages:
 [8] base     
 
 other attached packages:
-[1] dplyr_1.1.4          biomaRt_2.60.1       GenomicRanges_1.56.2
-[4] GenomeInfoDb_1.40.0  IRanges_2.38.0       S4Vectors_0.42.0    
-[7] BiocGenerics_0.50.0 
+ [1] org.Hs.eg.db_3.19.1  AnnotationDbi_1.66.0 Biobase_2.64.0      
+ [4] tidyr_1.3.1          dplyr_1.1.4          biomaRt_2.60.1      
+ [7] GenomicRanges_1.56.2 GenomeInfoDb_1.40.0  IRanges_2.38.0      
+[10] S4Vectors_0.42.0     BiocGenerics_0.50.0 
 
 loaded via a namespace (and not attached):
  [1] KEGGREST_1.44.0         xfun_0.43               bslib_0.7.0            
- [4] httr2_1.0.1             Biobase_2.64.0          generics_0.1.3         
- [7] vctrs_0.6.5             tools_4.4.0             curl_5.2.1             
-[10] tibble_3.2.1            fansi_1.0.6             AnnotationDbi_1.66.0   
-[13] RSQLite_2.3.6           blob_1.2.4              pkgconfig_2.0.3        
-[16] dbplyr_2.5.0            lifecycle_1.0.4         GenomeInfoDbData_1.2.12
-[19] compiler_4.4.0          stringr_1.5.1           git2r_0.33.0           
-[22] Biostrings_2.72.0       progress_1.2.3          httpuv_1.6.15          
-[25] htmltools_0.5.8.1       sass_0.4.9              yaml_2.3.8             
-[28] later_1.3.2             pillar_1.9.0            crayon_1.5.2           
-[31] jquerylib_0.1.4         whisker_0.4.1           cachem_1.0.8           
-[34] tidyselect_1.2.1        digest_0.6.35           stringi_1.8.4          
-[37] rprojroot_2.0.4         fastmap_1.1.1           cli_3.6.2              
-[40] magrittr_2.0.3          utf8_1.2.4              filelock_1.0.3         
-[43] prettyunits_1.2.0       UCSC.utils_1.0.0        promises_1.3.0         
-[46] rappdirs_0.3.3          bit64_4.0.5             rmarkdown_2.26         
-[49] XVector_0.44.0          httr_1.4.7              bit_4.0.5              
-[52] workflowr_1.7.1         png_0.1-8               hms_1.1.3              
-[55] memoise_2.0.1           evaluate_0.23           knitr_1.46             
-[58] BiocFileCache_2.12.0    rlang_1.1.3             Rcpp_1.0.12            
-[61] glue_1.7.0              DBI_1.2.3               xml2_1.3.6             
-[64] rstudioapi_0.16.0       jsonlite_1.8.8          R6_2.5.1               
-[67] fs_1.6.4                zlibbioc_1.50.0        </code></pre>
+ [4] httr2_1.0.1             vctrs_0.6.5             tools_4.4.0            
+ [7] generics_0.1.3          curl_5.2.1              tibble_3.2.1           
+[10] fansi_1.0.6             RSQLite_2.3.6           blob_1.2.4             
+[13] pkgconfig_2.0.3         dbplyr_2.5.0            lifecycle_1.0.4        
+[16] GenomeInfoDbData_1.2.12 compiler_4.4.0          stringr_1.5.1          
+[19] git2r_0.33.0            Biostrings_2.72.0       progress_1.2.3         
+[22] httpuv_1.6.15           htmltools_0.5.8.1       sass_0.4.9             
+[25] yaml_2.3.8              later_1.3.2             pillar_1.9.0           
+[28] crayon_1.5.2            jquerylib_0.1.4         cachem_1.0.8           
+[31] tidyselect_1.2.1        digest_0.6.35           stringi_1.8.4          
+[34] purrr_1.0.2             rprojroot_2.0.4         fastmap_1.1.1          
+[37] cli_3.6.2               magrittr_2.0.3          utf8_1.2.4             
+[40] withr_3.0.0             filelock_1.0.3          prettyunits_1.2.0      
+[43] UCSC.utils_1.0.0        promises_1.3.0          rappdirs_0.3.3         
+[46] bit64_4.0.5             rmarkdown_2.26          XVector_0.44.0         
+[49] httr_1.4.7              bit_4.0.5               workflowr_1.7.1        
+[52] png_0.1-8               hms_1.1.3               memoise_2.0.1          
+[55] evaluate_0.23           knitr_1.46              BiocFileCache_2.12.0   
+[58] rlang_1.1.3             Rcpp_1.0.12             glue_1.7.0             
+[61] DBI_1.2.3               xml2_1.3.6              rstudioapi_0.16.0      
+[64] jsonlite_1.8.8          R6_2.5.1                fs_1.6.4               
+[67] zlibbioc_1.50.0        </code></pre>
 </div>
 </div>
 

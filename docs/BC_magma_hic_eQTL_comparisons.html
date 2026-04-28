@@ -10,9 +10,9 @@
 
 
 
-<meta name="date" content="2026-03-30" />
+<meta name="date" content="2026-04-15" />
 
-<title>run magma on GWAS summary data only</title>
+<title>4/15 2026</title>
 
 <script src="site_libs/header-attrs-2.26/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -370,8 +370,8 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">run magma on GWAS summary data only</h1>
-<h4 class="date">2026-03-30</h4>
+<h1 class="title toc-ignore">4/15 2026</h1>
+<h4 class="date">2026-04-15</h4>
 
 </div>
 
@@ -400,7 +400,7 @@ aria-hidden="true"></span> </a>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2026-04-15
+<strong>Last updated:</strong> 2026-04-28
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -438,10 +438,10 @@ changes </a>
 <div id="strongRMarkdownfilestronguncommittedchanges"
 class="panel-collapse collapse">
 <div class="panel-body">
-<p>The R Markdown file has unstaged changes. To know which version of
-the R Markdown file created these results, you’ll want to first commit
-it to the Git repo. If you’re still working on the analysis, you can
-ignore this warning. When you’re finished, you can run
+<p>The R Markdown is untracked by Git. To know which version of the R
+Markdown file created these results, you’ll want to first commit it to
+the Git repo. If you’re still working on the analysis, you can ignore
+this warning. When you’re finished, you can run
 <code>wflow_publish</code> to commit the R Markdown file and build the
 HTML.</p>
 </div>
@@ -568,6 +568,7 @@ were generated:
 <pre><code>
 Untracked files:
     Untracked:  analysis/BC_magma_hic_eQTL.Rmd
+    Untracked:  analysis/BC_magma_hic_eQTL_comparisons.Rmd
 
 Unstaged changes:
     Modified:   analysis/BC_magma.Rmd
@@ -587,313 +588,326 @@ have uncommitted changes.
 <hr>
 </div>
 <div id="versions" class="tab-pane fade">
-
 <p>
-These are the previous versions of the repository in which changes were
-made to the R Markdown (<code>analysis/BC_magma.Rmd</code>) and HTML
-(<code>docs/BC_magma.html</code>) files. If you’ve configured a remote
-Git repository (see <code>?wflow_git_remote</code>), click on the
-hyperlinks in the table below to view the files as they were in that
-past version.
+There are no past versions. Publish this analysis with
+<code>wflow_publish()</code> to start tracking its development.
 </p>
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-File
-</th>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-<th>
-Message
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-Rmd
-</td>
-<td>
-<a href="https://github.com/han16/BreastCancerEpigenetics/blob/d1df81c190ea1a1e278194e40dc54751914577ff/analysis/BC_magma.Rmd" target="_blank">d1df81c</a>
-</td>
-<td>
-han
-</td>
-<td>
-2026-04-07
-</td>
-<td>
-4/7/2026
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/han16/BreastCancerEpigenetics/d1df81c190ea1a1e278194e40dc54751914577ff/docs/BC_magma.html" target="_blank">d1df81c</a>
-</td>
-<td>
-han
-</td>
-<td>
-2026-04-07
-</td>
-<td>
-4/7/2026
-</td>
-</tr>
-</tbody>
-</table>
-</div>
 <hr>
 </div>
 </div>
 </div>
-<div id="prepare-libraries-and-directory-timing-5-min"
-class="section level2">
-<h2>Prepare libraries and directory ● Timing 5 min</h2>
 <pre class="r"><code>rm(list=ls())
 set.seed(123)
 options(stringsAsFactors=F)
 library(GenomicRanges)
 library(biomaRt)
 library(dplyr)</code></pre>
+<div id="number-of-mapped-snps" class="section level2">
+<h2>number of mapped SNPs</h2>
+<pre class="r"><code># Load libraries
+library(ggplot2)
+library(scales)
+
+# 1. Create the data frame
+total_snps &lt;- 9822123
+plot_data &lt;- data.frame(
+  input_data = c(&quot;Exon+Promoter&quot;, 
+                 &quot;Exon+Promoter+eQTL&quot;, 
+                 &quot;Exon+Promoter+Chromatin Loop&quot;, 
+                 &quot;Exon+Promoter+Chromatin Loop+eQTL&quot;),
+  num_mapped_snps = c(905755, 934412, 4494800, 4504842)
+)
+
+# 2. Calculate proportions
+plot_data$proportion &lt;- plot_data$num_mapped_snps / total_snps
+
+# 3. Sort the data by proportion for the plot
+plot_data &lt;- plot_data[order(plot_data$proportion), ]
+plot_data$input_data &lt;- factor(plot_data$input_data, levels = plot_data$input_data)
+
+# 4. Create the bar plot
+p &lt;- ggplot(plot_data, aes(x = input_data, y = proportion, fill = input_data)) +
+  geom_bar(stat = &quot;identity&quot;, width = 0.7, show.legend = FALSE) +
+  # Add percentage labels over the bars
+  geom_text(aes(label = percent(proportion, accuracy = 0.1)), 
+            vjust = -0.5, 
+            size = 5, 
+            fontface = &quot;bold&quot;) +
+  # Custom aesthetic styling
+  scale_y_continuous(labels = percent_format(), expand = expansion(mult = c(0, 0.15))) +
+  scale_fill_manual(values = c(&quot;#3498db&quot;, &quot;#9b59b6&quot;, &quot;#f1c40f&quot;, &quot;#e74c3c&quot;)) +
+  labs(title = &quot;&quot;,
+       subtitle = &quot;&quot;,
+       x = &quot;&quot;,
+       y = &quot;Proportion of mapped SNPs&quot;) +
+  theme_minimal(base_size = 14) +
+  theme(
+    plot.title = element_text(face = &quot;bold&quot;, size = 16),
+    axis.text.x = element_text(angle = 15, hjust = 1),
+    panel.grid.major.x = element_blank()
+  )
+
+# View the plot
+print(p)</code></pre>
+<p><img src="figure/BC_magma_hic_eQTL_comparisons.Rmd/unnamed-chunk-2-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># ggsave(&quot;snp_mapping_plot.png&quot;, plot = p, width = 8, height = 6, dpi = 300)</code></pre>
+<pre class="r"><code>library(dplyr)
+library(ggplot2)
+library(tidyr)
+
+
+path2=&quot;C:\\han\\Projects\\2025_03_breast_cancer\\Run_MAGMA_on_GWAS_HiC_eQTL\\&quot;
+
+# 1. Define paths to your output files
+# Note: MAGMA output files usually end in .genes.out
+folders &lt;- paste0(path2, c(&quot;magma_output_exome_promoter&quot;, 
+             &quot;magma_output_exome_promoter_eQTL&quot;, 
+             &quot;magma_output_exome_promoter_HiC&quot;, 
+             &quot;magma_output_exome_promoter_HiC_eQTL&quot;))
+
+exome_promoter_output=as_tibble(read.table(paste0(folders[1], &quot;\\.genes.out.txt&quot;), header = T))
+exome_promoter_eQTL_output=as_tibble(read.table(paste0(folders[2], &quot;\\.genes.out.txt&quot;), header = T))
+exome_promoter_HiC_output=as_tibble(read.table(paste0(folders[3], &quot;\\.genes.out.txt&quot;), header = T))
+exome_promoter_HiC_eQTL_output=as_tibble(read.table(paste0(folders[4], &quot;\\.genes.out.txt&quot;), header = T))</code></pre>
+<pre class="r"><code>exome_promoter_output$Strategy &lt;- &quot;EP&quot;
+exome_promoter_eQTL_output$Strategy &lt;- &quot;EP+eQTL&quot;
+exome_promoter_HiC_output$Strategy &lt;- &quot;EP+HiC&quot;
+exome_promoter_HiC_eQTL_output$Strategy &lt;- &quot;EP+HiC+eQTL&quot;
+
+# 2. Stack them on top of each other (Row bind)
+# This uses your full variable names from the previous chunk
+plot_data &lt;- bind_rows(exome_promoter_output, 
+                       exome_promoter_eQTL_output, 
+                       exome_promoter_HiC_output, 
+                       exome_promoter_HiC_eQTL_output)
+
+# 3. Plot using GENE as the X-axis
+# Note: Ensure &#39;Strategy&#39; names in scale_color_manual match the labels above
+ggplot(plot_data, aes(x = GENE, y = -log10(P), color = Strategy)) +
+  geom_point(size = 2, alpha = 0.6) +
+  scale_color_manual(values = c(&quot;EP&quot;   = &quot;#3498db&quot;, 
+                                &quot;EP+HiC&quot;  = &quot;#f1c40f&quot;, 
+                                &quot;EP+eQTL&quot; = &quot;#9b59b6&quot;, 
+                                &quot;EP+HiC+eQTL&quot; = &quot;#e74c3c&quot;)) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_blank(),     # Hides the messy gene names
+    axis.ticks.x = element_blank(),    
+    panel.grid.major.x = element_blank(),
+    legend.position = &quot;top&quot;, 
+    legend.title = element_blank(),
+    # Increase this number to make text even larger
+    legend.text = element_text(size = 14)
+  ) +
+  labs(
+    title = &quot;&quot;,
+    x = &quot;Genes&quot;,
+    y = expression(-log[10](P-value))
+  )</code></pre>
+<p><img src="figure/BC_magma_hic_eQTL_comparisons.Rmd/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># Load necessary libraries
+library(dplyr)
+library(tidyr)
+library(biomaRt) # To convert ENSG to Gene Symbols
+
+
+path2=&quot;C:\\han\\Projects\\2025_03_breast_cancer\\Run_MAGMA_on_GWAS_HiC_eQTL\\&quot;
+
+# 1. Define paths to your output files
+# Note: MAGMA output files usually end in .genes.out
+folders &lt;- paste0(path2, c(&quot;magma_output_exome_promoter&quot;, 
+             &quot;magma_output_exome_promoter_eQTL&quot;, 
+             &quot;magma_output_exome_promoter_HiC&quot;, 
+             &quot;magma_output_exome_promoter_HiC_eQTL&quot;))
+
+
+
+
+# 1. Load  MAGMA gene-level output files
+ep_data   &lt;- as_tibble(read.table(paste0(folders[1], &quot;\\.genes.out.txt&quot;), header = T))
+hic_data  &lt;- as_tibble(read.table(paste0(folders[3], &quot;\\.genes.out.txt&quot;), header = T))
+eqtl_data &lt;- as_tibble(read.table(paste0(folders[2], &quot;\\.genes.out.txt&quot;), header = T))
+full_data &lt;- as_tibble(read.table(paste0(folders[4], &quot;\\.genes.out.txt&quot;), header = T))
+
+# 2. Select only Gene ID and P-value, then rename P for merging
+ep_p   &lt;- ep_data   %&gt;% dplyr::select(GENE, P_EP = P)
+hic_p  &lt;- hic_data  %&gt;% dplyr::select(GENE, P_HiC = P)
+eqtl_p &lt;- eqtl_data %&gt;% dplyr::select(GENE, P_eQTL = P)
+full_p &lt;- full_data %&gt;% dplyr::select(GENE, P_Full = P)
+
+# 3. Merge all models into one comparison table
+comparison_table &lt;- ep_p %&gt;%
+  inner_join(hic_p,  by = &quot;GENE&quot;) %&gt;%
+  inner_join(eqtl_p, by = &quot;GENE&quot;) %&gt;%
+  inner_join(full_p, by = &quot;GENE&quot;)
+
+comparison_table</code></pre>
+<pre><code># A tibble: 261 × 5
+   GENE              P_EP  P_HiC P_eQTL P_Full
+   &lt;chr&gt;            &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;
+ 1 ENSG00000269981 0.324  0.324  0.324  0.324 
+ 2 ENSG00000222623 0.0646 0.0646 0.0646 0.0646
+ 3 ENSG00000237094 0.0916 0.0916 0.0916 0.0916
+ 4 ENSG00000230021 0.895  0.895  0.895  0.895 
+ 5 ENSG00000269308 0.509  0.509  0.509  0.509 
+ 6 ENSG00000229571 0.738  0.738  0.738  0.738 
+ 7 ENSG00000204503 0.655  0.655  0.655  0.655 
+ 8 ENSG00000237847 0.115  0.115  0.115  0.115 
+ 9 ENSG00000174876 0.877  0.877  0.877  0.877 
+10 ENSG00000238122 0.35   0.35   0.35   0.35  
+# ℹ 251 more rows</code></pre>
+<pre class="r"><code># 4. Map Ensembl IDs to Gene Symbols (Requires internet connection)
+mart &lt;- useMart(&quot;ensembl&quot;, dataset = &quot;hsapiens_gene_ensembl&quot;)
+gene_map &lt;- getBM(attributes = c(&quot;ensembl_gene_id&quot;, &quot;external_gene_name&quot;),
+                  filters = &quot;ensembl_gene_id&quot;,
+                  values = comparison_table$GENE,
+                  mart = mart)
+
+# Join names back to p-values
+final_results &lt;- comparison_table %&gt;%
+  left_join(gene_map, by = c(&quot;GENE&quot; = &quot;ensembl_gene_id&quot;)) %&gt;%
+  dplyr::select(GENE, external_gene_name, everything())
+
+# 5. Example 1: Find &quot;True Risk Genes&quot; (Integrated Model is the most significant)
+# These are genes where adding 3D/eQTL data strengthened the signal
+true_risk &lt;- final_results %&gt;%
+  filter(P_Full &lt; P_EP) %&gt;%
+  arrange(P_Full)
+
+# 6. Example 2: Find &quot;False Positives&quot; (Proximity-based signal was diluted)
+# These are genes where linear proximity (EP) was significant but Full model dropped it
+diluted_signal &lt;- final_results %&gt;%
+  filter(P_Full &gt; P_EP) %&gt;%
+  arrange(desc(P_Full))
+
+# 7. Print specific genes 
+check_list &lt;- c(&quot;ENSG00000106123&quot;, &quot;ENSG00000183395&quot;, &quot;ENSG00000139618&quot;)
+print(final_results %&gt;% filter(GENE %in% check_list))</code></pre>
+<pre><code># A tibble: 0 × 6
+# ℹ 6 variables: GENE &lt;chr&gt;, external_gene_name &lt;chr&gt;, P_EP &lt;dbl&gt;, P_HiC &lt;dbl&gt;,
+#   P_eQTL &lt;dbl&gt;, P_Full &lt;dbl&gt;</code></pre>
+<pre class="r"><code># 8. Save results to CSV 
+#write.csv(final_results, &quot;MAGMA_Model_Comparison_Pvalues.csv&quot;, row.names = FALSE)</code></pre>
 </div>
-<div
-id="create-genomicranges-granges-objects-for-exon-and-promoter-coordinates-timing-5-min"
-class="section level2">
-<h2>Create GenomicRanges (GRanges) objects for exon and promoter
-coordinates ● Timing ~5 min</h2>
-<pre class="r"><code># 3 Read in exonic and promoter coordinate ﬁles by entering the following commands
-path=&quot;C:\\han\\Dataset\\20250221_PMID_32152537_hmagma\\6382668\\HMAGMA_Protocol_v1.02\\HMAGMA_Protocol\\&quot;
-path2=&quot;C:\\han\\Projects\\2025_03_breast_cancer\\Run_MAGMA_on_GWAS_Only\\&quot;
-#path3=&quot;C:\\han\\Projects\\2025_03_breast_cancer\\data_for_hmagma\\&quot;
-#path4=&quot;C:\\han\\Dataset\\20251106_PancanQTL_v2\\BRCA.eQTL-GWAS.xls\\&quot;
+<div id="non-overlapping-genes" class="section level2">
+<h2>non-overlapping genes</h2>
+<pre class="r"><code># 2. Use full_join to keep ALL genes from ALL files
+# This will create NA values for genes missing in a specific model
+comparison_table &lt;- ep_p %&gt;%
+  full_join(hic_p,  by = &quot;GENE&quot;) %&gt;%
+  full_join(eqtl_p, by = &quot;GENE&quot;) %&gt;%
+  full_join(full_p, by = &quot;GENE&quot;)
 
+# 3. Create a helper column to count how many models each gene appeared in
+comparison_table &lt;- comparison_table %&gt;%
+  mutate(Model_Count = rowSums(!is.na(dplyr::select(., starts_with(&quot;P_&quot;)))))
 
-exon &lt;- read.table(paste0(path, &quot;Gencode26_exon.bed&quot;), header = FALSE)
-dim(exon)</code></pre>
-<pre><code>[1] 324422      4</code></pre>
-<pre class="r"><code>head(exon)</code></pre>
-<pre><code>  V1       V2       V3              V4
-1  X 99883667 99884983 ENSG00000000003
-2  X 99885756 99885863 ENSG00000000003
-3  X 99887482 99887565 ENSG00000000003
-4  X 99888402 99888536 ENSG00000000003
-5  X 99888928 99889026 ENSG00000000003
-6  X 99890175 99890249 ENSG00000000003</code></pre>
-<pre class="r"><code>file.exists(paste0(path, &quot;Gencode26_exon.bed&quot;)) # check if the file exists </code></pre>
-<pre><code>[1] TRUE</code></pre>
-<pre class="r"><code>exon$V1 &lt;- sub(&quot;^&quot;, &quot;chr&quot;, exon$V1)
-promoter &lt;- read.table(paste(path, &quot;Gencode26_promoter.bed&quot;, sep=&quot;&quot;))
-promoter$V1 &lt;- sub(&quot;^&quot;, &quot;chr&quot;, promoter$V1)
+# 4. Classify genes based on your requirements
 
-# 4 Create a GRanges object for exon and promoter deﬁnitions.
-exonranges &lt;- GRanges(exon[,1],IRanges(exon[,2],exon[,3]),gene=exon[,4])
-promoterranges &lt;- GRanges(promoter[,1], IRanges(promoter[,2], promoter[,3]), gene=promoter[,4])
+# Category A: Genes unique to the Integrated (Full) Model
+# (These were NOT found by proximity/EP, only by 3D+eQTL)
+unique_to_full &lt;- comparison_table %&gt;% 
+  filter(!is.na(P_Full) &amp; is.na(P_EP))
 
-# 5 Save exon and promoter GRanges objects as a .rda ﬁle for future use.
-#save(exonranges, promoterranges, file=paste(path2, &quot;exon_promoranges.rda&quot;, sep=&quot;&quot;))
+# Category B: Genes unique to the Traditional (EP) Model
+# (These disappeared when you added functional data - likely false positives)
+unique_to_ep &lt;- comparison_table %&gt;% 
+  filter(!is.na(P_EP) &amp; is.na(P_Full))
 
-exonranges</code></pre>
-<pre><code>GRanges object with 324422 ranges and 1 metadata column:
-           seqnames            ranges strand |            gene
-              &lt;Rle&gt;         &lt;IRanges&gt;  &lt;Rle&gt; |     &lt;character&gt;
-       [1]     chrX 99883667-99884983      * | ENSG00000000003
-       [2]     chrX 99885756-99885863      * | ENSG00000000003
-       [3]     chrX 99887482-99887565      * | ENSG00000000003
-       [4]     chrX 99888402-99888536      * | ENSG00000000003
-       [5]     chrX 99888928-99889026      * | ENSG00000000003
-       ...      ...               ...    ... .             ...
-  [324418]     chrY 59355683-59355884      * | ENSGR0000270726
-  [324419]     chrY 59355973-59356131      * | ENSGR0000270726
-  [324420]     chrY 59356791-59356943      * | ENSGR0000270726
-  [324421]     chrY 59357703-59357771      * | ENSGR0000270726
-  [324422]     chrY 59357912-59358305      * | ENSGR0000270726
-  -------
-  seqinfo: 25 sequences from an unspecified genome; no seqlengths</code></pre>
-<pre class="r"><code>promoterranges</code></pre>
-<pre><code>GRanges object with 179237 ranges and 1 metadata column:
-           seqnames            ranges strand |            gene
-              &lt;Rle&gt;         &lt;IRanges&gt;  &lt;Rle&gt; |     &lt;character&gt;
-       [1]     chr1        9869-11869      * | ENSG00000223972
-       [2]     chr1        9872-11872      * | ENSG00000223972
-       [3]     chr1        9874-11874      * | ENSG00000223972
-       [4]     chr1       10010-12010      * | ENSG00000223972
-       [5]     chr1       24886-26886      * | ENSG00000227232
-       ...      ...               ...    ... .             ...
-  [179233]     chrY 59354038-59356038      * | ENSGR0000182484
-  [179234]     chrY 59354495-59356495      * | ENSGR0000182484
-  [179235]     chrY 59354742-59356742      * | ENSGR0000182484
-  [179236]     chrY 59360548-59362548      * | ENSGR0000227159
-  [179237]     chrY 59360854-59362854      * | ENSGR0000227159
-  -------
-  seqinfo: 25 sequences from an unspecified genome; no seqlengths</code></pre>
-<ul>
-<li>“Obtain gene and exon coordinates from Gencode version 26 by using
-the <a
-href="https://www.%20gencodegenes.org/human/release_26lift37.html">following
-link</a>. We downloaded the GFT ﬁle for basic gene annotation and
-converted them to .bed ﬁles. Promoters were deﬁned as 2 kb upstream to
-every transcription start site. Gene, exon and promoter coordinate ﬁles
-are listed as Gencode26_gene.bed, Gencode26_exon.bed and
-Gencode26_promoter.bed, respectively, in the Zenodo repository. Columns
-for these ﬁles are deﬁned as [chromosome, start, end, gene].”</li>
-</ul>
-<p><strong>Genome assembly hg19 was used</strong>.</p>
-</div>
-<div id="generate-a-granges-object-for-snp-coordinates-timing-5-min"
-class="section level2">
-<h2>Generate a GRanges object for SNP coordinates ● Timing ~5 min</h2>
-<pre class="r"><code>#Generate a GRanges object for SNP coordinates ● Timing ~5 min
-#6 Read in the SNP annotation ﬁle by using the following command.
-snps &lt;- read.table(paste(path, &quot;EUR.bim.gz&quot;, sep=&quot;&quot;))
-snps &lt;- snps[,c(1,2,4)]
-colnames(snps) &lt;- c(&quot;chr&quot;,&quot;SNP&quot;,&quot;Position&quot;)
-snps$chr &lt;- sub(&quot;^&quot;, &quot;chr&quot;, snps$chr)
+# Category C: Genes found in exactly TWO models
+found_in_two &lt;- comparison_table %&gt;% 
+  filter(Model_Count == 2)
 
+# 5. Summary statistics
+print(paste(&quot;Total unique genes found across all models:&quot;, nrow(comparison_table)))</code></pre>
+<pre><code>[1] &quot;Total unique genes found across all models: 732&quot;</code></pre>
+<pre class="r"><code>print(paste(&quot;Genes found in all 4 models:&quot;, sum(comparison_table$Model_Count == 4)))</code></pre>
+<pre><code>[1] &quot;Genes found in all 4 models: 261&quot;</code></pre>
+<pre class="r"><code>print(paste(&quot;Genes found ONLY in the Integrated model:&quot;, nrow(unique_to_full)))</code></pre>
+<pre><code>[1] &quot;Genes found ONLY in the Integrated model: 16&quot;</code></pre>
+<pre class="r"><code># 6. Save the complete list (including NAs)
+#write.csv(comparison_table, &quot;Comprehensive_Gene_Comparison.csv&quot;, row.names = FALSE)</code></pre>
+<pre class="r"><code># 1. Load libraries
+# install.packages(&quot;ggvenn&quot;) # Run this if you don&#39;t have the package
+library(ggvenn)
+library(dplyr)
+library(ggplot2)
 
-#7 Create a GRanges object for SNP annotations.
-snps &lt;- GRanges(snps$chr, IRanges(snps$Position, snps$Position), rsid=
-snps$SNP)
-#8 Save the SNP GRanges object as a .rda ﬁle for future use.
-#save(snps,file=paste(path2, &quot;snps.rda&quot;, sep=&quot;&quot;))
-snps</code></pre>
-<pre><code>GRanges object with 9822123 ranges and 1 metadata column:
-            seqnames    ranges strand |        rsid
-               &lt;Rle&gt; &lt;IRanges&gt;  &lt;Rle&gt; | &lt;character&gt;
-        [1]     chr1     10177      * | rs367896724
-        [2]     chr1     10352      * | rs555500075
-        [3]     chr1     10616      * | rs376342519
-        [4]     chr1     11008      * | rs575272151
-        [5]     chr1     11012      * | rs544419019
-        ...      ...       ...    ... .         ...
-  [9822119]    chr22  51236013      * | rs200507571
-  [9822120]    chr22  51237063      * |   rs3896457
-  [9822121]    chr22  51237364      * | rs200607599
-  [9822122]    chr22  51237712      * | rs370652263
-  [9822123]    chr22  51240820      * | rs202228854
-  -------
-  seqinfo: 22 sequences from an unspecified genome; no seqlengths</code></pre>
-</div>
-<div
-id="assign-snps-in-eur.bim-to-genes-by-overlapping-snps-with-exons-and-promoters-timing-1015-min"
-class="section level2">
-<h2>Assign SNPs (in EUR.bim) to genes by overlapping SNPs with exons and
-promoters ● Timing 10–15 min</h2>
-<pre class="r"><code>#9 Identify genes that map to SNPs residing in exons by overlapping the GRanges object for SNPs with
-#the GRanges object for exons.
-olap &lt;- findOverlaps(snps,exonranges)
-snpexon &lt;- snps[queryHits(olap)]
-mcols(snpexon) &lt;- cbind(mcols(snpexon), mcols(exonranges[subjectHits(olap)]))
-snpexon &lt;- snpexon[seqnames(snpexon)!=&quot;chrX&quot;]
+# 2. Extract significant Gene IDs (P &lt; 0.05) for each model
+# We filter each column separately to find the significant subset
+sig_list &lt;- list(
+  EP   = comparison_table %&gt;% filter(P_EP &lt; 0.05) %&gt;% pull(GENE),
+  `EP+HiC`  = comparison_table %&gt;% filter(P_HiC &lt; 0.05) %&gt;% pull(GENE),
+  `EP+eQTL` = comparison_table %&gt;% filter(P_eQTL &lt; 0.05) %&gt;% pull(GENE),
+  `EP+HiC+eQTL` = comparison_table %&gt;% filter(P_Full &lt; 0.05) %&gt;% pull(GENE)
+)
 
+# 2. Generate the plot
+ggvenn(
+  sig_list, 
+  fill_color = c(&quot;#0073C2FF&quot;, &quot;#EFC000FF&quot;, &quot;#868686FF&quot;, &quot;#CD534CFF&quot;),
+  stroke_size = 0.5, 
+  set_name_size = 5,
+  text_size = 4,
+  show_percentage = FALSE
+) +
+  # This manually expands the X and Y scales by 20% to prevent text clipping
+  scale_x_continuous(expand = expansion(mult = 0.1)) +
+  scale_y_continuous(expand = expansion(mult = 0.1)) +
+  # Ensure the labels are allowed to be drawn outside the panel
+  coord_cartesian(clip = &quot;off&quot;) +
+  theme(
+    plot.margin = margin(20, 20, 20, 20), # Extra space around the edges
+    plot.title = element_text(hjust = 0.5, size = 16, face = &quot;bold&quot;)
+  ) +
+  labs(title = &quot;&quot;)</code></pre>
+<p><img src="figure/BC_magma_hic_eQTL_comparisons.Rmd/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># 3. Save with enough dimensions to avoid squeezing
+#ggsave(&quot;Venn_Significant_Genes.png&quot;, width = 8, height = 8, dpi = 300)
+setdiff(sig_list$EP, sig_list$`EP+HiC+eQTL`)</code></pre>
+<pre><code> [1] &quot;ENSG00000200344&quot; &quot;ENSG00000243749&quot; &quot;ENSG00000272226&quot; &quot;ENSG00000234497&quot;
+ [5] &quot;ENSG00000212601&quot; &quot;ENSG00000206832&quot; &quot;ENSG00000236887&quot; &quot;ENSG00000224690&quot;
+ [9] &quot;ENSG00000232536&quot; &quot;ENSG00000271748&quot; &quot;ENSG00000232519&quot; &quot;ENSG00000228538&quot;
+[13] &quot;ENSG00000230274&quot; &quot;ENSG00000263651&quot; &quot;ENSG00000251804&quot; &quot;ENSG00000264146&quot;
+[17] &quot;ENSG00000251356&quot; &quot;ENSG00000199944&quot; &quot;ENSG00000086232&quot; &quot;ENSG00000213700&quot;
+[21] &quot;ENSG00000266344&quot; &quot;ENSG00000253068&quot; &quot;ENSG00000254732&quot; &quot;ENSG00000162231&quot;
+[25] &quot;ENSG00000252709&quot; &quot;ENSG00000254990&quot; &quot;ENSG00000254450&quot; &quot;ENSG00000118137&quot;
+[29] &quot;ENSG00000196531&quot; &quot;ENSG00000257604&quot; &quot;ENSG00000221560&quot; &quot;ENSG00000102468&quot;
+[33] &quot;ENSG00000102531&quot; &quot;ENSG00000242135&quot; &quot;ENSG00000080824&quot; &quot;ENSG00000270108&quot;
+[37] &quot;ENSG00000260274&quot; &quot;ENSG00000182511&quot; &quot;ENSG00000260494&quot; &quot;ENSG00000175938&quot;
+[41] &quot;ENSG00000183011&quot; &quot;ENSG00000266356&quot; &quot;ENSG00000267340&quot; &quot;ENSG00000265298&quot;
+[45] &quot;ENSG00000182687&quot; &quot;ENSG00000267783&quot; &quot;ENSG00000269181&quot; &quot;ENSG00000268457&quot;
+[49] &quot;ENSG00000221039&quot;</code></pre>
+<pre class="r"><code>sig_list$`EP+HiC+eQTL`</code></pre>
+<pre><code> [1] &quot;ENSG00000235398&quot; &quot;ENSG00000268074&quot; &quot;ENSG00000251738&quot; &quot;ENSG00000233275&quot;
+ [5] &quot;ENSG00000227120&quot; &quot;ENSG00000265577&quot; &quot;ENSG00000251634&quot; &quot;ENSG00000242607&quot;
+ [9] &quot;ENSG00000233451&quot; &quot;ENSG00000250946&quot; &quot;ENSG00000255184&quot; &quot;ENSG00000207811&quot;
+[13] &quot;ENSG00000200072&quot; &quot;ENSG00000233917&quot; &quot;ENSG00000265047&quot; &quot;ENSG00000261515&quot;
+[17] &quot;ENSG00000261782&quot; &quot;ENSG00000265821&quot; &quot;ENSG00000278023&quot;</code></pre>
+<pre class="r"><code> #install.packages(&quot;UpSetR&quot;)
+library(UpSetR)
+library(dplyr)
 
-#10 Overlap the GRanges object for promoters with the GRanges object for SNPs. Similar to the code
-#above, this command will identify genes that map to SNPs residing in promoter regions.
-olap &lt;- findOverlaps(snps,promoterranges)
-snpro &lt;- snps[queryHits(olap)]
-mcols(snpro) &lt;- cbind(mcols(snpro),mcols(promoterranges[subjectHits(olap)]))
-snpro &lt;- snpro[seqnames(snpro)!=&quot;chrX&quot;]
+# 1. Prepare the data list: extract genes with valid P-values for each model
+gene_list &lt;- list(
+  EP   = comparison_table$GENE[!is.na(comparison_table$P_EP)],
+  `EP+HiC`  = comparison_table$GENE[!is.na(comparison_table$P_HiC)],
+  `EP+eQTL` = comparison_table$GENE[!is.na(comparison_table$P_eQTL)],
+  `EP+HiC+eQTL` = comparison_table$GENE[!is.na(comparison_table$P_Full)]
+)
 
-#11 Save SNPs overlapping with exons and promoters as a .rda ﬁle.
-#save(snpro, snpexon, file=paste(path2, &quot;snp_locating_in_exon_promoter_transcript_level.rda&quot;, sep=&quot;&quot;))</code></pre>
-<ul>
-<li>“Find SNPs that fall inside any exon, attach the exon’s annotation
-(like gene ID) to those SNPs, and remove SNPs on chromosome X.”</li>
-</ul>
-<pre class="r"><code>#21 Integrate SNP-gene relationships derived from exons, promoters and Hi-C interaction data.
-load(paste(path2, &quot;snp_locating_in_exon_promoter_transcript_level.rda&quot;, sep=&quot;&quot;))
-
-
-snpromat &lt;- unique(data.frame(rsid=snpro$rsid, ensg=snpro$gene))
-snpexonmat &lt;- unique(data.frame(rsid=snpexon$rsid, ensg=snpexon$gene))
-head(snpexonmat)</code></pre>
-<pre><code>         rsid            ensg
-1 rs531730856 ENSG00000223972
-2 rs554008981 ENSG00000223972
-3 rs546169444 ENSG00000227232
-4 rs531646671 ENSG00000227232
-5 rs541940975 ENSG00000227232
-6   rs2691315 ENSG00000227232</code></pre>
-<pre class="r"><code>#save(snpexonmat, file=paste(path2, &quot;SNP_to_transcript_comb.rda&quot;, sep=&quot;&quot;))
-
-cat(&quot;Total mapped SNPs: &quot;, nrow(snpexonmat), &quot;\n&quot;)</code></pre>
-<pre><code>Total mapped SNPs:  348290 </code></pre>
-<pre class="r"><code>#22 Aggregate SNP-gene relationships to generate the variant-gene annotation ﬁle compatible
-#with MAGMA.
-snpagg &lt;- aggregate(snpexonmat, list(snpexonmat$ensg), unique)
-
-
-#23 Read in the gene deﬁnition ﬁle.
-genedef &lt;- read.table(paste(path, &quot;Gencode26_gene.bed&quot;, sep=&quot;&quot;))
-colnames(genedef) &lt;- c(&quot;chr&quot;, &quot;start&quot;, &quot;end&quot;, &quot;ensg&quot;)
-
-
-#24 Create an index column from the gene deﬁnition ﬁle consisting of gene chromosomal location, start
-#and end.
-genedef &lt;- genedef [grep(&quot;chr&quot;, genedef$chr),]
-genedef$chr &lt;- unlist(lapply(strsplit(genedef$chr, &quot;chr&quot;), &#39;[[&#39;, 2))
-genedef$index &lt;- paste(genedef$chr, genedef$start, genedef$end, sep=&quot;:&quot;)
-
-
-#25 Attach the index column from Step 24 to the variant-gene annotation ﬁle from Step 22.
-snpagg$index &lt;- genedef[match(snpagg$ensg, genedef$ensg),&quot;index&quot;]
-
-
-#26 Remove any missing values from the variant-gene annotation ﬁle.
-snpagg &lt;- snpagg[!is.na(snpagg$index),]
-
-#27 Subset gene, gene location and SNPs from the variant-gene annotation ﬁle.
-snpannot &lt;- snpagg[,c(&quot;ensg&quot;, &quot;index&quot;, &quot;rsid&quot;)]
-
-#28 Save the variant-gene annotation ﬁle in an executable format.
-writable &lt;- format(snpannot)
-write.table(writable, file=paste(path2, &quot;SNP_aggregate_transcript.txt&quot;, sep=&quot;&quot;), quote=F, row.names=F, col.names=F, sep=&quot;\t&quot;)
-
-#system(paste0(&quot;sed -e `s/, /\t/g` &lt; SNP_aggregate_transcript&quot;,&quot;.txt &gt;&quot;,&quot;Adultbrain.transcript.annot&quot;))
-system(&quot;sed -e `s/, /\\t/g` &lt; SNP_aggregate_transcript.txt &gt; transcript.annot&quot;)</code></pre>
-<pre class="r"><code>txt &lt;- readLines(paste0(path2, &quot;SNP_aggregate_transcript.txt&quot;))
-txt &lt;- gsub(&quot;, &quot;, &quot;\t&quot;, txt)
-#writeLines(txt, paste0(path2,&quot;transcript.annot&quot;))</code></pre>
-<pre class="r"><code>CGS03_gwas_summary=as_tibble(read.table(&quot;C:\\han\\Dataset\\20260326_TCGD\\CGS03.gwas_summary.txt&quot;, header=T))
-head(CGS03_gwas_summary)
-summary(CGS03_gwas_summary$p.value)
-sum(is.na(CGS03_gwas_summary))
-
-CGS03_gwas_summary$p.value[CGS03_gwas_summary$p.value == 0]=1e-100
-summary(CGS03_gwas_summary$p.value)
-#write.table(CGS03_gwas_summary, file=&quot;C:\\han\\Dataset\\20260326_TCGD\\CGS03.gwas_summary_for_magma.txt&quot;)
-
-CGS03_gwas_summary_for_magma=as_tibble(read.table(&quot;C:\\han\\Dataset\\20260326_TCGD\\CGS03.gwas_summary_for_magma.txt&quot;, header=T))
-
-# Ensure it&#39;s a data.table for clean export
-setDT(CGS03_gwas_summary_for_magma)
-# 1. Create a minimal table with ONLY the columns MAGMA needs
-magma_input &lt;- CGS03_gwas_summary_for_magma[, .(rsid, p.value)]
-# 2. Write it to a file WITHOUT quotes and with a simple TAB separator
-#fwrite(magma_input, &quot;C:\\han\\Dataset\\20260326_TCGD\\Breast_Cancer_Clean_MAGMA.txt&quot;, 
-#       sep = &quot;\t&quot;, 
-#       quote = FALSE, 
-#       row.names = FALSE)</code></pre>
-<pre class="r"><code>############# pan-ukbb
-library(data.table)
-phenotype_manifest=fread(&quot;C:\\han\\Dataset\\pan_ukbb\\phenotype_manifest.tsv&quot;)
-phenotype_manifest %&gt;% filter(category==&quot;Breast&quot;)
-
-phenotype_manifest %&gt;% filter(phenocode==&quot;174.1&quot;) %&gt;% select(aws_path)</code></pre>
-<pre class="r"><code># run MAGMA
-magma --bfile C:\\han\\Dataset\\20250221_PMID_32152537_hmagma\\g1000_eur\\g1000_eur --pval C:\\han\\Dataset\\20260326_TCGD\\Breast_Cancer_Clean_MAGMA.txt use=rsid, p.value N=139274 --gene-annot C:\\han\\Projects\\2025_03_breast_cancer\\Run_MAGMA_on_GWAS_Only\\transcript.annot --out C:\\han\\Projects\\2025_03_breast_cancer\\Run_MAGMA_on_GWAS_Only\\magma_output\\</code></pre>
+# 2. Generate the UpSet Plot
+upset(fromList(gene_list), 
+      sets = c(&quot;EP&quot;, &quot;EP+HiC&quot;, &quot;EP+eQTL&quot;, &quot;EP+HiC+eQTL&quot;),
+      keep.order = TRUE,             # Keep the sets in the order specified
+      main.bar.color = &quot;#2c3e50&quot;,    # Color for intersection bars
+      sets.bar.color = &quot;#7f8c8d&quot;,    # Color for set size bars
+      matrix.color = &quot;black&quot;,        # Color for the dots/lines
+      text.scale = 1.5,              # Increase text size for readability
+      order.by = &quot;freq&quot;,             # Show largest intersections first
+      point.size = 4, 
+      line.size = 1.2)</code></pre>
+<p><img src="figure/BC_magma_hic_eQTL_comparisons.Rmd/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -921,38 +935,42 @@ time zone: America/Chicago
 tzcode source: internal
 
 attached base packages:
-[1] stats4    stats     graphics  grDevices utils     datasets  methods  
-[8] base     
+[1] grid      stats4    stats     graphics  grDevices utils     datasets 
+[8] methods   base     
 
 other attached packages:
-[1] dplyr_1.1.4          biomaRt_2.60.1       GenomicRanges_1.56.2
-[4] GenomeInfoDb_1.40.0  IRanges_2.38.0       S4Vectors_0.42.0    
-[7] BiocGenerics_0.50.0 
+ [1] UpSetR_1.4.0         ggvenn_0.1.10        tidyr_1.3.1         
+ [4] scales_1.3.0         ggplot2_3.5.1        dplyr_1.1.4         
+ [7] biomaRt_2.60.1       GenomicRanges_1.56.2 GenomeInfoDb_1.40.0 
+[10] IRanges_2.38.0       S4Vectors_0.42.0     BiocGenerics_0.50.0 
 
 loaded via a namespace (and not attached):
- [1] KEGGREST_1.44.0         xfun_0.43               bslib_0.7.0            
- [4] httr2_1.0.1             Biobase_2.64.0          generics_0.1.3         
- [7] vctrs_0.6.5             tools_4.4.0             curl_5.2.1             
-[10] tibble_3.2.1            fansi_1.0.6             AnnotationDbi_1.66.0   
-[13] RSQLite_2.3.6           blob_1.2.4              pkgconfig_2.0.3        
-[16] dbplyr_2.5.0            lifecycle_1.0.4         GenomeInfoDbData_1.2.12
-[19] compiler_4.4.0          stringr_1.5.1           git2r_0.33.0           
-[22] Biostrings_2.72.0       progress_1.2.3          httpuv_1.6.15          
-[25] htmltools_0.5.8.1       sass_0.4.9              yaml_2.3.8             
-[28] later_1.3.2             pillar_1.9.0            crayon_1.5.2           
-[31] jquerylib_0.1.4         whisker_0.4.1           cachem_1.0.8           
-[34] tidyselect_1.2.1        digest_0.6.35           stringi_1.8.4          
-[37] rprojroot_2.0.4         fastmap_1.1.1           cli_3.6.2              
-[40] magrittr_2.0.3          utf8_1.2.4              filelock_1.0.3         
-[43] prettyunits_1.2.0       UCSC.utils_1.0.0        promises_1.3.0         
-[46] rappdirs_0.3.3          bit64_4.0.5             rmarkdown_2.26         
-[49] XVector_0.44.0          httr_1.4.7              bit_4.0.5              
-[52] workflowr_1.7.1         png_0.1-8               hms_1.1.3              
-[55] memoise_2.0.1           evaluate_0.23           knitr_1.46             
-[58] BiocFileCache_2.12.0    rlang_1.1.3             Rcpp_1.0.12            
-[61] glue_1.7.0              DBI_1.2.3               xml2_1.3.6             
-[64] rstudioapi_0.16.0       jsonlite_1.8.8          R6_2.5.1               
-[67] fs_1.6.4                zlibbioc_1.50.0        </code></pre>
+ [1] KEGGREST_1.44.0         gtable_0.3.5            xfun_0.43              
+ [4] bslib_0.7.0             httr2_1.0.1             Biobase_2.64.0         
+ [7] vctrs_0.6.5             tools_4.4.0             generics_0.1.3         
+[10] curl_5.2.1              tibble_3.2.1            fansi_1.0.6            
+[13] AnnotationDbi_1.66.0    RSQLite_2.3.6           highr_0.10             
+[16] blob_1.2.4              pkgconfig_2.0.3         dbplyr_2.5.0           
+[19] lifecycle_1.0.4         GenomeInfoDbData_1.2.12 farver_2.1.2           
+[22] compiler_4.4.0          stringr_1.5.1           git2r_0.33.0           
+[25] Biostrings_2.72.0       progress_1.2.3          munsell_0.5.1          
+[28] httpuv_1.6.15           htmltools_0.5.8.1       sass_0.4.9             
+[31] yaml_2.3.8              later_1.3.2             pillar_1.9.0           
+[34] crayon_1.5.2            jquerylib_0.1.4         cachem_1.0.8           
+[37] tidyselect_1.2.1        digest_0.6.35           stringi_1.8.4          
+[40] purrr_1.0.2             labeling_0.4.3          rprojroot_2.0.4        
+[43] fastmap_1.1.1           colorspace_2.1-0        cli_3.6.2              
+[46] magrittr_2.0.3          utf8_1.2.4              withr_3.0.0            
+[49] filelock_1.0.3          prettyunits_1.2.0       UCSC.utils_1.0.0       
+[52] promises_1.3.0          rappdirs_0.3.3          bit64_4.0.5            
+[55] rmarkdown_2.26          XVector_0.44.0          httr_1.4.7             
+[58] bit_4.0.5               gridExtra_2.3           workflowr_1.7.1        
+[61] png_0.1-8               hms_1.1.3               memoise_2.0.1          
+[64] evaluate_0.23           knitr_1.46              BiocFileCache_2.12.0   
+[67] rlang_1.1.3             Rcpp_1.0.12             glue_1.7.0             
+[70] DBI_1.2.3               xml2_1.3.6              rstudioapi_0.16.0      
+[73] jsonlite_1.8.8          plyr_1.8.9              R6_2.5.1               
+[76] fs_1.6.4                zlibbioc_1.50.0        </code></pre>
 </div>
 </div>
 

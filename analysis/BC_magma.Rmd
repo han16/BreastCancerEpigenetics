@@ -137,7 +137,7 @@ snpexonmat <- unique(data.frame(rsid=snpexon$rsid, ensg=snpexon$gene))
 head(snpexonmat)
 #save(snpexonmat, file=paste(path2, "SNP_to_transcript_comb.rda", sep=""))
 
-
+cat("Total mapped SNPs: ", nrow(snpexonmat), "\n")
 
 ```
 
@@ -186,7 +186,7 @@ system("sed -e `s/, /\\t/g` < SNP_aggregate_transcript.txt > transcript.annot")
 ```{r, message=F, warning=F, eval=F}
 txt <- readLines(paste0(path2, "SNP_aggregate_transcript.txt"))
 txt <- gsub(", ", "\t", txt)
-writeLines(txt, paste0(path2,"transcript.annot"))
+#writeLines(txt, paste0(path2,"transcript.annot"))
 ```
 
 
@@ -207,10 +207,10 @@ setDT(CGS03_gwas_summary_for_magma)
 # 1. Create a minimal table with ONLY the columns MAGMA needs
 magma_input <- CGS03_gwas_summary_for_magma[, .(rsid, p.value)]
 # 2. Write it to a file WITHOUT quotes and with a simple TAB separator
-fwrite(magma_input, "C:\\han\\Dataset\\20260326_TCGD\\Breast_Cancer_Clean_MAGMA.txt", 
-       sep = "\t", 
-       quote = FALSE, 
-       row.names = FALSE)
+#fwrite(magma_input, "C:\\han\\Dataset\\20260326_TCGD\\Breast_Cancer_Clean_MAGMA.txt", 
+#       sep = "\t", 
+#       quote = FALSE, 
+#       row.names = FALSE)
 ```
 
 

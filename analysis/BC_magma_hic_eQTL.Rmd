@@ -1,10 +1,10 @@
 ---
-title: "GWAS and hiC"
+title: "4/9/2026"
 output:
   workflowr::wflow_html:
     code_folding: hide
     toc: true
-date: "2026-04-07"
+date: "2026-04-09"
 ---
 
 ## Prepare libraries and directory ● Timing 5 min
@@ -27,8 +27,8 @@ library(dplyr)
 ```{r, message=F, warning=F}
 # 3 Read in exonic and promoter coordinate ﬁles by entering the following commands
 path="C:\\han\\Dataset\\20250221_PMID_32152537_hmagma\\6382668\\HMAGMA_Protocol_v1.02\\HMAGMA_Protocol\\"
-path2="C:\\han\\Projects\\2025_03_breast_cancer\\Run_MAGMA_on_GWAS_HiC\\"
-
+path2="C:\\han\\Projects\\2025_03_breast_cancer\\Run_MAGMA_on_GWAS_HiC_eQTL\\"
+path3="C:\\han\\Dataset\\20251106_PancanQTL_v2\\BRCA.eQTL_GWAS\\"
 
 exon <- read.table(paste0(path, "Gencode26_exon.bed"), header = FALSE)
 dim(exon)
@@ -92,8 +92,7 @@ mcols(snpexon) <- cbind(mcols(snpexon), mcols(exonranges[subjectHits(olap)]))
 snpexon <- snpexon[seqnames(snpexon)!="chrX"]
 
 
-#10 Overlap the GRanges object for promoters with the GRanges object for SNPs. Similar to the code
-#above, this command will identify genes that map to SNPs residing in promoter regions.
+#10 Overlap the GRanges object for promoters with the GRanges object for SNPs. Similar to the code above, this command will identify genes that map to SNPs residing in promoter regions.
 olap <- findOverlaps(snps,promoterranges)
 snpro <- snps[queryHits(olap)]
 mcols(snpro) <- cbind(mcols(snpro),mcols(promoterranges[subjectHits(olap)]))
@@ -126,8 +125,8 @@ snpranges
 ```{r, message=F, warning=F, eval=T}
 #14 Read in primary tumor Hi-C data. The ﬁrst three columns represent genomic coordinates [chr, start,
 #end] of loop anchor 1, and the last three columns represent genomic coordinates of loop anchor 
-path3="C:\\han\\Projects\\2025_03_breast_cancer\\Run_MAGMA_on_GWAS_HiC\\peaks_in_paper\\"
-hic <- read.table(paste0(path3, "GSM8138144_PT1_loops_q0.98_filt.txt"), header = T)
+path4="C:\\han\\Projects\\2025_03_breast_cancer\\Run_MAGMA_on_GWAS_HiC\\peaks_in_paper\\"
+hic <- read.table(paste0(path4, "GSM8138144_PT1_loops_q0.98_filt.txt"), header = T)
 
 
 #15 Restructure Hi-C data to account for both anchors 1 and 2 by using the command below.
@@ -204,6 +203,47 @@ snpint
 file.exists(paste0(path2, "PT1_Hi-C_interacting_snp.rda"))
 ```
 
+## Assign unmapped SNPs (in EUR.bim) to genes based on eQTL
+
+
+```{r, message=F, warning=F}
+#breast_cancer_eqtl=as_tibble(read.csv(paste0(path3, "BRCA.eQTL_GWAS.csv", header=T)))
+breast_cancer_eqtl=as_tibble(read.csv("C:\\han\\Dataset\\20251106_PancanQTL_v2\\BRCA.eQTL_GWAS\\BRCA.eQTL_GWAS.csv", header=T))
+
+library(tidyr)
+# 1. Clean the eQTL data: Split position and handle column names
+# We use eQTL_SNP as rsid and eGene as the gene identifier
+eqtl_processed <- breast_cancer_eqtl %>%
+  dplyr::select(rsid = eQTL_SNP, pos_raw = eQTL_SNP_pos, gene_symbol = eGene) %>%
+  separate(pos_raw, into = c("chr", "pos"), sep = ":") %>%
+  mutate(
+    chr = paste0("chr", chr), # Add 'chr' prefix to match snpint
+    pos = as.integer(pos)
+  )
+
+# 2. Map Gene Symbols to ENSG (using an external mapping or  existing data)
+
+ library(org.Hs.eg.db)
+ mapping <- select(org.Hs.eg.db, keys=unique(eqtl_processed$gene_symbol), 
+                   columns="ENSEMBL", keytype="SYMBOL")
+ eqtl_processed <- eqtl_processed %>% 
+   left_join(mapping, by=c("gene_symbol"="SYMBOL")) %>%
+   mutate(ensg = ENSEMBL) %>% filter(!is.na(ensg))
+
+
+ 
+ # Create the GRanges object
+eqtl_snpint <- GRanges(
+  seqnames = eqtl_processed$chr,
+  ranges = IRanges(start = eqtl_processed$pos, end = eqtl_processed$pos),
+  rsid = eqtl_processed$rsid,
+  ensg = eqtl_processed$ensg 
+)
+
+#save(eqtl_snpint, file=paste(path2, "eqtl_snpint.rda", sep=""))
+file.exists(paste0(path2, "eqtl_snpint.rda"))
+```
+
 
 
 
@@ -211,16 +251,53 @@ file.exists(paste0(path2, "PT1_Hi-C_interacting_snp.rda"))
 #21 Integrate SNP-gene relationships derived from exons, promoters and Hi-C interaction data.
 load(paste(path2, "PT1_Hi-C_interacting_snp.rda", sep=""))
 load(paste(path2, "snp_locating_in_exon_promoter.rda", sep=""))
+load(paste(path2, "eqtl_snpint.rda", sep=""))
+
+# 1. Convert Hi-C snpint to dataframe
 snpdat <- data.frame(chr=seqnames(snpint),cbp=start(snpint), rsid=snpint$rsid, ensg=snpint$ensg)
 head(snpdat)
 
+# 2. Extract Promoter and Exon matrices
 snpromat <- unique(data.frame(rsid=snpro$rsid, ensg=snpro$gene))
 snpexonmat <- unique(data.frame(rsid=snpexon$rsid, ensg=snpexon$gene))
+
+# 3.  Create the eQTL matrix
+snpeqtlmat <- unique(data.frame(rsid = eqtl_snpint$rsid, ensg = eqtl_snpint$ensg))
+
+# 4. Combine ALL sources (Hi-C + Exon + Promoter + eQTL)
+snpcomb <- unique(rbind(snpdat[,3:4], snpromat, snpexonmat, snpeqtlmat))
+head(snpcomb)
+#save(snpcomb, file=paste(path2, "PT1_Hi-C_SNP_comb.rda", sep=""))
+cat("Exon+Promoter+Hi-C+eQTL: Total mapped SNPs: ", nrow(snpcomb), "\n")
+
+# 4.  Exon + Promoter 
+snpcomb <- unique(rbind(snpromat, snpexonmat))
+head(snpcomb)
+#save(snpcomb, file=paste(path2, "PT1_Hi-C_SNP_comb.rda", sep=""))
+cat("Exon+Promoter: Total mapped SNPs: ", nrow(snpcomb), "\n")
+
+
+# 4. Exon + Promoter + eQTL
+snpcomb <- unique(rbind(snpromat, snpexonmat, snpeqtlmat))
+head(snpcomb)
+#save(snpcomb, file=paste(path2, "PT1_Hi-C_SNP_comb.rda", sep=""))
+cat("Exon+Promoter+eQTL: Total mapped SNPs: ", nrow(snpcomb), "\n")
+
+
+
+# 4. Combine ALL sources ( Exon + Promoter + HiC)
 snpcomb <- unique(rbind(snpdat[,3:4], snpromat, snpexonmat))
 head(snpcomb)
 #save(snpcomb, file=paste(path2, "PT1_Hi-C_SNP_comb.rda", sep=""))
+cat("Exon+Promoter+Hi-C: Total mapped SNPs: ", nrow(snpcomb), "\n")
 
-cat("Total mapped SNPs: ", nrow(snpcomb), "\n")
+mapped_snps=data.frame(conditions=c("Exon+Promoter", "Exon+Promoter+Hi-C", "Exon+Promoter+eQTL", "Exon+Promoter+Hi-C+eQTL"), 
+                     num_snps=c(nrow(unique(rbind(snpromat, snpexonmat))), 
+                                nrow(unique(rbind(snpdat[,3:4], snpromat, snpexonmat))), 
+                                nrow(unique(rbind(snpromat, snpexonmat, snpeqtlmat))), 
+                                nrow(unique(rbind(snpdat[,3:4], snpromat, snpexonmat, snpeqtlmat)))))
+
+mapped_snps
 
 ```
 
@@ -266,12 +343,5 @@ write.table(writable, file=paste(path2, "SNP_aggregate_transcript.txt", sep=""),
 ```{r, message=F, warning=F, eval=F}
 txt <- readLines(paste0(path2, "SNP_aggregate_transcript.txt"))
 txt <- gsub(", ", "\t", txt)
-#writeLines(txt, paste0(path2,"transcript.annot"))
-```
-
-
-```{r, message=F, warning=F, eval=F}
-# run MAGMA
-magma --bfile C:\\han\\Dataset\\20250221_PMID_32152537_hmagma\\g1000_eur\\g1000_eur --pval C:\\han\\Dataset\\20260326_TCGD\\Breast_Cancer_Clean_MAGMA.txt use=rsid, p.value N=139274 --gene-annot C:\\han\\Projects\\2025_03_breast_cancer\\Run_MAGMA_on_GWAS_HiC\\transcript.annot --out C:\\han\\Projects\\2025_03_breast_cancer\\Run_MAGMA_on_GWAS_HiC\\magma_output\\
-
+writeLines(txt, paste0(path2,"transcript.annot"))
 ```
