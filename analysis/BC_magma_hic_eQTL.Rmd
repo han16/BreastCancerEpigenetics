@@ -70,7 +70,7 @@ snps <- snps[,c(1,2,4)]
 colnames(snps) <- c("chr","SNP","Position")
 snps$chr <- sub("^", "chr", snps$chr)
 
-
+cat("Total number of snps: ", nrow(snps), "\n")
 #7 Create a GRanges object for SNP annotations.
 snps <- GRanges(snps$chr, IRanges(snps$Position, snps$Position), rsid=
 snps$SNP)
@@ -98,6 +98,8 @@ snpro <- snps[queryHits(olap)]
 mcols(snpro) <- cbind(mcols(snpro),mcols(promoterranges[subjectHits(olap)]))
 snpro <- snpro[seqnames(snpro)!="chrX"]
 
+
+
 #11 Save SNPs overlapping with exons and promoters as a .rda ﬁle.
 #save(snpro, snpexon, file=paste(path2, "snp_locating_in_exon_promoter.rda", sep=""))
 ```
@@ -118,6 +120,9 @@ snpranges <- snpranges[!(snpranges$rsid %in% snpro$rsid),]
 snpranges
 #13 Save unmapped SNPs as a .rda ﬁle.
 #save(snpranges, file=paste(path2, "non_exonic_promoter_snp.rda", sep=""))
+
+cat( "exon+promoter mapped snps: ", (1-8916368/9822123)*100, "%", "\n")
+
 ```
 
 
@@ -292,23 +297,53 @@ head(snpcomb)
 cat("Exon+Promoter+Hi-C: Total mapped SNPs: ", nrow(snpcomb), "\n")
 
 mapped_snps=data.frame(conditions=c("Exon+Promoter", "Exon+Promoter+Hi-C", "Exon+Promoter+eQTL", "Exon+Promoter+Hi-C+eQTL"), 
-                     num_snps=c(nrow(unique(rbind(snpromat, snpexonmat))), 
-                                nrow(unique(rbind(snpdat[,3:4], snpromat, snpexonmat))), 
-                                nrow(unique(rbind(snpromat, snpexonmat, snpeqtlmat))), 
-                                nrow(unique(rbind(snpdat[,3:4], snpromat, snpexonmat, snpeqtlmat)))))
+                     num_snps=c(
+length(unique(c(snpromat$rsid, snpexonmat$rsid))), 
+length(unique(c(snpdat$rsid, snpromat$rsid, snpexonmat$rsid))), 
+length(unique(c(snpromat$rsid, snpexonmat$rsid, snpeqtlmat$rsid))), 
+length(unique(c(snpdat$rsid, snpromat$rsid, snpexonmat$rsid, snpeqtlmat$rsid)))))
 
 mapped_snps
-
 ```
 
 
 
 
-```{r, message=F, warning=F, eval=F}
+
+```{r, message=F, warning=F}
+ep_snps=unique(c(snpromat$rsid, snpexonmat$rsid))
+ep_hic_snps=unique(c(snpdat$rsid, snpromat$rsid, snpexonmat$rsid))
+ep_eqtl_snps=unique(c(snpromat$rsid, snpexonmat$rsid, snpeqtlmat$rsid))
+ep_hic_eqtl_snps=unique(c(snpdat$rsid, snpromat$rsid, snpexonmat$rsid, snpeqtlmat$rsid))
+
+
+sum(ep_snps %in% ep_hic_eqtl_snps)==length(ep_snps)
+sum(ep_snps %in% snps$rsid)/length(ep_snps)
+sum(ep_hic_eqtl_snps %in% snps$rsid)/length(ep_hic_eqtl_snps)
+```
+
+
+
+
+
+
+```{r, message=F, warning=F, eval=T}
+############ Exome+Promoter #############
+load(paste(path2, "snp_locating_in_exon_promoter.rda", sep=""))
+
+# 2. Extract Promoter and Exon matrices
+snpromat <- unique(data.frame(rsid=snpro$rsid, ensg=snpro$gene))
+snpexonmat <- unique(data.frame(rsid=snpexon$rsid, ensg=snpexon$gene))
+
+# 4.  Exon + Promoter 
+snpcomb <- unique(rbind(snpromat, snpexonmat))
+head(snpcomb)
+sum(snpcomb$rsid %in% snps$rsid)/nrow(snpcomb) # how many snps are in reference panel 
+
+
 #22 Aggregate SNP-gene relationships to generate the variant-gene annotation ﬁle compatible
 #with MAGMA.
-snpagg <- aggregate(snpexonmat, list(snpexonmat$ensg), unique)
-
+snpagg <- aggregate(snpcomb, list(snpcomb$ensg), unique)
 
 #23 Read in the gene deﬁnition ﬁle.
 genedef <- read.table(paste(path, "Gencode26_gene.bed", sep=""))
@@ -334,14 +369,287 @@ snpannot <- snpagg[,c("ensg", "index", "rsid")]
 
 #28 Save the variant-gene annotation ﬁle in an executable format.
 writable <- format(snpannot)
-write.table(writable, file=paste(path2, "SNP_aggregate_transcript.txt", sep=""), quote=F, row.names=F, col.names=F, sep="\t")
 
+#write.table(writable, file=paste(path2, "exome_promoter.txt", sep=""), quote=F, row.names=F, col.names=F, sep="\t")
+
+txt <- readLines(paste0(path2, "exome_promoter.txt"))
+
+txt <- gsub(", ", "\t", txt)
+
+
+missed_genes <- c(
+  "ENSG00000200344", "ENSG00000243749", "ENSG00000272226", "ENSG00000234497",
+  "ENSG00000212601", "ENSG00000206832", "ENSG00000236887", "ENSG00000224690",
+  "ENSG00000232536", "ENSG00000271748", "ENSG00000232519", "ENSG00000228538",
+  "ENSG00000230274", "ENSG00000263651", "ENSG00000251804", "ENSG00000264146",
+  "ENSG00000251356", "ENSG00000199944", "ENSG00000086232", "ENSG00000213700",
+  "ENSG00000266344", "ENSG00000253068", "ENSG00000254732", "ENSG00000162231",
+  "ENSG00000252709", "ENSG00000254990", "ENSG00000254450", "ENSG00000118137",
+  "ENSG00000196531", "ENSG00000257604", "ENSG00000221560", "ENSG00000102468",
+  "ENSG00000102531", "ENSG00000242135", "ENSG00000080824", "ENSG00000270108",
+  "ENSG00000260274", "ENSG00000182511", "ENSG00000260494", "ENSG00000175938",
+  "ENSG00000183011", "ENSG00000266356", "ENSG00000267340", "ENSG00000265298",
+  "ENSG00000182687", "ENSG00000267783", "ENSG00000269181", "ENSG00000268457",
+  "ENSG00000221039"
+)
+ep_missed_genes=snpannot %>% filter(ensg %in% missed_genes)
+
+
+#writeLines(txt, paste0(path2,"exome_promoter.annot"))
+
+################ run magma ##############
+#C:\han\softwares\magma_v1.10_win>magma --bfile C:\\han\\Dataset\\20250221_PMID_32152537_hmagma\\g1000_eur\\g1000_eur --pval C:\\han\\Dataset\\20260326_TCGD\\Breast_Cancer_Clean_MAGMA.txt use=rsid, p.value N=139274 --gene-annot C:\\han\\Projects\\2025_03_breast_cancer\\Run_MAGMA_on_GWAS_HiC_eQTL\\exome_promoter.annot --out C:\\han\\Projects\\2025_03_breast_cancer\\Run_MAGMA_on_GWAS_HiC_eQTL\\magma_output_exome_promoter\\
 
 ```
+
 
 
 ```{r, message=F, warning=F, eval=F}
-txt <- readLines(paste0(path2, "SNP_aggregate_transcript.txt"))
+############ Exome+Promoter+Hi-C #############
+load(paste(path2, "snp_locating_in_exon_promoter.rda", sep=""))
+load(paste(path2, "PT1_Hi-C_interacting_snp.rda", sep=""))
+
+# 1. Convert Hi-C snpint to dataframe
+snpdat <- data.frame(chr=seqnames(snpint),cbp=start(snpint), rsid=snpint$rsid, ensg=snpint$ensg)
+head(snpdat)
+
+# 2. Extract Promoter and Exon matrices
+snpromat <- unique(data.frame(rsid=snpro$rsid, ensg=snpro$gene))
+snpexonmat <- unique(data.frame(rsid=snpexon$rsid, ensg=snpexon$gene))
+
+# 4.  Exon + Promoter+HiC 
+snpcomb <- unique(rbind(snpdat[,3:4], snpromat, snpexonmat))
+head(snpcomb)
+
+
+#22 Aggregate SNP-gene relationships to generate the variant-gene annotation ﬁle compatible
+#with MAGMA.
+snpagg <- aggregate(snpcomb, list(snpcomb$ensg), unique)
+
+#23 Read in the gene deﬁnition ﬁle.
+genedef <- read.table(paste(path, "Gencode26_gene.bed", sep=""))
+colnames(genedef) <- c("chr", "start", "end", "ensg")
+
+
+#24 Create an index column from the gene deﬁnition ﬁle consisting of gene chromosomal location, start
+#and end.
+genedef <- genedef [grep("chr", genedef$chr),]
+genedef$chr <- unlist(lapply(strsplit(genedef$chr, "chr"), '[[', 2))
+genedef$index <- paste(genedef$chr, genedef$start, genedef$end, sep=":")
+
+
+#25 Attach the index column from Step 24 to the variant-gene annotation ﬁle from Step 22.
+snpagg$index <- genedef[match(snpagg$ensg, genedef$ensg),"index"]
+
+
+#26 Remove any missing values from the variant-gene annotation ﬁle.
+snpagg <- snpagg[!is.na(snpagg$index),]
+
+#27 Subset gene, gene location and SNPs from the variant-gene annotation ﬁle.
+snpannot <- snpagg[,c("ensg", "index", "rsid")]
+
+#28 Save the variant-gene annotation ﬁle in an executable format.
+writable <- format(snpannot)
+
+write.table(writable, file=paste(path2, "exome_promoter_HiC.txt", sep=""), quote=F, row.names=F, col.names=F, sep="\t")
+
+txt <- readLines(paste0(path2, "exome_promoter_HiC.txt"))
+
 txt <- gsub(", ", "\t", txt)
-writeLines(txt, paste0(path2,"transcript.annot"))
+
+writeLines(txt, paste0(path2,"exome_promoter_HiC.annot"))
+
+################ run magma ##############
+#C:\han\softwares\magma_v1.10_win>magma --bfile C:\\han\\Dataset\\20250221_PMID_32152537_hmagma\\g1000_eur\\g1000_eur --pval C:\\han\\Dataset\\20260326_TCGD\\Breast_Cancer_Clean_MAGMA.txt use=rsid, p.value N=139274 --gene-annot C:\\han\\Projects\\2025_03_breast_cancer\\Run_MAGMA_on_GWAS_HiC_eQTL\\exome_promoter.annot --out C:\\han\\Projects\\2025_03_breast_cancer\\Run_MAGMA_on_GWAS_HiC_eQTL\\magma_output_exome_promoter\\
+
 ```
+
+
+
+```{r, message=F, warning=F, eval=F}
+############ Exome+Promoter+eQTL #############
+load(paste(path2, "snp_locating_in_exon_promoter.rda", sep=""))
+load(paste(path2, "eqtl_snpint.rda", sep=""))
+
+
+# 2. Extract Promoter and Exon matrices
+snpromat <- unique(data.frame(rsid=snpro$rsid, ensg=snpro$gene))
+snpexonmat <- unique(data.frame(rsid=snpexon$rsid, ensg=snpexon$gene))
+
+# 3.  Create the eQTL matrix
+snpeqtlmat <- unique(data.frame(rsid = eqtl_snpint$rsid, ensg = eqtl_snpint$ensg))
+
+
+# 4.  Exon + Promoter+eQTL 
+snpcomb <- unique(rbind(snpromat, snpexonmat, snpeqtlmat))
+head(snpcomb)
+
+
+#22 Aggregate SNP-gene relationships to generate the variant-gene annotation ﬁle compatible
+#with MAGMA.
+snpagg <- aggregate(snpcomb, list(snpcomb$ensg), unique)
+
+#23 Read in the gene deﬁnition ﬁle.
+genedef <- read.table(paste(path, "Gencode26_gene.bed", sep=""))
+colnames(genedef) <- c("chr", "start", "end", "ensg")
+
+
+#24 Create an index column from the gene deﬁnition ﬁle consisting of gene chromosomal location, start
+#and end.
+genedef <- genedef [grep("chr", genedef$chr),]
+genedef$chr <- unlist(lapply(strsplit(genedef$chr, "chr"), '[[', 2))
+genedef$index <- paste(genedef$chr, genedef$start, genedef$end, sep=":")
+
+
+#25 Attach the index column from Step 24 to the variant-gene annotation ﬁle from Step 22.
+snpagg$index <- genedef[match(snpagg$ensg, genedef$ensg),"index"]
+
+
+#26 Remove any missing values from the variant-gene annotation ﬁle.
+snpagg <- snpagg[!is.na(snpagg$index),]
+
+#27 Subset gene, gene location and SNPs from the variant-gene annotation ﬁle.
+snpannot <- snpagg[,c("ensg", "index", "rsid")]
+
+#28 Save the variant-gene annotation ﬁle in an executable format.
+writable <- format(snpannot)
+
+write.table(writable, file=paste(path2, "exome_promoter_eQTL.txt", sep=""), quote=F, row.names=F, col.names=F, sep="\t")
+
+txt <- readLines(paste0(path2, "exome_promoter_eQTL.txt"))
+
+txt <- gsub(", ", "\t", txt)
+
+writeLines(txt, paste0(path2,"exome_promoter_eQTL.annot"))
+
+################ run magma ##############
+#C:\han\softwares\magma_v1.10_win>magma --bfile C:\\han\\Dataset\\20250221_PMID_32152537_hmagma\\g1000_eur\\g1000_eur --pval C:\\han\\Dataset\\20260326_TCGD\\Breast_Cancer_Clean_MAGMA.txt use=rsid, p.value N=139274 --gene-annot C:\\han\\Projects\\2025_03_breast_cancer\\Run_MAGMA_on_GWAS_HiC_eQTL\\exome_promoter.annot --out C:\\han\\Projects\\2025_03_breast_cancer\\Run_MAGMA_on_GWAS_HiC_eQTL\\magma_output_exome_promoter\\
+
+```
+
+
+
+
+```{r, message=F, warning=F, eval=T}
+############ Exome+Promoter+HiC+eQTL #############
+load(paste(path2, "snp_locating_in_exon_promoter.rda", sep=""))
+load(paste(path2, "PT1_Hi-C_interacting_snp.rda", sep=""))
+load(paste(path2, "eqtl_snpint.rda", sep=""))
+
+
+# 1. Convert Hi-C snpint to dataframe
+snpdat <- data.frame(chr=seqnames(snpint),cbp=start(snpint), rsid=snpint$rsid, ensg=snpint$ensg)
+head(snpdat)
+
+# 2. Extract Promoter and Exon matrices
+snpromat <- unique(data.frame(rsid=snpro$rsid, ensg=snpro$gene))
+snpexonmat <- unique(data.frame(rsid=snpexon$rsid, ensg=snpexon$gene))
+
+# 3.  Create the eQTL matrix
+snpeqtlmat <- unique(data.frame(rsid = eqtl_snpint$rsid, ensg = eqtl_snpint$ensg))
+
+
+# 4.  Exon + Promoter+HiC+eQTL 
+snpcomb <- unique(rbind(snpdat[,3:4], snpromat, snpexonmat, snpeqtlmat))
+head(snpcomb)
+
+
+## check one specific gene:  ENSG00000086232
+
+
+
+
+#22 Aggregate SNP-gene relationships to generate the variant-gene annotation ﬁle compatible
+#with MAGMA.
+snpagg <- aggregate(snpcomb, list(snpcomb$ensg), unique)
+
+#23 Read in the gene deﬁnition ﬁle.
+genedef <- read.table(paste(path, "Gencode26_gene.bed", sep=""))
+colnames(genedef) <- c("chr", "start", "end", "ensg")
+
+
+#24 Create an index column from the gene deﬁnition ﬁle consisting of gene chromosomal location, start
+#and end.
+genedef <- genedef [grep("chr", genedef$chr),]
+genedef$chr <- unlist(lapply(strsplit(genedef$chr, "chr"), '[[', 2))
+genedef$index <- paste(genedef$chr, genedef$start, genedef$end, sep=":")
+
+
+#25 Attach the index column from Step 24 to the variant-gene annotation ﬁle from Step 22.
+snpagg$index <- genedef[match(snpagg$ensg, genedef$ensg),"index"]
+
+
+#26 Remove any missing values from the variant-gene annotation ﬁle.
+snpagg <- snpagg[!is.na(snpagg$index),]
+
+#27 Subset gene, gene location and SNPs from the variant-gene annotation ﬁle.
+snpannot <- snpagg[,c("ensg", "index", "rsid")]
+
+#28 Save the variant-gene annotation ﬁle in an executable format.
+writable <- format(snpannot)
+
+write.table(writable, file=paste(path2, "exome_promoter_HiC_eQTL.txt", sep=""), quote=F, row.names=F, col.names=F, sep="\t")
+
+txt <- readLines(paste0(path2, "exome_promoter_HiC_eQTL.txt"))
+
+txt <- gsub(", ", "\t", txt)
+
+missed_genes <- c(
+  "ENSG00000200344", "ENSG00000243749", "ENSG00000272226", "ENSG00000234497",
+  "ENSG00000212601", "ENSG00000206832", "ENSG00000236887", "ENSG00000224690",
+  "ENSG00000232536", "ENSG00000271748", "ENSG00000232519", "ENSG00000228538",
+  "ENSG00000230274", "ENSG00000263651", "ENSG00000251804", "ENSG00000264146",
+  "ENSG00000251356", "ENSG00000199944", "ENSG00000086232", "ENSG00000213700",
+  "ENSG00000266344", "ENSG00000253068", "ENSG00000254732", "ENSG00000162231",
+  "ENSG00000252709", "ENSG00000254990", "ENSG00000254450", "ENSG00000118137",
+  "ENSG00000196531", "ENSG00000257604", "ENSG00000221560", "ENSG00000102468",
+  "ENSG00000102531", "ENSG00000242135", "ENSG00000080824", "ENSG00000270108",
+  "ENSG00000260274", "ENSG00000182511", "ENSG00000260494", "ENSG00000175938",
+  "ENSG00000183011", "ENSG00000266356", "ENSG00000267340", "ENSG00000265298",
+  "ENSG00000182687", "ENSG00000267783", "ENSG00000269181", "ENSG00000268457",
+  "ENSG00000221039"
+)
+ep_hic_eqtl_missed_genes=snpannot %>% filter(ensg %in% missed_genes)
+
+
+writeLines(txt, paste0(path2,"exome_promoter_HiC_eQTL.annot"))
+
+################ run magma ##############
+#C:\han\softwares\magma_v1.10_win>magma --bfile C:\\han\\Dataset\\20250221_PMID_32152537_hmagma\\g1000_eur\\g1000_eur --pval C:\\han\\Dataset\\20260326_TCGD\\Breast_Cancer_Clean_MAGMA.txt use=rsid, p.value N=139274 --gene-annot C:\\han\\Projects\\2025_03_breast_cancer\\Run_MAGMA_on_GWAS_HiC_eQTL\\exome_promoter.annot --out C:\\han\\Projects\\2025_03_breast_cancer\\Run_MAGMA_on_GWAS_HiC_eQTL\\magma_output_exome_promoter\\
+
+```
+
+
+
+```{r, message=F, warning=F}
+target_gene="ENSG00000086232"
+ep_missed_genes %>% filter(ensg==target_gene)
+ep_missed_genes_snps=ep_missed_genes %>% filter(ensg == target_gene) %>% pull(rsid)
+sum(ep_missed_genes_snps %in% snps$rsid) ############ is looks all snps are in reference panel, why here it's 0?????????
+
+
+
+num_snps_in_reference=numeric()
+for (i in 1:length(missed_genes))
+{
+  ep_missed_genes_snps=ep_missed_genes %>% filter(ensg == missed_genes[i]) %>% pull(rsid)
+  num_snps_in_reference[i]=sum(ep_missed_genes_snps %in% snps$rsid)
+}
+
+
+
+ep_hic_eqtl_missed_genes_snps=ep_hic_eqtl_missed_genes %>% filter(ensg==target_gene)%>% pull(rsid)
+
+num_snps_in_reference2=numeric()
+for (i in 1:length(missed_genes))
+{
+  ep_hic_eqtl_missed_genes_snps=ep_hic_eqtl_missed_genes %>% filter(ensg == missed_genes[i]) %>% pull(rsid)
+  num_snps_in_reference2[i]=sum(ep_hic_eqtl_missed_genes_snps %in% snps$rsid)
+}
+
+intersect(ep_hic_eqtl_missed_genes_snps[[1]], ep_missed_genes_snps[[1]])
+setdiff(ep_hic_eqtl_missed_genes_snps[[1]], ep_missed_genes_snps[[1]])
+sum(ep_hic_eqtl_missed_genes_snps %in% snps$rsid)
+
+```
+* all snps are found in 

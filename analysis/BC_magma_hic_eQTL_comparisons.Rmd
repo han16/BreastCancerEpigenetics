@@ -305,7 +305,7 @@ ggvenn(
   labs(title = "")
 # 3. Save with enough dimensions to avoid squeezing
 #ggsave("Venn_Significant_Genes.png", width = 8, height = 8, dpi = 300)
-setdiff(sig_list$EP, sig_list$`EP+HiC+eQTL`)
+missed_genes=setdiff(sig_list$EP, sig_list$`EP+HiC+eQTL`)
 
 sig_list$`EP+HiC+eQTL`
 ```

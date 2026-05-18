@@ -220,7 +220,7 @@ snpcomb <- unique(rbind(snpdat[,3:4], snpromat, snpexonmat))
 head(snpcomb)
 #save(snpcomb, file=paste(path2, "PT1_Hi-C_SNP_comb.rda", sep=""))
 
-cat("Total mapped SNPs: ", nrow(snpcomb), "\n")
+cat("Total mapped SNPs: ", nrow(snpcomb), "\n")  # it's supposed to be this number 10820451
 
 ```
 

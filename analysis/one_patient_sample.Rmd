@@ -1,0 +1,82 @@
+---
+title: "one patient sample"
+output:
+  workflowr::wflow_html:
+    code_folding: hide
+    toc: true
+date: "2026-05-18"
+---
+
+
+
+```{r, message=F, warning=F}
+rm(list=ls())
+library(rprojroot)
+library(dplyr)
+root <- rprojroot::find_rstudio_root_file()
+```
+
+
+
+
+```{r, message=F, warning=F}
+library(readxl)
+#broad_peaks=read_excel(file.path(root, #"../h3k27ac/patient_sample/step01_alignment_and_peak_calling_result/Sample5_H3K27ac_broad_peaks.xls"))
+
+broad_peaks=read.csv("C:/han/Projects/2025_03_breast_cancer/h3k27ac/patient_sample/step01_alignment_and_peak_calling_result/Sample5_H3K27ac_broad_peaks_noheader.csv", header=T)
+
+narrow_peaks=read.csv("C:/han/Projects/2025_03_breast_cancer/h3k27ac/patient_sample/step01_alignment_and_peak_calling_result/Sample5_H3K27ac_narrow_peaks_noheader.csv", header=T)
+
+```
+
+
+```{r, message=F, warning=F}
+
+cutoffs <- c(2.5, 5, 7.5, 10, 12.5)
+
+# Count rows greater than or equal to each cutoff
+broad_peaks_counts <- sapply(cutoffs, function(x) sum(broad_peaks$fold_enrichment >= x, na.rm = TRUE))
+narrow_peaks_counts=sapply(cutoffs, function(x) sum(narrow_peaks$fold_enrichment >= x, na.rm = TRUE))
+
+```
+
+
+
+
+```{r, message=F, warning=F}
+library(ggplot2)
+library(scales)
+
+# 1. Create the data frame
+cutoffs <- c("2.5", "5", "7.5", "10", "12.5")
+df <- data.frame(
+  Cutoff = rep(factor(cutoffs, levels = cutoffs), 2),
+  Counts = c(broad_peaks_counts, narrow_peaks_counts),
+  Type   = rep(c("Broad Peaks", "Narrow Peaks"), each = 5)
+)
+
+# 2. Create the plot with a linear Y-axis
+ggplot(df, aes(x = Cutoff, y = Counts, fill = Type)) +
+  geom_bar(stat = "identity", position = position_dodge(width = 0.8), width = 0.7) +
+  geom_text(aes(label = comma(Counts)), 
+            position = position_dodge(width = 0.8), 
+            vjust = -0.5, 
+            size = 3.2, 
+            fontface = "bold") +
+  # Expand upper limit by 15% to ensure the "28,372" text doesn't get clipped
+  scale_y_continuous(labels = comma, expand = expansion(mult = c(0, 0.15))) +
+  scale_fill_manual(values = c("Broad Peaks" = "#0073C2FF", "Narrow Peaks" = "#EFC000FF")) +
+  labs(
+    x = "Fold Enrichment Cutoff",
+    y = "Number of Peaks",
+    fill = "Peak Type",
+    title = "Peak Counts by Fold Enrichment Cutoff"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"),
+    legend.position = "top",
+    panel.grid.major.x = element_blank()
+  )
+
+```
