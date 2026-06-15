@@ -9,6 +9,20 @@ editor_options:
 ---
 
 
+## H3k27ac (05/2026)
+
+* [(one) patient sample](one_patient_sample.html)
+
+
+
+
+
+
+
+
+
+
+
 ## tools for longitudianl transcriptomics data
 
 * [TiSA](TiSA.html) 
@@ -45,3 +59,5 @@ editor_options:
 ## comparions between GWAS, GWAS+Hi-C, GWAS+HiC+eQTL
 
 * [comparions between GWAS, GWAS+Hi-C, GWAS+HiC+eQTL](BC_magma_hic_eQTL_comparisons.html)
+
+
