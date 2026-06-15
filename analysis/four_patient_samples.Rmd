@@ -239,3 +239,67 @@ p <- ggplot() +
 
 p
 ```
+
+
+```{r, message=F, warning=F}
+# Load required libraries
+library(ggplot2)
+library(tidyr)
+library(dplyr)
+
+# 1. Create the dataset directly from your MACS2 narrowPeak line counts
+peak_data <- data.frame(
+  Sample_ID = c("IF-03_Baseline", "IF-03_Followup", 
+                "IF-04_Baseline", "IF-04_Followup", 
+                "IF-05_Baseline", "IF-05_Followup", 
+                "IF-06_Baseline", "IF-06_Followup"),
+  Peaks_Called = c(23083, 19265, 34242, 31849, 13786, 12705, 16709, 8882)
+)
+
+# 2. Reshape and organize data for side-by-side layout
+plot_data <- peak_data %>%
+  separate(Sample_ID, into = c("Patient", "Timepoint"), sep = "_") %>%
+  mutate(
+    Patient = factor(Patient, levels = c("IF-03", "IF-04", "IF-05", "IF-06")),
+    Timepoint = factor(Timepoint, levels = c("Baseline", "Followup"))
+  )
+
+# 3. Build the side-by-side grouped bar chart
+p <- ggplot(plot_data, aes(x = Patient, y = Peaks_Called, fill = Timepoint)) +
+  # position = "dodge" places Baseline and Followup right next to each other
+  geom_bar(stat = "identity", position = position_dodge(width = 0.8), width = 0.7, color = "black") +
+  
+  # Keeping your consistent color scheme (Dark Blue vs. Red-Coral)
+  scale_fill_manual(values = c("Baseline" = "#1d3557", "Followup" = "#e63946")) +
+  
+  # Add exact peak count labels nicely formatted with commas above each bar
+  geom_text(aes(label = scales::comma(Peaks_Called)), 
+            position = position_dodge(width = 0.8), 
+            vjust = -0.5, size = 3.5, fontface = "bold") +
+  
+  # Extend the top of the Y-axis so the text labels don't get clipped
+  scale_y_continuous(labels = scales::comma, expand = expansion(mult = c(0, 0.15))) +
+  
+  # Titles and Axis Labels
+  labs(
+    title = "Peaks Called Summary Across Patients",
+    subtitle = "",
+    x = "Patient ID",
+    y = "Number of Called Peaks",
+    fill = "Study Stage"
+  ) +
+  
+  # Sleek publicaton-ready theme
+  theme_minimal(base_size = 14) +
+  theme(
+    plot.title = element_text(face = "bold", size = 16, hjust = 0.5),
+    plot.subtitle = element_text(size = 12, hjust = 0.5, color = "gray25"),
+    axis.text = element_text(color = "black"),
+    axis.line.x = element_line(color = "black"),
+    axis.line.y = element_line(color = "black"),
+    panel.grid.major.x = element_blank(), # Remove distracting vertical lines
+    legend.position = "top"
+  )
+
+p
+```
