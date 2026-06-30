@@ -8,6 +8,15 @@ date: "2026-06-15"
 ---
 
 
+```{r, message=F, warning=F}
+rm(list=ls())
+library(rprojroot)
+library(dplyr)
+root <- rprojroot::find_rstudio_root_file()
+```
+
+
+
 
 ## reads number
 
@@ -247,13 +256,26 @@ library(ggplot2)
 library(tidyr)
 library(dplyr)
 
+############## peak windows with FDR 5%, -q  0.05 
+#wc -l   step_03_parallel_peak_calling_results/*narrowPeak
+#   32783 step_03_parallel_peak_calling_results/IF-03_Baseline_peaks.narrowPeak
+#   29123 step_03_parallel_peak_calling_results/IF-03_Followup_peaks.narrowPeak
+#   45352 step_03_parallel_peak_calling_results/IF-04_Baseline_peaks.narrowPeak
+#   43024 step_03_parallel_peak_calling_results/IF-04_Followup_peaks.narrowPeak
+#   23845 step_03_parallel_peak_calling_results/IF-05_Baseline_peaks.narrowPeak
+#   20827 step_03_parallel_peak_calling_results/IF-05_Followup_peaks.narrowPeak
+#   26732 step_03_parallel_peak_calling_results/IF-06_Baseline_peaks.narrowPeak
+#   14843 step_03_parallel_peak_calling_results/IF-06_Followup_peaks.narrowPeak
+
+
+
 # 1. Create the dataset directly from your MACS2 narrowPeak line counts
 peak_data <- data.frame(
   Sample_ID = c("IF-03_Baseline", "IF-03_Followup", 
                 "IF-04_Baseline", "IF-04_Followup", 
                 "IF-05_Baseline", "IF-05_Followup", 
                 "IF-06_Baseline", "IF-06_Followup"),
-  Peaks_Called = c(23083, 19265, 34242, 31849, 13786, 12705, 16709, 8882)
+  Peaks_Called = c(32783, 29123, 45352, 43024, 23845, 20827, 26732, 14843)
 )
 
 # 2. Reshape and organize data for side-by-side layout
@@ -282,7 +304,7 @@ p <- ggplot(plot_data, aes(x = Patient, y = Peaks_Called, fill = Timepoint)) +
   
   # Titles and Axis Labels
   labs(
-    title = "Peaks Called Summary Across Patients",
+    title = "Peaks Called Summary Across Patients (FDR<5%)",
     subtitle = "",
     x = "Patient ID",
     y = "Number of Called Peaks",
@@ -302,4 +324,143 @@ p <- ggplot(plot_data, aes(x = Patient, y = Peaks_Called, fill = Timepoint)) +
   )
 
 p
+```
+
+
+
+```{r, message=F, warning=F}
+# 1. Install/Load required packages
+# If you don't have rtracklayer, run: BiocManager::install("rtracklayer")
+library(rtracklayer)
+library(dplyr)
+library(purrr)
+
+# 2. Define directory path and locate your files
+# Change this to "." if the script is in the exact same folder as the files
+peak_dir <- "C:\\han\\Projects\\2025_03_breast_cancer\\h3k27ac\\4_patient_peaks\\" 
+
+peak_files <- list.files(
+  path = peak_dir, 
+  pattern = "_peaks\\.narrowPeak$", 
+  full.names = TRUE
+)
+
+# 3. Create clean names for your list entries (e.g., "IF-03_Baseline")
+sample_names <- list.files(path = peak_dir, pattern = "_peaks\\.narrowPeak$") %>%
+  gsub("_peaks\\.narrowPeak", "", .)
+
+# Name the file vector so the resulting list retains the sample IDs
+names(peak_files) <- sample_names
+
+# 4. Import all files into a structured list of GRanges objects
+cat("Reading peak files into genomic ranges...\n")
+peaks_list <- map(peak_files, ~ import(.x, format = "narrowPeak"))
+
+# 5. Quick Verification Check
+cat("\n--- Peak Import Summary ---\n")
+iwalk(peaks_list, ~ cat(.y, ": loaded", length(.x), "peak windows.\n"))
+
+# Example: How to access a specific sample's peaks
+# head(peaks_list[["IF-03_Baseline"]])
+```
+
+
+```{r, message=F, warning=F}
+library(rtracklayer)
+library(GenomicRanges)
+library(ggVennDiagram)
+library(ggplot2)
+
+sample_names <- c("IF03_BL", "IF03_FU", "IF04_BL", "IF04_FU", 
+                  "IF05_BL", "IF05_FU", "IF06_BL", "IF06_FU")
+names(peak_files) <- sample_names
+
+# 3. Read files into GRanges lists
+cat("Importing narrowPeak files...\n")
+gr_list <- lapply(peak_files, function(x) import(x, format = "narrowPeak"))
+
+# 4. Filter for high-confidence peaks using native R looping (Prevents structure corruption)
+p_cutoff_log10 <- -log10(0.05)
+cat("Filtering individual sample peaks for p-value <= 0.05...\n")
+
+filtered_gr_list <- list()
+for (name in sample_names) {
+  current_gr <- gr_list[[name]]
+  # Filter strictly using native GRanges subsetting
+  filtered_gr_list[[name]] <- current_gr[mcols(current_gr)$pValue >= p_cutoff_log10]
+}
+
+# 5. Combine the 4 Baseline samples together and the 4 Follow-up samples together
+cat("Merging condition groups into unified Baseline and Follow-up peak sets...\n")
+
+# Use BiocGenerics::append or explicit c() on clean GRanges components
+baseline_stacked <- c(
+  filtered_gr_list[["IF03_BL"]], 
+  filtered_gr_list[["IF04_BL"]], 
+  filtered_gr_list[["IF05_BL"]], 
+  filtered_gr_list[["IF06_BL"]]
+)
+baseline_combined <- GenomicRanges::reduce(baseline_stacked)
+
+followup_stacked <- c(
+  filtered_gr_list[["IF03_FU"]], 
+  filtered_gr_list[["IF04_FU"]], 
+  filtered_gr_list[["IF05_FU"]], 
+  filtered_gr_list[["IF06_FU"]]
+)
+followup_combined <- GenomicRanges::reduce(followup_stacked)
+
+# 6. Generate an absolute master list of unique windows across both conditions
+master_consensus <- GenomicRanges::reduce(c(baseline_combined, followup_combined))
+cat("Total master peak windows identified:", length(master_consensus), "\n")
+```
+
+
+
+
+```{r, message=F, warning=F}
+# 1. Install and Load the ggvenn package 
+# install.packages("ggvenn")
+library(ggvenn)
+
+# 7. Map windows back to find unique vs overlapping regions with a >100bp condition
+cat("Calculating overlaps with a strict >100bp minimum length requirement...\n")
+
+cutoff=500
+
+# findOverlaps with minoverlap handles the length constraint natively at the genomic layer
+baseline_overlaps <- findOverlaps(master_consensus, baseline_combined, minoverlap = cutoff)
+followup_overlaps <- findOverlaps(master_consensus, followup_combined, minoverlap = cutoff)
+
+# Extract the master consensus peak index IDs that match the criteria
+baseline_ids  <- unique(queryHits(baseline_overlaps))
+followup_ids <- unique(queryHits(followup_overlaps))
+
+# Structure the input data into a clean two-group named list
+venn_data <- list(
+  "Baseline Peaks"  = baseline_ids,
+  "Follow-up Peaks" = followup_ids
+)
+
+# 8. Generate and save the horizontal side-by-side Venn Diagram
+cat("Plotting horizontal Venn Diagram...\n")
+
+p <- ggvenn(
+  venn_data, 
+  fill_color = c("#c7e9b4", "#f07167"), # Left circle: Soft Mint | Right circle: Soft Coral
+  stroke_size = 1.0,                    # Circle border thickness
+  set_name_size = 5,                    # Text size for "Baseline Peaks" and "Follow-up Peaks"
+  text_size = 5                         # Text size for counts inside circles
+) +
+  labs(
+    title = "Chromatin Accessibility Window Comparison",
+    subtitle = "Venn Diagram: Peaks Passing 5% FDR Cutoff (>500bp Overlap Required)"
+  ) +
+  theme(
+    plot.title = element_text(face = "bold", size = 16, hjust = 0.5, margin = margin(b = 5)),
+    plot.subtitle = element_text(size = 11, hjust = 0.5, color = "gray30", margin = margin(b = 15))
+  )
+
+# Render the plot horizontally to your Viewer
+print(p)
 ```

@@ -400,7 +400,7 @@ aria-hidden="true"></span> </a>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2026-06-15
+<strong>Last updated:</strong> 2026-06-30
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -534,15 +534,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomhan16BreastCancerEpigeneticstreece3050548b671eb4fc4c19688966e4a2fdeede23targetblankce30505a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomhan16BreastCancerEpigeneticstree2622aa27db67828cca013bb0f6b29a9264897d97targetblank2622aa2a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/han16/BreastCancerEpigenetics/tree/ce3050548b671eb4fc4c19688966e4a2fdeede23" target="_blank">ce30505</a>
+<a href="https://github.com/han16/BreastCancerEpigenetics/tree/2622aa27db67828cca013bb0f6b29a9264897d97" target="_blank">2622aa2</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomhan16BreastCancerEpigeneticstreece3050548b671eb4fc4c19688966e4a2fdeede23targetblankce30505a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomhan16BreastCancerEpigeneticstree2622aa27db67828cca013bb0f6b29a9264897d97targetblank2622aa2a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -552,7 +552,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/han16/BreastCancerEpigenetics/tree/ce3050548b671eb4fc4c19688966e4a2fdeede23" target="_blank">ce30505</a>.
+<a href="https://github.com/han16/BreastCancerEpigenetics/tree/2622aa27db67828cca013bb0f6b29a9264897d97" target="_blank">2622aa2</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -568,6 +568,7 @@ were generated:
 <pre><code>
 Ignored files:
     Ignored:    analysis/patient_complete_sequencing_profiles.png
+    Ignored:    analysis/peaks_venn_diagram.png
 
 Unstaged changes:
     Modified:   analysis/four_patient_samples.Rmd
@@ -621,6 +622,40 @@ Message
 Rmd
 </td>
 <td>
+<a href="https://github.com/han16/BreastCancerEpigenetics/blob/2622aa27db67828cca013bb0f6b29a9264897d97/analysis/four_patient_samples.Rmd" target="_blank">2622aa2</a>
+</td>
+<td>
+han
+</td>
+<td>
+2026-06-15
+</td>
+<td>
+6/15/2026
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/han16/BreastCancerEpigenetics/2622aa27db67828cca013bb0f6b29a9264897d97/docs/four_patient_samples.html" target="_blank">2622aa2</a>
+</td>
+<td>
+han
+</td>
+<td>
+2026-06-15
+</td>
+<td>
+6/15/2026
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
 <a href="https://github.com/han16/BreastCancerEpigenetics/blob/ce3050548b671eb4fc4c19688966e4a2fdeede23/analysis/four_patient_samples.Rmd" target="_blank">ce30505</a>
 </td>
 <td>
@@ -657,6 +692,10 @@ han
 </div>
 </div>
 </div>
+<pre class="r"><code>rm(list=ls())
+library(rprojroot)
+library(dplyr)
+root &lt;- rprojroot::find_rstudio_root_file()</code></pre>
 <div id="reads-number" class="section level2">
 <h2>reads number</h2>
 <pre class="r"><code>FASTQ_File                                      Total_Reads
@@ -766,44 +805,7 @@ p &lt;- ggplot(plot_data, aes(x = Patient, y = Counts_Millions, fill = Timepoint
     legend.position = &quot;top&quot;
   )
 p </code></pre>
-<p><img src="figure/four_patient_samples.Rmd/unnamed-chunk-2-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-2-1">
-Past versions of unnamed-chunk-2-1.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-2-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/han16/BreastCancerEpigenetics/blob/ce3050548b671eb4fc4c19688966e4a2fdeede23/docs/figure/four_patient_samples.Rmd/unnamed-chunk-2-1.png" target="_blank">ce30505</a>
-</td>
-<td>
-han
-</td>
-<td>
-2026-06-15
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+<p><img src="figure/four_patient_samples.Rmd/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code># 4. Save to image disk file
 #ggsave(&quot;patient_complete_sequencing_profiles.png&quot;, plot = p, width = 9, height = 9, dpi = 300)
 
@@ -906,13 +908,13 @@ p &lt;- ggplot() +
   )
 
 p</code></pre>
-<p><img src="figure/four_patient_samples.Rmd/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/four_patient_samples.Rmd/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-1">
-Past versions of unnamed-chunk-4-1.png
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-5-1">
+Past versions of unnamed-chunk-5-1.png
 </button>
 </p>
-<div id="fig-unnamed-chunk-4-1" class="collapse">
+<div id="fig-unnamed-chunk-5-1" class="collapse">
 <div class="table-responsive">
 <table class="table table-condensed table-hover">
 <thead>
@@ -931,7 +933,7 @@ Date
 <tbody>
 <tr>
 <td>
-<a href="https://github.com/han16/BreastCancerEpigenetics/blob/ce3050548b671eb4fc4c19688966e4a2fdeede23/docs/figure/four_patient_samples.Rmd/unnamed-chunk-4-1.png" target="_blank">ce30505</a>
+<a href="https://github.com/han16/BreastCancerEpigenetics/blob/2622aa27db67828cca013bb0f6b29a9264897d97/docs/figure/four_patient_samples.Rmd/unnamed-chunk-5-1.png" target="_blank">2622aa2</a>
 </td>
 <td>
 han
@@ -949,13 +951,26 @@ library(ggplot2)
 library(tidyr)
 library(dplyr)
 
+############## peak windows with FDR 5%, -q  0.05 
+#wc -l   step_03_parallel_peak_calling_results/*narrowPeak
+#   32783 step_03_parallel_peak_calling_results/IF-03_Baseline_peaks.narrowPeak
+#   29123 step_03_parallel_peak_calling_results/IF-03_Followup_peaks.narrowPeak
+#   45352 step_03_parallel_peak_calling_results/IF-04_Baseline_peaks.narrowPeak
+#   43024 step_03_parallel_peak_calling_results/IF-04_Followup_peaks.narrowPeak
+#   23845 step_03_parallel_peak_calling_results/IF-05_Baseline_peaks.narrowPeak
+#   20827 step_03_parallel_peak_calling_results/IF-05_Followup_peaks.narrowPeak
+#   26732 step_03_parallel_peak_calling_results/IF-06_Baseline_peaks.narrowPeak
+#   14843 step_03_parallel_peak_calling_results/IF-06_Followup_peaks.narrowPeak
+
+
+
 # 1. Create the dataset directly from your MACS2 narrowPeak line counts
 peak_data &lt;- data.frame(
   Sample_ID = c(&quot;IF-03_Baseline&quot;, &quot;IF-03_Followup&quot;, 
                 &quot;IF-04_Baseline&quot;, &quot;IF-04_Followup&quot;, 
                 &quot;IF-05_Baseline&quot;, &quot;IF-05_Followup&quot;, 
                 &quot;IF-06_Baseline&quot;, &quot;IF-06_Followup&quot;),
-  Peaks_Called = c(23083, 19265, 34242, 31849, 13786, 12705, 16709, 8882)
+  Peaks_Called = c(32783, 29123, 45352, 43024, 23845, 20827, 26732, 14843)
 )
 
 # 2. Reshape and organize data for side-by-side layout
@@ -984,7 +999,7 @@ p &lt;- ggplot(plot_data, aes(x = Patient, y = Peaks_Called, fill = Timepoint)) 
   
   # Titles and Axis Labels
   labs(
-    title = &quot;Peaks Called Summary Across Patients&quot;,
+    title = &quot;Peaks Called Summary Across Patients (FDR&lt;5%)&quot;,
     subtitle = &quot;&quot;,
     x = &quot;Patient ID&quot;,
     y = &quot;Number of Called Peaks&quot;,
@@ -1004,7 +1019,144 @@ p &lt;- ggplot(plot_data, aes(x = Patient, y = Peaks_Called, fill = Timepoint)) 
   )
 
 p</code></pre>
-<p><img src="figure/four_patient_samples.Rmd/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/four_patient_samples.Rmd/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># 1. Install/Load required packages
+# If you don&#39;t have rtracklayer, run: BiocManager::install(&quot;rtracklayer&quot;)
+library(rtracklayer)
+library(dplyr)
+library(purrr)
+
+# 2. Define directory path and locate your files
+# Change this to &quot;.&quot; if the script is in the exact same folder as the files
+peak_dir &lt;- &quot;C:\\han\\Projects\\2025_03_breast_cancer\\h3k27ac\\4_patient_peaks\\&quot; 
+
+peak_files &lt;- list.files(
+  path = peak_dir, 
+  pattern = &quot;_peaks\\.narrowPeak$&quot;, 
+  full.names = TRUE
+)
+
+# 3. Create clean names for your list entries (e.g., &quot;IF-03_Baseline&quot;)
+sample_names &lt;- list.files(path = peak_dir, pattern = &quot;_peaks\\.narrowPeak$&quot;) %&gt;%
+  gsub(&quot;_peaks\\.narrowPeak&quot;, &quot;&quot;, .)
+
+# Name the file vector so the resulting list retains the sample IDs
+names(peak_files) &lt;- sample_names
+
+# 4. Import all files into a structured list of GRanges objects
+cat(&quot;Reading peak files into genomic ranges...\n&quot;)</code></pre>
+<pre><code>Reading peak files into genomic ranges...</code></pre>
+<pre class="r"><code>peaks_list &lt;- map(peak_files, ~ import(.x, format = &quot;narrowPeak&quot;))
+
+# 5. Quick Verification Check
+cat(&quot;\n--- Peak Import Summary ---\n&quot;)</code></pre>
+<pre><code>
+--- Peak Import Summary ---</code></pre>
+<pre class="r"><code>iwalk(peaks_list, ~ cat(.y, &quot;: loaded&quot;, length(.x), &quot;peak windows.\n&quot;))</code></pre>
+<pre><code>IF-03_Baseline : loaded 32783 peak windows.
+IF-03_Followup : loaded 29123 peak windows.
+IF-04_Baseline : loaded 45352 peak windows.
+IF-04_Followup : loaded 43024 peak windows.
+IF-05_Baseline : loaded 23845 peak windows.
+IF-05_Followup : loaded 20827 peak windows.
+IF-06_Baseline : loaded 26732 peak windows.
+IF-06_Followup : loaded 14843 peak windows.</code></pre>
+<pre class="r"><code># Example: How to access a specific sample&#39;s peaks
+# head(peaks_list[[&quot;IF-03_Baseline&quot;]])</code></pre>
+<pre class="r"><code>library(rtracklayer)
+library(GenomicRanges)
+library(ggVennDiagram)
+library(ggplot2)
+
+sample_names &lt;- c(&quot;IF03_BL&quot;, &quot;IF03_FU&quot;, &quot;IF04_BL&quot;, &quot;IF04_FU&quot;, 
+                  &quot;IF05_BL&quot;, &quot;IF05_FU&quot;, &quot;IF06_BL&quot;, &quot;IF06_FU&quot;)
+names(peak_files) &lt;- sample_names
+
+# 3. Read files into GRanges lists
+cat(&quot;Importing narrowPeak files...\n&quot;)</code></pre>
+<pre><code>Importing narrowPeak files...</code></pre>
+<pre class="r"><code>gr_list &lt;- lapply(peak_files, function(x) import(x, format = &quot;narrowPeak&quot;))
+
+# 4. Filter for high-confidence peaks using native R looping (Prevents structure corruption)
+p_cutoff_log10 &lt;- -log10(0.05)
+cat(&quot;Filtering individual sample peaks for p-value &lt;= 0.05...\n&quot;)</code></pre>
+<pre><code>Filtering individual sample peaks for p-value &lt;= 0.05...</code></pre>
+<pre class="r"><code>filtered_gr_list &lt;- list()
+for (name in sample_names) {
+  current_gr &lt;- gr_list[[name]]
+  # Filter strictly using native GRanges subsetting
+  filtered_gr_list[[name]] &lt;- current_gr[mcols(current_gr)$pValue &gt;= p_cutoff_log10]
+}
+
+# 5. Combine the 4 Baseline samples together and the 4 Follow-up samples together
+cat(&quot;Merging condition groups into unified Baseline and Follow-up peak sets...\n&quot;)</code></pre>
+<pre><code>Merging condition groups into unified Baseline and Follow-up peak sets...</code></pre>
+<pre class="r"><code># Use BiocGenerics::append or explicit c() on clean GRanges components
+baseline_stacked &lt;- c(
+  filtered_gr_list[[&quot;IF03_BL&quot;]], 
+  filtered_gr_list[[&quot;IF04_BL&quot;]], 
+  filtered_gr_list[[&quot;IF05_BL&quot;]], 
+  filtered_gr_list[[&quot;IF06_BL&quot;]]
+)
+baseline_combined &lt;- GenomicRanges::reduce(baseline_stacked)
+
+followup_stacked &lt;- c(
+  filtered_gr_list[[&quot;IF03_FU&quot;]], 
+  filtered_gr_list[[&quot;IF04_FU&quot;]], 
+  filtered_gr_list[[&quot;IF05_FU&quot;]], 
+  filtered_gr_list[[&quot;IF06_FU&quot;]]
+)
+followup_combined &lt;- GenomicRanges::reduce(followup_stacked)
+
+# 6. Generate an absolute master list of unique windows across both conditions
+master_consensus &lt;- GenomicRanges::reduce(c(baseline_combined, followup_combined))
+cat(&quot;Total master peak windows identified:&quot;, length(master_consensus), &quot;\n&quot;)</code></pre>
+<pre><code>Total master peak windows identified: 66129 </code></pre>
+<pre class="r"><code># 1. Install and Load the ggvenn package 
+# install.packages(&quot;ggvenn&quot;)
+library(ggvenn)
+
+# 7. Map windows back to find unique vs overlapping regions with a &gt;100bp condition
+cat(&quot;Calculating overlaps with a strict &gt;100bp minimum length requirement...\n&quot;)</code></pre>
+<pre><code>Calculating overlaps with a strict &gt;100bp minimum length requirement...</code></pre>
+<pre class="r"><code>cutoff=500
+
+# findOverlaps with minoverlap handles the length constraint natively at the genomic layer
+baseline_overlaps &lt;- findOverlaps(master_consensus, baseline_combined, minoverlap = cutoff)
+followup_overlaps &lt;- findOverlaps(master_consensus, followup_combined, minoverlap = cutoff)
+
+# Extract the master consensus peak index IDs that match the criteria
+baseline_ids  &lt;- unique(queryHits(baseline_overlaps))
+followup_ids &lt;- unique(queryHits(followup_overlaps))
+
+# Structure the input data into a clean two-group named list
+venn_data &lt;- list(
+  &quot;Baseline Peaks&quot;  = baseline_ids,
+  &quot;Follow-up Peaks&quot; = followup_ids
+)
+
+# 8. Generate and save the horizontal side-by-side Venn Diagram
+cat(&quot;Plotting horizontal Venn Diagram...\n&quot;)</code></pre>
+<pre><code>Plotting horizontal Venn Diagram...</code></pre>
+<pre class="r"><code>p &lt;- ggvenn(
+  venn_data, 
+  fill_color = c(&quot;#c7e9b4&quot;, &quot;#f07167&quot;), # Left circle: Soft Mint | Right circle: Soft Coral
+  stroke_size = 1.0,                    # Circle border thickness
+  set_name_size = 5,                    # Text size for &quot;Baseline Peaks&quot; and &quot;Follow-up Peaks&quot;
+  text_size = 5                         # Text size for counts inside circles
+) +
+  labs(
+    title = &quot;Chromatin Accessibility Window Comparison&quot;,
+    subtitle = &quot;Venn Diagram: Peaks Passing 5% FDR Cutoff (&gt;500bp Overlap Required)&quot;
+  ) +
+  theme(
+    plot.title = element_text(face = &quot;bold&quot;, size = 16, hjust = 0.5, margin = margin(b = 5)),
+    plot.subtitle = element_text(size = 11, hjust = 0.5, color = &quot;gray30&quot;, margin = margin(b = 15))
+  )
+
+# Render the plot horizontally to your Viewer
+print(p)</code></pre>
+<p><img src="figure/four_patient_samples.Rmd/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -1032,25 +1184,56 @@ time zone: America/Chicago
 tzcode source: internal
 
 attached base packages:
-[1] stats     graphics  grDevices utils     datasets  methods   base     
+[1] grid      stats4    stats     graphics  grDevices utils     datasets 
+[8] methods   base     
 
 other attached packages:
-[1] dplyr_1.1.4   tidyr_1.3.1   ggplot2_3.5.1
+ [1] ggvenn_0.1.10        ggVennDiagram_1.5.7  purrr_1.0.2         
+ [4] rtracklayer_1.64.0   GenomicRanges_1.56.2 GenomeInfoDb_1.40.0 
+ [7] IRanges_2.38.0       S4Vectors_0.42.0     BiocGenerics_0.50.0 
+[10] tidyr_1.3.1          ggplot2_3.5.1        dplyr_1.1.4         
+[13] rprojroot_2.0.4     
 
 loaded via a namespace (and not attached):
- [1] gtable_0.3.5      jsonlite_1.8.8    highr_0.10        compiler_4.4.0   
- [5] promises_1.3.0    tidyselect_1.2.1  Rcpp_1.0.12       stringr_1.5.1    
- [9] git2r_0.33.0      later_1.3.2       jquerylib_0.1.4   scales_1.3.0     
-[13] yaml_2.3.8        fastmap_1.1.1     R6_2.5.1          labeling_0.4.3   
-[17] generics_0.1.3    workflowr_1.7.1   knitr_1.46        tibble_3.2.1     
-[21] munsell_0.5.1     rprojroot_2.0.4   bslib_0.7.0       pillar_1.9.0     
-[25] rlang_1.1.3       utf8_1.2.4        cachem_1.0.8      stringi_1.8.4    
-[29] httpuv_1.6.15     xfun_0.43         fs_1.6.4          sass_0.4.9       
-[33] cli_3.6.2         withr_3.0.0       magrittr_2.0.3    digest_0.6.35    
-[37] grid_4.4.0        rstudioapi_0.16.0 lifecycle_1.0.4   vctrs_0.6.5      
-[41] evaluate_0.23     glue_1.7.0        farver_2.1.2      whisker_0.4.1    
-[45] colorspace_2.1-0  fansi_1.0.6       purrr_1.0.2       rmarkdown_2.26   
-[49] tools_4.4.0       pkgconfig_2.0.3   htmltools_0.5.8.1</code></pre>
+ [1] SummarizedExperiment_1.34.0 gtable_0.3.5               
+ [3] rjson_0.2.23                xfun_0.43                  
+ [5] bslib_0.7.0                 lattice_0.22-6             
+ [7] Biobase_2.64.0              vctrs_0.6.5                
+ [9] tools_4.4.0                 bitops_1.0-7               
+[11] generics_0.1.3              parallel_4.4.0             
+[13] curl_5.2.1                  tibble_3.2.1               
+[15] fansi_1.0.6                 highr_0.10                 
+[17] pkgconfig_2.0.3             Matrix_1.7-0               
+[19] lifecycle_1.0.4             GenomeInfoDbData_1.2.12    
+[21] compiler_4.4.0              farver_2.1.2               
+[23] stringr_1.5.1               git2r_0.33.0               
+[25] Rsamtools_2.20.0            Biostrings_2.72.0          
+[27] munsell_0.5.1               codetools_0.2-20           
+[29] httpuv_1.6.15               htmltools_0.5.8.1          
+[31] sass_0.4.9                  RCurl_1.98-1.16            
+[33] yaml_2.3.8                  crayon_1.5.2               
+[35] later_1.3.2                 pillar_1.9.0               
+[37] jquerylib_0.1.4             whisker_0.4.1              
+[39] BiocParallel_1.38.0         DelayedArray_0.30.1        
+[41] cachem_1.0.8                abind_1.4-5                
+[43] tidyselect_1.2.1            digest_0.6.35              
+[45] stringi_1.8.4               restfulr_0.0.16            
+[47] labeling_0.4.3              fastmap_1.1.1              
+[49] SparseArray_1.4.8           colorspace_2.1-0           
+[51] cli_3.6.2                   magrittr_2.0.3             
+[53] S4Arrays_1.4.1              XML_3.99-0.20              
+[55] utf8_1.2.4                  withr_3.0.0                
+[57] scales_1.3.0                UCSC.utils_1.0.0           
+[59] promises_1.3.0              rmarkdown_2.26             
+[61] XVector_0.44.0              httr_1.4.7                 
+[63] matrixStats_1.3.0           workflowr_1.7.1            
+[65] evaluate_0.23               knitr_1.46                 
+[67] BiocIO_1.14.0               rlang_1.1.3                
+[69] Rcpp_1.0.12                 glue_1.7.0                 
+[71] rstudioapi_0.16.0           jsonlite_1.8.8             
+[73] R6_2.5.1                    MatrixGenerics_1.16.0      
+[75] GenomicAlignments_1.40.0    fs_1.6.4                   
+[77] zlibbioc_1.50.0            </code></pre>
 </div>
 </div>
 
