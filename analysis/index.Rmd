@@ -13,6 +13,8 @@ editor_options:
 
 * [(one) patient sample](one_patient_sample.html)
 
+* [four +two patient samples](four_patient_samples.html)
+
 
 
 
