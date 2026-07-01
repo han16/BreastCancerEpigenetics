@@ -1,5 +1,5 @@
 ---
-title: "four patient samples"
+title: "four + two patient samples"
 output:
   workflowr::wflow_html:
     code_folding: hide
@@ -156,6 +156,15 @@ IF-06_Baseline                  33,836,467              33,837,604              
 IF-06_Followup                  34,902,506              34,904,788              69,807,294
 IF-05_Baseline                  35,902,036              35,908,458              71,810,494
 =======================================================
+  
+Sample_ID                               Aligned_R1      Aligned_R2      Total_Aligned
+=====================================================================================
+IF-07_Baseline-H3k27ac  37381329                37281118                74662447
+IF-07_Followup-H3k27ac  38029179                37916497                75945676
+IF-08_Baseline-H3k27ac  36447634                36314512                72762146
+IF-08_Followup-H3k27ac  41552929                41399315                82952244
+=====================================================================================
+
 
 
 ```
@@ -170,9 +179,9 @@ library(dplyr)
 # 1. Create the dataset directly from your samtools output
 data <- data.frame(
   Sample_ID = c("IF-03_Baseline", "IF-04_Baseline", "IF-04_Followup", "IF-03_Followup", 
-                "IF-05_Followup", "IF-06_Baseline", "IF-06_Followup", "IF-05_Baseline"),
-  Mapped_R1 = c(24739053, 32462972, 33121436, 32197707, 31759284, 33836467, 34902506, 35902036),
-  Mapped_R2 = c(24740316, 32463040, 33123247, 32199144, 31772936, 33837604, 34904788, 35908458)
+                "IF-05_Followup", "IF-06_Baseline", "IF-06_Followup", "IF-05_Baseline", "IF-07_Baseline", "IF-07_Followup", "IF-08_Baseline", "IF-08_Followup"),
+  Mapped_R1 = c(24739053, 32462972, 33121436, 32197707, 31759284, 33836467, 34902506, 35902036,37381329, 38029179, 36447634, 41552929 ),
+  Mapped_R2 = c(24740316, 32463040, 33123247, 32199144, 31772936, 33837604, 34904788, 35908458,37281118, 37916497, 36314512, 41399315 )
 )
 
 # 2. Reshape and clean data for true vertical stacking
@@ -183,7 +192,7 @@ plot_data <- data %>%
                values_to = "Counts") %>%
   mutate(
     Counts_Millions = Counts / 1e6,
-    Patient = factor(Patient, levels = c("IF-03", "IF-04", "IF-05", "IF-06")),
+    Patient = factor(Patient, levels = c("IF-03", "IF-04", "IF-05", "IF-06", "IF-07", "IF-08")),
     Timepoint = factor(Timepoint, levels = c("Baseline", "Followup")),
     Read_Pair = case_when(
       Read_Pair == "Mapped_R1" ~ "R1 Reads",
@@ -268,21 +277,31 @@ library(dplyr)
 #   14843 step_03_parallel_peak_calling_results/IF-06_Followup_peaks.narrowPeak
 
 
+# wc -l  step_03_call_peaks_results/*narrowPeak
+#  19186 step_03_call_peaks_results/IF-07_Baseline-H3k27ac_peaks.narrowPeak
+#  15408 step_03_call_peaks_results/IF-07_Followup-H3k27ac_peaks.narrowPeak
+#  30135 step_03_call_peaks_results/IF-08_Baseline-H3k27ac_peaks.narrowPeak
+#   7073 step_03_call_peaks_results/IF-08_Followup-H3k27ac_peaks.narrowPeak
+
+
 
 # 1. Create the dataset directly from your MACS2 narrowPeak line counts
 peak_data <- data.frame(
   Sample_ID = c("IF-03_Baseline", "IF-03_Followup", 
                 "IF-04_Baseline", "IF-04_Followup", 
                 "IF-05_Baseline", "IF-05_Followup", 
-                "IF-06_Baseline", "IF-06_Followup"),
-  Peaks_Called = c(32783, 29123, 45352, 43024, 23845, 20827, 26732, 14843)
+                "IF-06_Baseline", "IF-06_Followup", 
+                "IF-07_Baseline", "IF-07_Followup",
+                "IF-08_Baseline", "IF-08_Followup"
+                ),
+  Peaks_Called = c(32783, 29123, 45352, 43024, 23845, 20827, 26732, 14843, 19186, 15408, 30135, 7073)
 )
 
 # 2. Reshape and organize data for side-by-side layout
 plot_data <- peak_data %>%
   separate(Sample_ID, into = c("Patient", "Timepoint"), sep = "_") %>%
   mutate(
-    Patient = factor(Patient, levels = c("IF-03", "IF-04", "IF-05", "IF-06")),
+    Patient = factor(Patient, levels = c("IF-03", "IF-04", "IF-05", "IF-06", "IF-07", "IF-08")),
     Timepoint = factor(Timepoint, levels = c("Baseline", "Followup"))
   )
 
@@ -337,7 +356,7 @@ library(purrr)
 
 # 2. Define directory path and locate your files
 # Change this to "." if the script is in the exact same folder as the files
-peak_dir <- "C:\\han\\Projects\\2025_03_breast_cancer\\h3k27ac\\4_patient_peaks\\" 
+peak_dir <- "C:\\han\\Projects\\2025_03_breast_cancer\\h3k27ac\\all_patient_peaks\\" 
 
 peak_files <- list.files(
   path = peak_dir, 
@@ -372,7 +391,7 @@ library(ggVennDiagram)
 library(ggplot2)
 
 sample_names <- c("IF03_BL", "IF03_FU", "IF04_BL", "IF04_FU", 
-                  "IF05_BL", "IF05_FU", "IF06_BL", "IF06_FU")
+                  "IF05_BL", "IF05_FU", "IF06_BL", "IF06_FU", "IF07_BL", "IF07_FU", "IF08_BL", "IF08_FU")
 names(peak_files) <- sample_names
 
 # 3. Read files into GRanges lists
@@ -398,7 +417,9 @@ baseline_stacked <- c(
   filtered_gr_list[["IF03_BL"]], 
   filtered_gr_list[["IF04_BL"]], 
   filtered_gr_list[["IF05_BL"]], 
-  filtered_gr_list[["IF06_BL"]]
+  filtered_gr_list[["IF06_BL"]],
+  filtered_gr_list[["IF07_BL"]],
+  filtered_gr_list[["IF08_BL"]]
 )
 baseline_combined <- GenomicRanges::reduce(baseline_stacked)
 
@@ -406,7 +427,9 @@ followup_stacked <- c(
   filtered_gr_list[["IF03_FU"]], 
   filtered_gr_list[["IF04_FU"]], 
   filtered_gr_list[["IF05_FU"]], 
-  filtered_gr_list[["IF06_FU"]]
+  filtered_gr_list[["IF06_FU"]],
+  filtered_gr_list[["IF07_FU"]],
+  filtered_gr_list[["IF08_FU"]]
 )
 followup_combined <- GenomicRanges::reduce(followup_stacked)
 
@@ -423,8 +446,6 @@ cat("Total master peak windows identified:", length(master_consensus), "\n")
 # install.packages("ggvenn")
 library(ggvenn)
 
-# 7. Map windows back to find unique vs overlapping regions with a >100bp condition
-cat("Calculating overlaps with a strict >100bp minimum length requirement...\n")
 
 cutoff=500
 
@@ -463,4 +484,159 @@ p <- ggvenn(
 
 # Render the plot horizontally to your Viewer
 print(p)
+```
+
+
+
+```{r, message=F, warning=F}
+###########################################################
+# Extract Unique and Shared Peak IDs
+###########################################################
+# IDs in Baseline but NOT in Follow-up (Lost peaks)
+baseline_unique_ids <- setdiff(baseline_ids, followup_ids)
+
+# IDs in Follow-up but NOT in Baseline (Gained peaks)
+followup_unique_ids <- setdiff(followup_ids, baseline_ids)
+
+# IDs found in both groups (Shared peaks)
+shared_ids <- intersect(baseline_ids, followup_ids)
+
+
+###########################################################
+# Map IDs back to Genomic Coordinates (GRanges)
+###########################################################
+cat("Subsetting master consensus GRanges...\n")
+
+baseline_unique_peaks <- master_consensus[baseline_unique_ids]
+followup_unique_peaks <- master_consensus[followup_unique_ids]
+shared_peaks          <- master_consensus[shared_ids]
+
+```
+
+
+
+
+```{r, message=F, warning=F}
+# Load necessary biomarker discovery packages
+library(ChIPseeker)
+library(clusterProfiler)
+library(org.Hs.eg.db)
+
+#1. install.packages("BiocManager")
+# 2. Use BiocManager to install the hg38 reference genome package
+#BiocManager::install("TxDb.Hsapiens.UCSC.hg38.knownGene")
+# 3. If  need the gene symbol mapping database, grab it too:
+#BiocManager::install("org.Hs.eg.db")
+
+library(TxDb.Hsapiens.UCSC.hg38.knownGene)
+library(ggplot2)
+library(DT)
+
+
+
+txdb <- TxDb.Hsapiens.UCSC.hg38.knownGene
+
+###########################################################
+# 1. Genomic Annotation & Proximity Mapping
+###########################################################
+
+# Map peaks to genes. Promoters are defined as +/- 3000bp from the start site
+anno_baseline <- annotatePeak(baseline_unique_peaks, 
+                              TxDb = txdb, 
+                              tssRegion = c(-3000, 3000), 
+                              annoDb = "org.Hs.eg.db")
+
+anno_followup <- annotatePeak(followup_unique_peaks, 
+                              TxDb = txdb, 
+                              tssRegion = c(-3000, 3000), 
+                              annoDb = "org.Hs.eg.db")
+
+# Convert to clean data frames
+df_baseline <- as.data.frame(anno_baseline)
+df_followup <- as.data.frame(anno_followup)
+
+df_baseline %>%
+datatable(extensions = 'Buttons',
+          caption = "", 
+            options = list(dom = 'Blfrtip',
+                           buttons = c('copy', 'csv', 'excel', 'pdf', 'print'),
+                           lengthMenu = list(c(10,25,50,-1),
+                                             c(10,25,50,"All"))))
+# Save the master biomarker gene mappings to disk
+#write.csv(df_baseline, "biomarkers_mapped_baseline_unique.csv", row.names = FALSE)
+#write.csv(df_followup, "biomarkers_mapped_followup_unique.csv", row.names = FALSE)
+
+
+df_followup%>%
+datatable(extensions = 'Buttons',
+          caption = "", 
+            options = list(dom = 'Blfrtip',
+                           buttons = c('copy', 'csv', 'excel', 'pdf', 'print'),
+                           lengthMenu = list(c(10,25,50,-1),
+                                             c(10,25,50,"All"))))
+```
+
+
+```{r, message=F, warning=F}
+
+###########################################################
+# 2. Extracting Gene Vectors for Network Profiling
+###########################################################
+
+# Isolate unique Entrez Gene IDs, filtering out any unmapped slots
+genes_lost   <- unique(df_baseline$geneId[!is.na(df_baseline$geneId)])
+genes_gained <- unique(df_followup$geneId[!is.na(df_followup$geneId)])
+
+# Format into a structured named list for comparative profiling
+biomarker_clusters <- list(
+  "Lost_Chromatin_Marks"   = genes_lost,
+  "Gained_Chromatin_Marks" = genes_gained
+)
+
+
+###########################################################
+# 3. Comparative Pathway Enrichment (GO / KEGG)
+###########################################################
+
+# Run Gene Ontology (GO) Biological Processes comparative test
+go_comparison <- compareCluster(geneClusters = biomarker_clusters, 
+                                fun = "enrichGO", 
+                                OrgDb = org.Hs.eg.db, 
+                                ont = "BP", 
+                                pAdjustMethod = "BH", 
+                                pvalueCutoff = 0.05, 
+                                qvalueCutoff = 0.05)
+library(DT)
+as.data.frame(go_comparison)%>%
+datatable(extensions = 'Buttons',
+          caption = "", 
+            options = list(dom = 'Blfrtip',
+                           buttons = c('copy', 'csv', 'excel', 'pdf', 'print'),
+                           lengthMenu = list(c(10,25,50,-1),
+                                             c(10,25,50,"All"))))
+
+# Save statistical summary calculations
+#write.csv(as.data.frame(go_comparison), "biomarker_pathway_enrichment_results.csv", row.names = FALSE)
+```
+
+
+
+```{r, message=F, warning=F}
+
+# Generate a high-quality visualization comparing altered pathways
+p_pathway <- dotplot(go_comparison, showCategory = 10, includeAll = FALSE) +
+  labs(
+    title = "Functional Pathway Shifts Driven by Epigenetic Biomarkers",
+    subtitle = "Side-by-side comparison of lost vs gained chromatin profiles"
+  ) +
+  theme(
+    plot.title = element_text(face = "bold", size = 14, hjust = 0.5),
+    plot.subtitle = element_text(size = 10, color = "gray30", hjust = 0.5)
+  )
+
+p_pathway
+
+# Save visualization plot to disk
+#ggsave("biomarker_pathway_comparison.pdf", plot = p_pathway, width = 11, height = 8)
+
 ```
