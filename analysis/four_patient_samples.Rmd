@@ -511,6 +511,9 @@ baseline_unique_peaks <- master_consensus[baseline_unique_ids]
 followup_unique_peaks <- master_consensus[followup_unique_ids]
 shared_peaks          <- master_consensus[shared_ids]
 
+baseline_unique_peaks
+followup_unique_peaks
+
 ```
 
 
