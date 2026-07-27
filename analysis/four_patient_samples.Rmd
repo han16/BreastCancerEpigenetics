@@ -680,6 +680,54 @@ ggplot(final_mapped_peaks, aes(x = logFC, y = -log10(P.Value))) +
   )
 ```
 
+* top 10 genes by p values 
+
+
+
+
+```{r, message=F, warning=F}
+library(ggplot2)
+library(dplyr)
+library(ggrepel) # For non-overlapping gene text labels
+
+# 1. Identify top 10 most extreme genes to label on the plot
+top_genes <- final_mapped_peaks %>%
+  filter(!is.na(SYMBOL)) %>%
+  arrange(logFC) %>%
+  head(10)
+
+# 2. Generate Volcano Plot
+ggplot(final_mapped_peaks, aes(x = logFC, y = -log10(P.Value))) +
+  geom_point(aes(color = logFC > 0), alpha = 0.6, size = 1.8) +
+  geom_vline(xintercept = 0, linetype = "dashed", color = "grey40") +
+  scale_color_manual(
+    values = c("TRUE" = "#2E8B57", "FALSE" = "#D95F02"),
+    labels = c("TRUE" = "Gained", "FALSE" = "Lost"),
+    name = "Peak Change"
+  ) +
+  # Add labels for top 10 genes
+  geom_text_repel(
+    data = top_genes,
+    aes(label = SYMBOL),
+    size = 4,
+    fontface = "bold",
+    box.padding = 0.5,
+    max.overlaps = 15
+  ) +
+  labs(
+    title = "Volcano Plot: Log2 Fold Change vs. Significance",
+    x = "Log2 Fold Change (logFC)",
+    y = "-log10 (P-Value)"
+  ) +
+  theme_classic(base_size = 14) +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"),
+    legend.position = "top"
+  )
+```
+
+
+* top 10 genes by fold changes 
 
 
 
