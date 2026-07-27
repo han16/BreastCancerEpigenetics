@@ -279,9 +279,9 @@ library(ggplot2)
 # We filter each column separately to find the significant subset
 sig_list <- list(
   EP   = comparison_table %>% filter(P_EP < 0.05) %>% pull(GENE),
-  `EP+HiC`  = comparison_table %>% filter(P_HiC < 0.05) %>% pull(GENE),
+  `EP+chrmt loops`  = comparison_table %>% filter(P_HiC < 0.05) %>% pull(GENE),
   `EP+eQTL` = comparison_table %>% filter(P_eQTL < 0.05) %>% pull(GENE),
-  `EP+HiC+eQTL` = comparison_table %>% filter(P_Full < 0.05) %>% pull(GENE)
+  `EP+Chrmt loops+eQTL` = comparison_table %>% filter(P_Full < 0.05) %>% pull(GENE)
 )
 
 # 2. Generate the plot
@@ -289,7 +289,8 @@ ggvenn(
   sig_list, 
   fill_color = c("#0073C2FF", "#EFC000FF", "#868686FF", "#CD534CFF"),
   stroke_size = 0.5, 
-  set_name_size = 5,
+  set_name_size = 0,      # Set to 0 to hide the category titles
+  #set_name_size = 5,
   text_size = 4,
   show_percentage = FALSE
 ) +
@@ -299,7 +300,7 @@ ggvenn(
   # Ensure the labels are allowed to be drawn outside the panel
   coord_cartesian(clip = "off") +
   theme(
-    plot.margin = margin(20, 20, 20, 20), # Extra space around the edges
+    plot.margin = margin(25, 25, 10, 10), # Extra space around the edges
     plot.title = element_text(hjust = 0.5, size = 16, face = "bold")
   ) +
   labs(title = "")

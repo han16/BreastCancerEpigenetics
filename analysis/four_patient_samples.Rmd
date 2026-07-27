@@ -21,7 +21,7 @@ root <- rprojroot::find_rstudio_root_file()
 ## reads number
 
 
-```{r, message=F, warning=F, eval=F}
+```
 FASTQ_File                                      Total_Reads
 -------------------------------------------------------
 IF-03_Baseline_S65_R2_001.fastq.gz              35,432,588
@@ -142,7 +142,7 @@ p
 ```
 
 
-```{r, message=F, warning=F, eval=F}
+```
 mapped reads count
 =======================================================
 Sample_ID                       Mapped_R1               Mapped_R2               Total_Mapped
@@ -165,9 +165,10 @@ IF-08_Baseline-H3k27ac  36447634                36314512                72762146
 IF-08_Followup-H3k27ac  41552929                41399315                82952244
 =====================================================================================
 
-
-
 ```
+
+
+
 
 
 ```{r, message=F, warning=F}
@@ -382,6 +383,374 @@ iwalk(peaks_list, ~ cat(.y, ": loaded", length(.x), "peak windows.\n"))
 # Example: How to access a specific sample's peaks
 # head(peaks_list[["IF-03_Baseline"]])
 ```
+
+
+
+## Paired Differential Intensity Analysis
+
+
+
+
+```{r, message=F, warning=F}
+library(GenomicRanges)
+
+
+# 1. Install BiocManager if you do not have it already
+#if (!require("BiocManager", quietly = TRUE)) {
+#    install.packages("BiocManager")
+#}
+
+# 2. Install the limma package
+#BiocManager::install("limma")
+
+
+library(limma)
+
+all_peaks_GR <- do.call(c, unname(peaks_list))
+
+length(all_peaks_GR)==sum(lengths(peaks_list))
+
+    
+# 1. Force the list structure to flatten into a pure GRanges object
+flat_GR <- GRanges(
+  seqnames = seqnames(all_peaks_GR),
+  ranges   = ranges(all_peaks_GR),
+  strand   = strand(all_peaks_GR)
+)
+
+# 2. Now run reduce on the flat GRanges object 
+consensus_peaks <- GenomicRanges::reduce(flat_GR)
+length(consensus_peaks)
+
+
+
+
+```
+
+* how function `GenomicRanges::reduce` works 
+
+
+```
+Before reduce():
+Peak A:   [100 =========== 200]
+Peak B:              [150 =========== 250]
+Peak C:                                       [300 ===== 400]
+
+After reduce():
+Result:   [100 ======================= 250]   [300 ===== 400]
+```
+
+
+
+
+
+```{r, message=F, warning=F}
+
+# 2. Extract 'signalValue' for each sample mapping to consensus peaks
+
+num_samples <- length(peaks_list)
+num_peaks <- length(consensus_peaks)
+
+# Initialize matrix with a small background value (1.0) for non-overlapping windows
+intensity_matrix <- matrix(1.0, nrow = num_peaks, ncol = num_samples)
+colnames(intensity_matrix) <- names(peaks_list)
+
+for (i in seq_along(peaks_list)) {
+  sample_name <- names(peaks_list)[i]
+  sample_gr <- peaks_list[[i]]
+  
+  # Find overlaps between consensus bins and this sample's peaks
+  olaps <- findOverlaps(consensus_peaks, sample_gr)
+  
+  if (length(olaps) > 0) {
+    # If multiple sample peaks hit one consensus region, take the maximum signalValue
+    signal_df <- data.frame(
+      consensus_idx = queryHits(olaps),
+      signal = sample_gr$signalValue[subjectHits(olaps)]
+    )
+    max_signals <- aggregate(signal ~ consensus_idx, data = signal_df, max)
+    
+    intensity_matrix[max_signals$consensus_idx, sample_name] <- max_signals$signal
+  }
+}
+
+all_ones_rows <- which(rowSums(intensity_matrix != 1) == 0) # report rows whose columns are all 1. 
+all_ones_rows
+```
+
+
+
+
+
+```{r, message=F, warning=F}
+
+# 3. Define the paired experimental design
+
+samples_meta <- data.frame(
+  SampleID = colnames(intensity_matrix)
+)
+
+# Extract Metadata: Condition (Baseline vs Followup) and Patient ID (IF-03 to IF-08)
+samples_meta$Condition <- ifelse(grepl("Baseline", samples_meta$SampleID), "Baseline", "Followup")
+samples_meta$Patient   <- sub("_.*", "", samples_meta$SampleID)
+
+# Ensure they are factors
+samples_meta$Condition <- factor(samples_meta$Condition, levels = c("Baseline", "Followup"))
+samples_meta$Patient   <- factor(samples_meta$Patient)
+
+# Create paired design matrix: ~ Patient + Condition
+design <- model.matrix(~ Patient + Condition, data = samples_meta)
+
+# 4. Run Limma-Trend on Log2-transformed Intensities
+
+log2_intensities <- log2(intensity_matrix)
+
+# Fit linear model
+fit <- lmFit(log2_intensities, design)
+fit <- eBayes(fit, trend = TRUE)
+
+# Extract top differentially intense peaks (coefficient 7 is ConditionFollowup)
+
+# This tests: Followup vs Baseline, accounting for patient-specific variation
+results_table <- topTable(fit, coef = "ConditionFollowup", number = Inf, adjust.method = "BH")
+
+summary(results_table$P.Value)
+summary(results_table$adj.P.Val)
+
+```
+
+```{r, message=F, warning=F}
+
+library(dplyr)
+library(ggplot2)
+
+# 1. Define the p-value cutoffs and calculate peak counts
+cutoffs <- c(0.001, 0.005, 0.01, 0.05)
+
+plot_data <- data.frame(
+  Cutoff = factor(paste0("< ", cutoffs), levels = paste0("< ", cutoffs)),
+  Count  = sapply(cutoffs, function(x) sum(results_table$P.Value < x))
+)
+
+# 2. Plot using ggplot2
+ggplot(plot_data, aes(x = Cutoff, y = Count, fill = Cutoff)) +
+  geom_col(width = 0.5, show.legend = FALSE, fill = "#4C72B0") +
+  # Add exact numbers above each bar
+  geom_text(aes(label = scales::comma(Count)), 
+            vjust = -0.5, 
+            fontface = "bold", 
+            size = 4.5) +
+  # Give extra vertical room so numbers aren't cut off at the top
+  scale_y_continuous(expand = expansion(mult = c(0, 0.15))) +
+  labs(
+    title = "Number of Peak Windows by P-Value Cutoff",
+    x = "P-Value Threshold",
+    y = "Number of Peak Windows"
+  ) +
+  theme_classic(base_size = 14) +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"),
+    axis.text = element_text(color = "black")
+  )
+
+```
+
+### map to closest genes 
+
+
+
+```{r, message=F, warning=F}
+library(dplyr)
+library(GenomicRanges)
+library(ChIPseeker)
+library(TxDb.Hsapiens.UCSC.hg38.knownGene)
+library(org.Hs.eg.db)
+
+
+# 1. Attach genomic coordinates from consensus_peaks using the row indices
+peak_indices <- as.numeric(rownames(results_table))
+
+results_with_coords <- results_table %>%
+  mutate(
+    seqnames = as.character(seqnames(consensus_peaks[peak_indices])),
+    start    = start(consensus_peaks[peak_indices]),
+    end      = end(consensus_peaks[peak_indices]),
+    strand   = as.character(strand(consensus_peaks[peak_indices]))
+  )
+
+# 2. Filter for significant peaks (P.Value < 0.05)
+sig_peaks_df <- results_with_coords %>% 
+  filter(P.Value < 0.05)
+
+cat(paste("Extracted", nrow(sig_peaks_df), "peaks with P.Value < 0.05\n"))
+
+# 3. Convert to GRanges object
+sig_peaks_GR <- GRanges(
+  seqnames = sig_peaks_df$seqnames,
+  ranges   = IRanges(start = sig_peaks_df$start, end = sig_peaks_df$end),
+  strand   = sig_peaks_df$strand
+)
+
+# Attach statistical metadata columns
+mcols(sig_peaks_GR) <- sig_peaks_df %>% dplyr::select(-seqnames, -start, -end, -strand)
+
+# 4. Annotate peaks with nearest genes using ChIPseeker
+txdb <- TxDb.Hsapiens.UCSC.hg38.knownGene
+
+peak_annotation <- annotatePeak(
+  sig_peaks_GR,
+  TxDb = txdb,
+  annoDb = "org.Hs.eg.db",    # Maps Entrez IDs to official Gene Symbols (e.g. BRCA1)
+  tssRegion = c(-3000, 3000), # Promoter region definition (-3kb to +3kb of TSS)
+  verbose = FALSE
+)
+
+# 5. Convert annotation output back to a Data Frame
+annotated_df <- as.data.frame(peak_annotation)
+
+# 6. Select and organize useful output columns
+final_mapped_peaks <- annotated_df %>%
+  dplyr::select(
+    seqnames, start, end, width, logFC, AveExpr, P.Value,
+    annotation,        # e.g., "Promoter (<=1kb)", "Distal Intergenic", "Intron"
+    geneId,            # Entrez Gene ID
+    SYMBOL,            # Official Gene Symbol (e.g., GAPDH)
+    GENENAME,          # Full Gene Name
+    distanceToTSS      # Exact distance in bp to nearest Transcript Start Site
+  )
+
+# 7. Save mapped results to CSV
+#write.csv(final_mapped_peaks, "significant_peaks_mapped_to_genes.csv", row.names = FALSE)
+
+
+# Preview top 5 mapped peaks
+library(DT)
+final_mapped_peaks%>%
+  datatable(
+    extensions = 'Buttons',
+    caption = "", 
+    options = list(
+      dom = 'Blfrtip',
+      buttons = c('copy', 'csv', 'excel', 'pdf', 'print'),
+      lengthMenu = list(c(10, 25, 50, -1), c(10, 25, 50, "All"))
+    )
+  )
+```
+
+
+
+```{r, message=F, warning=F}
+library(ggplot2)
+library(dplyr)
+library(ggrepel) # For non-overlapping gene text labels
+
+# 1. Identify top 10 most extreme genes to label on the plot
+top_genes <- final_mapped_peaks %>%
+  filter(!is.na(SYMBOL)) %>%
+  arrange(P.Value) %>%
+  head(10)
+
+# 2. Generate Volcano Plot
+ggplot(final_mapped_peaks, aes(x = logFC, y = -log10(P.Value))) +
+  geom_point(aes(color = logFC > 0), alpha = 0.6, size = 1.8) +
+  geom_vline(xintercept = 0, linetype = "dashed", color = "grey40") +
+  scale_color_manual(
+    values = c("TRUE" = "#2E8B57", "FALSE" = "#D95F02"),
+    labels = c("TRUE" = "Gained", "FALSE" = "Lost"),
+    name = "Peak Change"
+  ) +
+  # Add labels for top 10 genes
+  geom_text_repel(
+    data = top_genes,
+    aes(label = SYMBOL),
+    size = 4,
+    fontface = "bold",
+    box.padding = 0.5,
+    max.overlaps = 15
+  ) +
+  labs(
+    title = "Volcano Plot: Log2 Fold Change vs. Significance",
+    x = "Log2 Fold Change (logFC)",
+    y = "-log10 (P-Value)"
+  ) +
+  theme_classic(base_size = 14) +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"),
+    legend.position = "top"
+  )
+```
+
+
+
+
+
+
+```{r, message=F, warning=F}
+
+# Combine results with consensus peak coordinates
+final_annotated_peaks <- as.data.frame(consensus_peaks[as.numeric(rownames(results_table))])
+final_results <- cbind(final_annotated_peaks, results_table)
+
+# Save results
+#write.csv(final_results, "paired_differential_peaks_results.csv", row.names = FALSE)
+
+
+
+
+library(dplyr)
+library(ggplot2)
+
+# 1. Calculate counts
+sig_gained <- sum(final_results$P.Value < 0.05 & final_results$logFC > 0)
+sig_lost   <- sum(final_results$P.Value < 0.05 & final_results$logFC < 0)
+
+# 2. Assemble data frame with counts, percentages, and labels
+pie_data <- data.frame(
+  Direction = factor(c("Gained (logFC > 0)", "Lost (logFC < 0)"), 
+                     levels = c("Gained (logFC > 0)", "Lost (logFC < 0)")),
+  Count = c(sig_gained, sig_lost)
+) %>%
+  mutate(
+    Percentage = round(Count / sum(Count) * 100, 1),
+    Label = paste0(scales::comma(Count), "\n(", Percentage, "%)")
+  )
+
+# 3. Draw the Pie Chart
+ggplot(pie_data, aes(x = "", y = Count, fill = Direction)) +
+  geom_col(width = 1, color = "white", size = 1.2) +
+  coord_polar(theta = "y", start = 0) +
+  geom_text(
+    aes(label = Label), 
+    position = position_stack(vjust = 0.5), 
+    color = "black", 
+    fontface = "bold", 
+    size = 5
+  ) +
+  scale_fill_manual(values = c("Gained (logFC > 0)" = "#2E8B57", "Lost (logFC < 0)" = "#D95F02")) +
+  theme_void(base_size = 14) +
+  labs(
+    title = "Significant Peak Windows (P.Value < 0.05)",
+    fill = "Peak Change"
+  ) +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold", margin = margin(b = 10)),
+    legend.title = element_text(face = "bold"),
+    legend.position = "bottom"
+  )
+
+```
+
+
+
+
+
+
+
+
+
+
+## direct combine peak windows 
+
 
 
 ```{r, message=F, warning=F}

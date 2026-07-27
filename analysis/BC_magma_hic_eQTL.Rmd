@@ -625,7 +625,7 @@ writeLines(txt, paste0(path2,"exome_promoter_HiC_eQTL.annot"))
 target_gene="ENSG00000086232"
 ep_missed_genes %>% filter(ensg==target_gene)
 ep_missed_genes_snps=ep_missed_genes %>% filter(ensg == target_gene) %>% pull(rsid)
-sum(ep_missed_genes_snps %in% snps$rsid) ############ is looks all snps are in reference panel, why here it's 0?????????
+sum(ep_missed_genes_snps[[1]] %in% snps$rsid) ############ is looks all snps are in reference panel, why here it's 0?????????
 
 
 
@@ -633,7 +633,7 @@ num_snps_in_reference=numeric()
 for (i in 1:length(missed_genes))
 {
   ep_missed_genes_snps=ep_missed_genes %>% filter(ensg == missed_genes[i]) %>% pull(rsid)
-  num_snps_in_reference[i]=sum(ep_missed_genes_snps %in% snps$rsid)
+  num_snps_in_reference[i]=sum(ep_missed_genes_snps[[1]] %in% snps$rsid)
 }
 
 
@@ -644,7 +644,7 @@ num_snps_in_reference2=numeric()
 for (i in 1:length(missed_genes))
 {
   ep_hic_eqtl_missed_genes_snps=ep_hic_eqtl_missed_genes %>% filter(ensg == missed_genes[i]) %>% pull(rsid)
-  num_snps_in_reference2[i]=sum(ep_hic_eqtl_missed_genes_snps %in% snps$rsid)
+  num_snps_in_reference2[i]=sum(ep_hic_eqtl_missed_genes_snps[[1]] %in% snps$rsid)
 }
 
 intersect(ep_hic_eqtl_missed_genes_snps[[1]], ep_missed_genes_snps[[1]])
