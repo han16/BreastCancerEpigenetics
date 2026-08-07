@@ -426,6 +426,11 @@ length(consensus_peaks)
 
 
 ```
+* peak windows from 12 samples (6 baseline + 6 followups) total : 308,331 peaks 
+
+* after mergering using `GenomicRanges::reduce`, 72,678 peaks remain
+
+
 
 * how function `GenomicRanges::reduce` works 
 
@@ -519,6 +524,11 @@ summary(results_table$adj.P.Val)
 
 ```
 
+
+* limma approach was used to identify the differential peaks 
+
+
+
 ```{r, message=F, warning=F}
 
 library(dplyr)
@@ -543,9 +553,9 @@ ggplot(plot_data, aes(x = Cutoff, y = Count, fill = Cutoff)) +
   # Give extra vertical room so numbers aren't cut off at the top
   scale_y_continuous(expand = expansion(mult = c(0, 0.15))) +
   labs(
-    title = "Number of Peak Windows by P-Value Cutoff",
+    title = "Number of peaks by p value cutoff",
     x = "P-Value Threshold",
-    y = "Number of Peak Windows"
+    y = "Number of peaks"
   ) +
   theme_classic(base_size = 14) +
   theme(
@@ -621,11 +631,19 @@ final_mapped_peaks <- annotated_df %>%
 
 # 7. Save mapped results to CSV
 #write.csv(final_mapped_peaks, "significant_peaks_mapped_to_genes.csv", row.names = FALSE)
+```
 
 
-# Preview top 5 mapped peaks
+
+
+```{r, message=F, warning=F}
+protein_coding_peaks <- final_mapped_peaks %>%
+  filter(!is.na(SYMBOL)) %>%
+  # Remove LOCs, LINCs, MicroRNAs, antisense, and pseudogene-style symbols
+  filter(!grepl("^LOC[0-9]|^LINC[0-9]|^MIR|^SNOR|^RNU|^RPS[0-9]+P|-AS[0-9]*$", SYMBOL))
+
 library(DT)
-final_mapped_peaks%>%
+protein_coding_peaks%>%
   datatable(
     extensions = 'Buttons',
     caption = "", 
@@ -645,13 +663,13 @@ library(dplyr)
 library(ggrepel) # For non-overlapping gene text labels
 
 # 1. Identify top 10 most extreme genes to label on the plot
-top_genes <- final_mapped_peaks %>%
+top_genes <- protein_coding_peaks %>%
   filter(!is.na(SYMBOL)) %>%
   arrange(P.Value) %>%
   head(10)
 
 # 2. Generate Volcano Plot
-ggplot(final_mapped_peaks, aes(x = logFC, y = -log10(P.Value))) +
+ggplot(protein_coding_peaks, aes(x = logFC, y = -log10(P.Value))) +
   geom_point(aes(color = logFC > 0), alpha = 0.6, size = 1.8) +
   geom_vline(xintercept = 0, linetype = "dashed", color = "grey40") +
   scale_color_manual(
@@ -691,13 +709,13 @@ library(dplyr)
 library(ggrepel) # For non-overlapping gene text labels
 
 # 1. Identify top 10 most extreme genes to label on the plot
-top_genes <- final_mapped_peaks %>%
+top_genes <- protein_coding_peaks %>%
   filter(!is.na(SYMBOL)) %>%
   arrange(logFC) %>%
   head(10)
 
 # 2. Generate Volcano Plot
-ggplot(final_mapped_peaks, aes(x = logFC, y = -log10(P.Value))) +
+ggplot(protein_coding_peaks, aes(x = logFC, y = -log10(P.Value))) +
   geom_point(aes(color = logFC > 0), alpha = 0.6, size = 1.8) +
   geom_vline(xintercept = 0, linetype = "dashed", color = "grey40") +
   scale_color_manual(
