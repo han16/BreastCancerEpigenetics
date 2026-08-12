@@ -640,7 +640,9 @@ final_mapped_peaks <- annotated_df %>%
 protein_coding_peaks <- final_mapped_peaks %>%
   filter(!is.na(SYMBOL)) %>%
   # Remove LOCs, LINCs, MicroRNAs, antisense, and pseudogene-style symbols
-  filter(!grepl("^LOC[0-9]|^LINC[0-9]|^MIR|^SNOR|^RNU|^RPS[0-9]+P|-AS[0-9]*$", SYMBOL))
+  filter(!grepl("^LOC[0-9]|^LINC[0-9]|^MIR|^SNOR|^RNU|^RPS[0-9]+P|-AS[0-9]*$", SYMBOL)) %>% 
+  # remove peaks within 2kb promoters 
+  filter(annotation!="Promoter (<=1kb)") %>% filter(annotation!="Promoter (1-2kb)")
 
 library(DT)
 protein_coding_peaks%>%
@@ -653,6 +655,11 @@ protein_coding_peaks%>%
       lengthMenu = list(c(10, 25, 50, -1), c(10, 25, 50, "All"))
     )
   )
+
+
+#write.csv(protein_coding_peaks, paste0(peak_dir, "significant_peaks_mapped_to_genes.csv"))
+cat("Lost windows:", protein_coding_peaks %>% filter(logFC<0) %>% nrow())
+cat("Gain windows:", protein_coding_peaks %>% filter(logFC>0) %>% nrow())
 ```
 
 
