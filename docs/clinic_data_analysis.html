@@ -10,8 +10,9 @@
 
 
 
+<meta name="date" content="2026-08-13" />
 
-<title>Home</title>
+<title>clinic data analysis</title>
 
 <script src="site_libs/header-attrs-2.26/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -29,7 +30,11 @@
        h6 {font-size: 12px;}
        code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
        pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
 <link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
@@ -228,7 +233,73 @@ $(document).ready(function () {
 </style>
 
 <!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
 
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
 
 
 
@@ -238,6 +309,16 @@ $(document).ready(function () {
 
 
 <div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
 
 
 
@@ -279,9 +360,18 @@ $(document).ready(function () {
 
 <div id="header">
 
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
 
 
-<h1 class="title toc-ignore">Home</h1>
+
+<h1 class="title toc-ignore">clinic data analysis</h1>
+<h4 class="date">2026-08-13</h4>
 
 </div>
 
@@ -314,7 +404,7 @@ aria-hidden="true"></span> </a>
 </p>
 <p>
 <strong>Checks:</strong> <span
-class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 1
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6
 <span class="glyphicon glyphicon-exclamation-sign text-danger"
 aria-hidden="true"></span> 1
 </p>
@@ -348,12 +438,96 @@ changes </a>
 <div id="strongRMarkdownfilestronguncommittedchanges"
 class="panel-collapse collapse">
 <div class="panel-body">
-<p>The R Markdown file has unstaged changes. To know which version of
-the R Markdown file created these results, you’ll want to first commit
-it to the Git repo. If you’re still working on the analysis, you can
-ignore this warning. When you’re finished, you can run
+<p>The R Markdown is untracked by Git. To know which version of the R
+Markdown file created these results, you’ll want to first commit it to
+the Git repo. If you’re still working on the analysis, you can ignore
+this warning. When you’re finished, you can run
 <code>wflow_publish</code> to commit the R Markdown file and build the
 HTML.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the
+global environment can affect the analysis in your R Markdown file in
+unknown ways. For reproduciblity it’s best to always run the code in an
+empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20240919code">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Seed:</strong>
+<code>set.seed(20240919)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20240919code"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20240919)</code> was run prior to running
+the code in the R Markdown file. Setting a seed ensures that any results
+that rely on randomness, e.g. subsampling or permutations, are
+reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Session information:</strong>
+recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package
+versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be
+confident that you successfully produced the results during this
+run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr
+project makes it easier to run your code on other machines.</p>
 </div>
 </div>
 </div>
@@ -396,6 +570,9 @@ Ignored files:
     Ignored:    analysis/patient_complete_sequencing_profiles.png
     Ignored:    analysis/peaks_venn_diagram.png
 
+Untracked files:
+    Untracked:  analysis/clinic_data_analysis.Rmd
+
 Unstaged changes:
     Modified:   analysis/index.Rmd
 
@@ -412,407 +589,88 @@ have uncommitted changes.
 <hr>
 </div>
 <div id="versions" class="tab-pane fade">
-
 <p>
-These are the previous versions of the repository in which changes were
-made to the R Markdown (<code>analysis/index.Rmd</code>) and HTML
-(<code>docs/index.html</code>) files. If you’ve configured a remote Git
-repository (see <code>?wflow_git_remote</code>), click on the hyperlinks
-in the table below to view the files as they were in that past version.
+There are no past versions. Publish this analysis with
+<code>wflow_publish()</code> to start tracking its development.
 </p>
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-File
-</th>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-<th>
-Message
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-Rmd
-</td>
-<td>
-<a href="https://github.com/han16/BreastCancerEpigenetics/blob/814a2c9e440c34fa8f89832cd106882484d81443/analysis/index.Rmd" target="_blank">814a2c9</a>
-</td>
-<td>
-han
-</td>
-<td>
-2026-07-01
-</td>
-<td>
-7/1/2026
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/han16/BreastCancerEpigenetics/814a2c9e440c34fa8f89832cd106882484d81443/docs/index.html" target="_blank">814a2c9</a>
-</td>
-<td>
-han
-</td>
-<td>
-2026-07-01
-</td>
-<td>
-7/1/2026
-</td>
-</tr>
-<tr>
-<td>
-Rmd
-</td>
-<td>
-<a href="https://github.com/han16/BreastCancerEpigenetics/blob/ce3050548b671eb4fc4c19688966e4a2fdeede23/analysis/index.Rmd" target="_blank">ce30505</a>
-</td>
-<td>
-han
-</td>
-<td>
-2026-06-15
-</td>
-<td>
-6/15/2026
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/han16/BreastCancerEpigenetics/ce3050548b671eb4fc4c19688966e4a2fdeede23/docs/index.html" target="_blank">ce30505</a>
-</td>
-<td>
-han
-</td>
-<td>
-2026-06-15
-</td>
-<td>
-6/15/2026
-</td>
-</tr>
-<tr>
-<td>
-Rmd
-</td>
-<td>
-<a href="https://github.com/han16/BreastCancerEpigenetics/blob/8a9c131d3bb05cf01cbae0013610e3408eb33c12/analysis/index.Rmd" target="_blank">8a9c131</a>
-</td>
-<td>
-han
-</td>
-<td>
-2026-04-28
-</td>
-<td>
-4/28/2026
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/han16/BreastCancerEpigenetics/8a9c131d3bb05cf01cbae0013610e3408eb33c12/docs/index.html" target="_blank">8a9c131</a>
-</td>
-<td>
-han
-</td>
-<td>
-2026-04-28
-</td>
-<td>
-4/28/2026
-</td>
-</tr>
-<tr>
-<td>
-Rmd
-</td>
-<td>
-<a href="https://github.com/han16/BreastCancerEpigenetics/blob/d1df81c190ea1a1e278194e40dc54751914577ff/analysis/index.Rmd" target="_blank">d1df81c</a>
-</td>
-<td>
-han
-</td>
-<td>
-2026-04-07
-</td>
-<td>
-4/7/2026
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/han16/BreastCancerEpigenetics/d1df81c190ea1a1e278194e40dc54751914577ff/docs/index.html" target="_blank">d1df81c</a>
-</td>
-<td>
-han
-</td>
-<td>
-2026-04-07
-</td>
-<td>
-4/7/2026
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/han16/BreastCancerEpigenetics/443091416826ed3bd3ffe879bc1cac0286618864/docs/index.html" target="_blank">4430914</a>
-</td>
-<td>
-han
-</td>
-<td>
-2025-12-22
-</td>
-<td>
-12/22/2025
-</td>
-</tr>
-<tr>
-<td>
-Rmd
-</td>
-<td>
-<a href="https://github.com/han16/BreastCancerEpigenetics/blob/a2d6fca4510e87e1c31da94b0d1c2658fe2f40ca/analysis/index.Rmd" target="_blank">a2d6fca</a>
-</td>
-<td>
-han
-</td>
-<td>
-2025-12-05
-</td>
-<td>
-12/5/2025
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/han16/BreastCancerEpigenetics/a2d6fca4510e87e1c31da94b0d1c2658fe2f40ca/docs/index.html" target="_blank">a2d6fca</a>
-</td>
-<td>
-han
-</td>
-<td>
-2025-12-05
-</td>
-<td>
-12/5/2025
-</td>
-</tr>
-<tr>
-<td>
-Rmd
-</td>
-<td>
-<a href="https://github.com/han16/BreastCancerEpigenetics/blob/af00fd6c874d5e930d3fae62b575200e20f0912d/analysis/index.Rmd" target="_blank">af00fd6</a>
-</td>
-<td>
-han
-</td>
-<td>
-2025-11-05
-</td>
-<td>
-11/5/2025
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/han16/BreastCancerEpigenetics/af00fd6c874d5e930d3fae62b575200e20f0912d/docs/index.html" target="_blank">af00fd6</a>
-</td>
-<td>
-han
-</td>
-<td>
-2025-11-05
-</td>
-<td>
-11/5/2025
-</td>
-</tr>
-<tr>
-<td>
-Rmd
-</td>
-<td>
-<a href="https://github.com/han16/BreastCancerEpigenetics/blob/b28caa5893eab67e80b9c725aa27374fbb8406ba/analysis/index.Rmd" target="_blank">b28caa5</a>
-</td>
-<td>
-han
-</td>
-<td>
-2024-09-26
-</td>
-<td>
-9/26/2024
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/han16/BreastCancerEpigenetics/b28caa5893eab67e80b9c725aa27374fbb8406ba/docs/index.html" target="_blank">b28caa5</a>
-</td>
-<td>
-han
-</td>
-<td>
-2024-09-26
-</td>
-<td>
-9/26/2024
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/han16/BreastCancerEpigenetics/4d39e0819b2a0c0b11c8d3e5e65a485bf3477c31/docs/index.html" target="_blank">4d39e08</a>
-</td>
-<td>
-han
-</td>
-<td>
-2024-09-19
-</td>
-<td>
-9/19/2024
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/han16/BreastCancerEpigenetics/5b7808f7fe13d51eefea7dad1a04dcf02bf7740f/docs/index.html" target="_blank">5b7808f</a>
-</td>
-<td>
-han
-</td>
-<td>
-2024-09-19
-</td>
-<td>
-Build site.
-</td>
-</tr>
-<tr>
-<td>
-Rmd
-</td>
-<td>
-<a href="https://github.com/han16/BreastCancerEpigenetics/blob/d52415b228af8469e0b9331e9b12d35bae4a0fc1/analysis/index.Rmd" target="_blank">d52415b</a>
-</td>
-<td>
-han
-</td>
-<td>
-2024-09-19
-</td>
-<td>
-Start workflowr project.
-</td>
-</tr>
-</tbody>
-</table>
-</div>
 <hr>
 </div>
 </div>
 </div>
-<div id="h3k27ac-052026" class="section level2">
-<h2>H3k27ac (05/2026)</h2>
-<ul>
-<li><p><a href="one_patient_sample.html">(one) patient
-sample</a></p></li>
-<li><p><a href="four_patient_samples.html">four +two patient
-samples</a></p></li>
-<li><p><a href="clinic_data_analysis.html">clinical data</a></p></li>
-</ul>
-</div>
-<div id="tools-for-longitudianl-transcriptomics-data"
-class="section level2">
-<h2>tools for longitudianl transcriptomics data</h2>
-<ul>
-<li><a href="TiSA.html">TiSA</a></li>
-</ul>
-</div>
-<div id="run-h-magma" class="section level2">
-<h2>run H-MAGMA</h2>
-<ul>
-<li><p><a href="BC_HMAGMA.html">prepare the input files for
-H-MAGMA</a></p></li>
-<li><p><a href="hic_calling.html">call Hi-C</a></p></li>
-</ul>
-</div>
-<div id="run-fuma" class="section level2">
-<h2>run FUMA</h2>
-<ul>
-<li><a href="BC_fuma.html">prepare the input files for FUMA</a></li>
-</ul>
-</div>
-<div id="run-magma-with-gwas-summary-data-only" class="section level2">
-<h2>run MAGMA with GWAS summary data only</h2>
-<ul>
-<li><a href="BC_magma.html">run magma on GWAS summary data only</a></li>
-</ul>
-</div>
-<div id="run-magma-on-gwas-and-hic" class="section level2">
-<h2>run MAGMA on GWAS and HiC</h2>
-<ul>
-<li><a href="BC_magma_hic.html">run magma on GWAS summary data and
-Hic</a></li>
-</ul>
-</div>
-<div id="run-magma-on-gwas-hic-and-eqtl" class="section level2">
-<h2>run MAGMA on GWAS, HiC and eQTL</h2>
-<ul>
-<li><a href="BC_magma_hic_eQTL.html">run magma on GWAS summary data, Hic
-and eQTL</a></li>
-</ul>
-</div>
-<div id="comparions-between-gwas-gwashi-c-gwashiceqtl"
-class="section level2">
-<h2>comparions between GWAS, GWAS+Hi-C, GWAS+HiC+eQTL</h2>
-<ul>
-<li><a href="BC_magma_hic_eQTL_comparisons.html">comparions between
-GWAS, GWAS+Hi-C, GWAS+HiC+eQTL</a></li>
-</ul>
+<pre class="r"><code>rm(list=ls())
+library(rprojroot)
+root &lt;- rprojroot::find_rstudio_root_file()
+library(dplyr)
+library(purrr)
+library(tidyr)</code></pre>
+<pre class="r"><code>library(readxl)
+clinic_data=read_excel(file.path(root, &quot;..\\fasting_project\\INT FASTING  PATIENT DATA.xlsx&quot;))
+clinic_data</code></pre>
+<pre><code># A tibble: 11 × 49
+   `IF-Ids` DOB                 RACE   AGE   MRN   ER    PR    HER2  Hist  STAGE
+   &lt;chr&gt;    &lt;dttm&gt;              &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;lgl&gt; &lt;chr&gt; &lt;chr&gt;
+ 1 IF-02    1973-06-14 00:00:00 F,Whi… HB, … 7093… 91%+  1     NA    Duct… II   
+ 2 IF-03    1975-11-05 00:00:00 F, W,… BD, … 9229… 81%+  91%+  NA    Lobu… I    
+ 3 IF-04    1985-10-30 00:00:00 F, Wh… KG, … 1024… 95%+  95%+  NA    Lobu… II   
+ 4 IF-01    1973-08-11 00:00:00 F, Af… CR, … 9466… 81%+  71%+  NA    Duct… III  
+ 5 IF-05    1984-04-22 00:00:00 F, Me… GC, … 1069… 81%+  21%+  NA    Duct… II   
+ 6 IF-07    1978-10-09 00:00:00 F, Mi… NK, … 1161… 95%+  95%+  NA    Duct… I    
+ 7 IF-08    1950-11-19 00:00:00 F, W   CM, … 1040… 91%+  11%+  NA    Duct… I    
+ 8 &lt;NA&gt;     1987-03-13 00:00:00 F, W   BI    1078… &lt;NA&gt;  &lt;NA&gt;  NA    Duct… III  
+ 9 IF-10    1954-01-12 00:00:00 F, W   LY    5732… 100%+ 91-1… NA    Duct… I    
+10 IF-11    NA                  &lt;NA&gt;   DG    9061… &lt;NA&gt;  &lt;NA&gt;  NA    &lt;NA&gt;  &lt;NA&gt; 
+11 IF-06    NA                  &lt;NA&gt;   &lt;NA&gt;  1006… &lt;NA&gt;  &lt;NA&gt;  NA    &lt;NA&gt;  &lt;NA&gt; 
+# ℹ 39 more variables: XRT &lt;chr&gt;, AET &lt;chr&gt;, `Menstrual Status` &lt;chr&gt;,
+#   `Height -(in)` &lt;dbl&gt;, `WEIGHT Kg` &lt;chr&gt;, WEIGHT2 &lt;chr&gt;, `WEIGHT 3` &lt;chr&gt;,
+#   `BMI 1` &lt;dbl&gt;, `BMI 2` &lt;chr&gt;, `BMI 3` &lt;dbl&gt;, `WST CIRC 1` &lt;chr&gt;,
+#   `WT CIRC 2` &lt;chr&gt;, `WST CIRC 3` &lt;dbl&gt;, ECOG &lt;chr&gt;, Surgery &lt;chr&gt;,
+#   `Received Chemo` &lt;chr&gt;, Remarks &lt;chr&gt;, `IGF and IGF-Z pre study` &lt;chr&gt;,
+#   `IGF and IGF-Z score post study` &lt;chr&gt;, `IL 6 Pre` &lt;chr&gt;,
+#   `IL-6 post` &lt;chr&gt;, `Glucose Pre` &lt;dbl&gt;, `Glucose post` &lt;dbl&gt;, CRP &lt;chr&gt;, …</code></pre>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 4.4.0 (2024-04-24 ucrt)
+Platform: x86_64-w64-mingw32/x64
+Running under: Windows 11 x64 (build 26200)
+
+Matrix products: default
+
+
+locale:
+[1] LC_COLLATE=English_United States.utf8 
+[2] LC_CTYPE=English_United States.utf8   
+[3] LC_MONETARY=English_United States.utf8
+[4] LC_NUMERIC=C                          
+[5] LC_TIME=English_United States.utf8    
+
+time zone: America/Chicago
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+[1] readxl_1.4.3    tidyr_1.3.1     purrr_1.0.2     dplyr_1.1.4    
+[5] rprojroot_2.0.4
+
+loaded via a namespace (and not attached):
+ [1] jsonlite_1.8.8    compiler_4.4.0    promises_1.3.0    tidyselect_1.2.1 
+ [5] Rcpp_1.0.12       stringr_1.5.1     git2r_0.33.0      later_1.3.2      
+ [9] jquerylib_0.1.4   yaml_2.3.8        fastmap_1.1.1     R6_2.5.1         
+[13] generics_0.1.3    workflowr_1.7.1   knitr_1.46        tibble_3.2.1     
+[17] bslib_0.7.0       pillar_1.9.0      rlang_1.1.3       utf8_1.2.4       
+[21] cachem_1.0.8      stringi_1.8.4     httpuv_1.6.15     xfun_0.43        
+[25] fs_1.6.4          sass_0.4.9        cli_3.6.2         magrittr_2.0.3   
+[29] digest_0.6.35     rstudioapi_0.16.0 lifecycle_1.0.4   vctrs_0.6.5      
+[33] evaluate_0.23     glue_1.7.0        cellranger_1.1.0  fansi_1.0.6      
+[37] rmarkdown_2.26    tools_4.4.0       pkgconfig_2.0.3   htmltools_0.5.8.1</code></pre>
 </div>
 
 
@@ -831,6 +689,8 @@ footer is added to webpages before the MathJax javascript. -->
 
 
 
+</div>
+</div>
 
 </div>
 
@@ -862,7 +722,41 @@ $(document).ready(function () {
 </script>
 
 <!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
 
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
 <script>

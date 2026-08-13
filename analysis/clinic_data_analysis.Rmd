@@ -1,0 +1,26 @@
+---
+title: "clinic data analysis"
+output:
+  workflowr::wflow_html:
+    code_folding: hide
+    toc: true
+date: "2026-08-13"
+---
+
+```{r, message=F, warning=F}
+rm(list=ls())
+library(rprojroot)
+root <- rprojroot::find_rstudio_root_file()
+library(dplyr)
+library(purrr)
+library(tidyr)
+
+```
+
+
+
+```{r, message=F, warning=F}
+library(readxl)
+clinic_data=read_excel(file.path(root, "..\\fasting_project\\INT FASTING  PATIENT DATA.xlsx"))
+clinic_data
+```

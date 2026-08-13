@@ -15,6 +15,8 @@ editor_options:
 
 * [four +two patient samples](four_patient_samples.html)
 
+* [clinical data](clinic_data_analysis.html)
+
 
 
 
