@@ -662,6 +662,8 @@ cat("Lost windows:", protein_coding_peaks %>% filter(logFC<0) %>% nrow())
 cat("Gain windows:", protein_coding_peaks %>% filter(logFC>0) %>% nrow())
 ```
 
+* Remove LOCs, LINCs, MicroRNAs, antisense, and pseudogene-style symbols and within 2kb promoters. 
+
 
 
 ```{r, message=F, warning=F}
