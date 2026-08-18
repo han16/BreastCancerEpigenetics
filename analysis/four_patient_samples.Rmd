@@ -382,6 +382,7 @@ iwalk(peaks_list, ~ cat(.y, ": loaded", length(.x), "peak windows.\n"))
 
 # Example: How to access a specific sample's peaks
 # head(peaks_list[["IF-03_Baseline"]])
+#save(peaks_list,file=file.path(root, "..\\h3k27ac\\intermediate_data\\peak_list.RData"))
 ```
 
 
@@ -394,6 +395,7 @@ iwalk(peaks_list, ~ cat(.y, ": loaded", length(.x), "peak windows.\n"))
 ```{r, message=F, warning=F}
 library(GenomicRanges)
 
+load(file.path(root, "..\\h3k27ac\\intermediate_data\\peak_list.RData"))
 
 # 1. Install BiocManager if you do not have it already
 #if (!require("BiocManager", quietly = TRUE)) {
@@ -522,6 +524,7 @@ results_table <- topTable(fit, coef = "ConditionFollowup", number = Inf, adjust.
 summary(results_table$P.Value)
 summary(results_table$adj.P.Val)
 
+#save(results_table,file=file.path(root, "..\\h3k27ac\\intermediate_data\\results_table.RData"))
 ```
 
 
@@ -533,6 +536,8 @@ summary(results_table$adj.P.Val)
 
 library(dplyr)
 library(ggplot2)
+
+load(file.path(root, "..\\h3k27ac\\intermediate_data\\results_table.RData"))
 
 # 1. Define the p-value cutoffs and calculate peak counts
 cutoffs <- c(0.001, 0.005, 0.01, 0.05)
@@ -576,6 +581,7 @@ library(ChIPseeker)
 library(TxDb.Hsapiens.UCSC.hg38.knownGene)
 library(org.Hs.eg.db)
 
+load(file.path(root, "..\\h3k27ac\\intermediate_data\\results_table.RData"))
 
 # 1. Attach genomic coordinates from consensus_peaks using the row indices
 peak_indices <- as.numeric(rownames(results_table))
@@ -655,18 +661,28 @@ protein_coding_peaks%>%
       lengthMenu = list(c(10, 25, 50, -1), c(10, 25, 50, "All"))
     )
   )
-
+cat("number of unique genes:", length(unique(protein_coding_peaks$SYMBOL)), "\n")
 
 #write.csv(protein_coding_peaks, paste0(peak_dir, "significant_peaks_mapped_to_genes.csv"))
-cat("Lost windows:", protein_coding_peaks %>% filter(logFC<0) %>% nrow())
+cat("Lost windows:", protein_coding_peaks %>% filter(logFC<0) %>% nrow(), "\n")
+
+protein_coding_lost_peaks=protein_coding_peaks %>% filter(logFC<0) %>% arrange(logFC)
+
 cat("Gain windows:", protein_coding_peaks %>% filter(logFC>0) %>% nrow())
+
+protein_coding_gain_peaks=protein_coding_peaks %>% filter(logFC>0) %>% arrange(desc(logFC))
+
+#write.csv(protein_coding_lost_peaks, paste0(peak_dir, "significant_lost_peaks_mapped_to_genes.csv"))
+#write.csv(protein_coding_gain_peaks, paste0(peak_dir, "significant_gain_peaks_mapped_to_genes.csv"))
+
+#save(protein_coding_peaks, file=file.path(root, "..\\h3k27ac\\intermediate_data\\protein_coding_peaks.RData"))
 ```
 
 * Remove LOCs, LINCs, MicroRNAs, antisense, and pseudogene-style symbols and within 2kb promoters. 
 
 
 
-```{r, message=F, warning=F}
+```{r, message=F, warning=F, eval=F}
 library(ggplot2)
 library(dplyr)
 library(ggrepel) # For non-overlapping gene text labels
@@ -705,9 +721,11 @@ ggplot(protein_coding_peaks, aes(x = logFC, y = -log10(P.Value))) +
     plot.title = element_text(hjust = 0.5, face = "bold"),
     legend.position = "top"
   )
+
+
+############### top 10 genes by p values 
 ```
 
-* top 10 genes by p values 
 
 
 
@@ -716,6 +734,8 @@ ggplot(protein_coding_peaks, aes(x = logFC, y = -log10(P.Value))) +
 library(ggplot2)
 library(dplyr)
 library(ggrepel) # For non-overlapping gene text labels
+
+load(file.path(root, "..\\h3k27ac\\intermediate_data\\protein_coding_peaks.RData"))
 
 # 1. Identify top 10 most extreme genes to label on the plot
 top_genes <- protein_coding_peaks %>%
@@ -756,6 +776,97 @@ ggplot(protein_coding_peaks, aes(x = logFC, y = -log10(P.Value))) +
 
 * top 10 genes by fold changes 
 
+
+
+### top 10 peaks (mapped to genes) by fold change 
+
+```{r, message=F, warning=F}
+top_genes <- protein_coding_peaks %>%
+  filter(!is.na(SYMBOL)) %>%
+  arrange(logFC) %>%
+  head(10) 
+
+top_genes %>%
+datatable(extensions = 'Buttons',
+          caption = "", 
+            options = list(dom = 'Blfrtip',
+                           buttons = c('copy', 'csv', 'excel', 'pdf', 'print'),
+                           lengthMenu = list(c(10,25,50,-1),
+                                             c(10,25,50,"All"))))
+```
+
+
+
+```{r, message=F, warning=F}
+library(GenomicRanges)
+library(dplyr)
+
+
+load(file.path(root, "..\\h3k27ac\\intermediate_data\\peak_list.RData"))
+
+# ==================================================================
+# 1. Convert top_genes into a GRanges object
+# ==================================================================
+top_genes_gr <- GRanges(
+  seqnames = top_genes$seqnames,
+  ranges   = IRanges(start = top_genes$start, end = top_genes$end),
+  symbol   = top_genes$SYMBOL,
+  gene_id  = top_genes$geneId
+)
+
+# ==================================================================
+# 2. Combine all original peaks into a single tagged GRanges object
+# ==================================================================
+# Convert list of GRanges into a single object tagged with sample names
+all_samples_gr <- unlist(GRangesList(peaks_list), use.names = TRUE)
+
+# Assign the list names (sample IDs) as a metadata column
+all_samples_gr$sample_id <- rep(names(peaks_list), lengths(peaks_list))
+
+# ==================================================================
+# 3. Find overlaps between your top 10 peaks and original sample peaks
+# ==================================================================
+overlaps <- findOverlaps(top_genes_gr, all_samples_gr)
+
+# ==================================================================
+# 4. Map sample IDs back to top_genes
+# ==================================================================
+sample_mapping <- data.frame(
+  top_peak_idx = queryHits(overlaps),
+  sample_id    = all_samples_gr$sample_id[subjectHits(overlaps)],
+  original_peak = all_samples_gr$name[subjectHits(overlaps)]
+) %>%
+  group_by(top_peak_idx) %>%
+  summarise(
+    contributing_sample_count = n_distinct(sample_id),
+    contributing_samples       = paste(sort(unique(sample_id)), collapse = ", "),
+    original_peak_ids          = paste(original_peak, collapse = ", ")
+  )
+
+# ==================================================================
+# 5. Attach the results directly onto your top_genes table
+# ==================================================================
+# Join results back to top_genes by row position
+top_genes_annotated <- top_genes %>%
+  mutate(top_peak_idx = row_number()) %>%
+  left_join(sample_mapping, by = "top_peak_idx") %>%
+  dplyr::select(-top_peak_idx)
+
+# View the final result
+top_genes_annotated %>% 
+  dplyr::select(seqnames, start, end, SYMBOL, contributing_sample_count, contributing_samples)%>%
+datatable(extensions = 'Buttons',
+          caption = "", 
+            options = list(dom = 'Blfrtip',
+                           buttons = c('copy', 'csv', 'excel', 'pdf', 'print'),
+                           lengthMenu = list(c(10,25,50,-1),
+                                             c(10,25,50,"All"))))
+
+```
+
+
+
+## peaks distribution: gain vs lost  
 
 
 
