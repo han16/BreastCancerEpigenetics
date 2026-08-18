@@ -551,15 +551,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomhan16BreastCancerEpigeneticstree35c1ec49f113094147be8880af2d83ea71173f8btargetblank35c1ec4a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomhan16BreastCancerEpigeneticstreeade8ccffd4a59dda3a27403645ed8d89c1da6d8etargetblankade8ccfa">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/han16/BreastCancerEpigenetics/tree/35c1ec49f113094147be8880af2d83ea71173f8b" target="_blank">35c1ec4</a>
+<a href="https://github.com/han16/BreastCancerEpigenetics/tree/ade8ccffd4a59dda3a27403645ed8d89c1da6d8e" target="_blank">ade8ccf</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomhan16BreastCancerEpigeneticstree35c1ec49f113094147be8880af2d83ea71173f8btargetblank35c1ec4a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomhan16BreastCancerEpigeneticstreeade8ccffd4a59dda3a27403645ed8d89c1da6d8etargetblankade8ccfa"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -569,7 +569,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/han16/BreastCancerEpigenetics/tree/35c1ec49f113094147be8880af2d83ea71173f8b" target="_blank">35c1ec4</a>.
+<a href="https://github.com/han16/BreastCancerEpigenetics/tree/ade8ccffd4a59dda3a27403645ed8d89c1da6d8e" target="_blank">ade8ccf</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -634,6 +634,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/han16/BreastCancerEpigenetics/blob/ade8ccffd4a59dda3a27403645ed8d89c1da6d8e/analysis/four_patient_samples.Rmd" target="_blank">ade8ccf</a>
+</td>
+<td>
+han
+</td>
+<td>
+2026-08-18
+</td>
+<td>
+8/18/2026
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/han16/BreastCancerEpigenetics/ade8ccffd4a59dda3a27403645ed8d89c1da6d8e/docs/four_patient_samples.html" target="_blank">ade8ccf</a>
+</td>
+<td>
+han
+</td>
+<td>
+2026-08-18
+</td>
+<td>
+8/18/2026
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1882,7 +1916,7 @@ load(file.path(root, &quot;..\\h3k27ac\\intermediate_data\\protein_coding_peaks.
 # 1. Identify top 10 most extreme genes to label on the plot
 top_genes &lt;- protein_coding_peaks %&gt;%
   filter(!is.na(SYMBOL)) %&gt;%
-  arrange(logFC) %&gt;%
+  arrange(desc(abs(logFC))) %&gt;%   # rank by absolute values 
   head(10)
 
 # 2. Generate Volcano Plot
@@ -1893,7 +1927,7 @@ ggplot(protein_coding_peaks, aes(x = logFC, y = -log10(P.Value))) +
     values = c(&quot;TRUE&quot; = &quot;#2E8B57&quot;, &quot;FALSE&quot; = &quot;#D95F02&quot;),
     labels = c(&quot;TRUE&quot; = &quot;Gained&quot;, &quot;FALSE&quot; = &quot;Lost&quot;),
     name = &quot;Peak Change&quot;
-  ) +
+  )+ 
   # Add labels for top 10 genes
   geom_text_repel(
     data = top_genes,
@@ -1911,7 +1945,8 @@ ggplot(protein_coding_peaks, aes(x = logFC, y = -log10(P.Value))) +
   theme_classic(base_size = 14) +
   theme(
     plot.title = element_text(hjust = 0.5, face = &quot;bold&quot;),
-    legend.position = &quot;top&quot;
+    legend.position = &quot;top&quot;, 
+    legend.text = element_text(size = 14)
   )</code></pre>
 <p><img src="figure/four_patient_samples.Rmd/unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
@@ -1936,6 +1971,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/han16/BreastCancerEpigenetics/blob/ade8ccffd4a59dda3a27403645ed8d89c1da6d8e/docs/figure/four_patient_samples.Rmd/unnamed-chunk-13-1.png" target="_blank">ade8ccf</a>
+</td>
+<td>
+han
+</td>
+<td>
+2026-08-18
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/han16/BreastCancerEpigenetics/blob/be7d21b15c4ccbbac6bcca2d61f0dec0974ff938/docs/figure/four_patient_samples.Rmd/unnamed-chunk-13-1.png" target="_blank">be7d21b</a>
@@ -2004,7 +2050,7 @@ class="section level3">
 <h3>top 10 peaks (mapped to genes) by fold change</h3>
 <pre class="r"><code>top_genes &lt;- protein_coding_peaks %&gt;%
   filter(!is.na(SYMBOL)) %&gt;%
-  arrange(logFC) %&gt;%
+  arrange(desc(abs(logFC))) %&gt;%
   head(10) 
 
 top_genes %&gt;%
@@ -2015,7 +2061,7 @@ datatable(extensions = &#39;Buttons&#39;,
                            lengthMenu = list(c(10,25,50,-1),
                                              c(10,25,50,&quot;All&quot;))))</code></pre>
 <div class="datatables html-widget html-fill-item" id="htmlwidget-dc0b9cf4151881f6f5f5" style="width:100%;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-dc0b9cf4151881f6f5f5">{"x":{"filter":"none","vertical":false,"extensions":["Buttons"],"caption":"<caption><\/caption>","data":[["1","2","3","4","5","6","7","8","9","10"],["chr21","chr16","chr4","chr12","chr10","chr14","chr1","chr3","chr9","chr1"],[10273898,67053306,37865391,10153117,6474078,70871794,204544851,72454831,114995422,160480274],[10274266,67055046,37867046,10154410,6475313,70872898,204546659,72456095,114996593,160481517],[369,1741,1656,1294,1236,1105,1809,1265,1172,1244],[-1.903074753364886,-1.801182464129205,-1.773331087746703,-1.731460743227929,-1.714765804557435,-1.672439078344107,-1.66457701544575,-1.663857502693833,-1.66161697414087,-1.645578919998205],[2.236636299770031,1.244652155441873,1.353244689650198,1.764043238524946,1.843063348514499,1.633926292859141,1.233180596436179,0.8319287513469167,1.36035914013994,1.109724276080206],[0.03148127681343606,0.0005265315844331777,0.00223495190368328,0.007095900902715302,0.01688280661153125,0.00360382112762636,0.007138775437920258,0.001403323889755762,0.01053052900812886,0.0002291694203581333],["Distal Intergenic","Intron (ENST00000651988.1/865, intron 3 of 5)","Exon (ENST00000623925.1/ENST00000623925.1, exon 1 of 1)","Distal Intergenic","Intron (ENST00000397176.6/5588, intron 12 of 16)","Distal Intergenic","Promoter (2-3kb)","Distal Intergenic","Intron (ENST00000648852.1/124902255, intron 3 of 5)","Distal Intergenic"],["85319","865","55276","4973","5588","22990","4194","23429","50514","114836"],["BAGE2","CBFB","PGM2","OLR1","PRKCQ","PCNX1","MDM4","RYBP","DELEC1","SLAMF6"],["BAGE family member 2 (pseudogene)","core-binding factor subunit beta","phosphoglucomutase 2","oxidized low density lipoprotein receptor 1","protein kinase C theta","pecanex 1","MDM4 regulator of p53","RING1 and YY1 binding protein","deleted in esophageal cancer 1","SLAM family member 6"],[-139211,16879,18351,6151,104963,-34507,2062,-8210,25838,41725]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>seqnames<\/th>\n      <th>start<\/th>\n      <th>end<\/th>\n      <th>width<\/th>\n      <th>logFC<\/th>\n      <th>AveExpr<\/th>\n      <th>P.Value<\/th>\n      <th>annotation<\/th>\n      <th>geneId<\/th>\n      <th>SYMBOL<\/th>\n      <th>GENENAME<\/th>\n      <th>distanceToTSS<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"dom":"Blfrtip","buttons":["copy","csv","excel","pdf","print"],"lengthMenu":[[10,25,50,-1],["10","25","50","All"]],"columnDefs":[{"className":"dt-right","targets":[2,3,4,5,6,7,12]},{"orderable":false,"targets":0},{"name":" ","targets":0},{"name":"seqnames","targets":1},{"name":"start","targets":2},{"name":"end","targets":3},{"name":"width","targets":4},{"name":"logFC","targets":5},{"name":"AveExpr","targets":6},{"name":"P.Value","targets":7},{"name":"annotation","targets":8},{"name":"geneId","targets":9},{"name":"SYMBOL","targets":10},{"name":"GENENAME","targets":11},{"name":"distanceToTSS","targets":12}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+<script type="application/json" data-for="htmlwidget-dc0b9cf4151881f6f5f5">{"x":{"filter":"none","vertical":false,"extensions":["Buttons"],"caption":"<caption><\/caption>","data":[["1","2","3","4","5","6","7","8","9","10"],["chr21","chr16","chr4","chr12","chr10","chrX","chr14","chr1","chr3","chr9"],[10273898,67053306,37865391,10153117,6474078,60082729,70871794,204544851,72454831,114995422],[10274266,67055046,37867046,10154410,6475313,60083382,70872898,204546659,72456095,114996593],[369,1741,1656,1294,1236,654,1105,1809,1265,1172],[-1.903074753364886,-1.801182464129205,-1.773331087746703,-1.731460743227929,-1.714765804557435,1.674739054373422,-1.672439078344107,-1.66457701544575,-1.663857502693833,-1.66161697414087],[2.236636299770031,1.244652155441873,1.353244689650198,1.764043238524946,1.843063348514499,1.820598951956638,1.633926292859141,1.233180596436179,0.8319287513469167,1.36035914013994],[0.03148127681343606,0.0005265315844331777,0.00223495190368328,0.007095900902715302,0.01688280661153125,0.03081945066169883,0.00360382112762636,0.007138775437920258,0.001403323889755762,0.01053052900812886],["Distal Intergenic","Intron (ENST00000651988.1/865, intron 3 of 5)","Exon (ENST00000623925.1/ENST00000623925.1, exon 1 of 1)","Distal Intergenic","Intron (ENST00000397176.6/5588, intron 12 of 16)","Distal Intergenic","Distal Intergenic","Promoter (2-3kb)","Distal Intergenic","Intron (ENST00000648852.1/124902255, intron 3 of 5)"],["85319","865","55276","4973","5588","7789","22990","4194","23429","50514"],["BAGE2","CBFB","PGM2","OLR1","PRKCQ","ZXDA","PCNX1","MDM4","RYBP","DELEC1"],["BAGE family member 2 (pseudogene)","core-binding factor subunit beta","phosphoglucomutase 2","oxidized low density lipoprotein receptor 1","protein kinase C theta","zinc finger X-linked duplicated A","pecanex 1","MDM4 regulator of p53","RING1 and YY1 binding protein","deleted in esophageal cancer 1"],[-139211,16879,18351,6151,104963,-2172271,-34507,2062,-8210,25838]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>seqnames<\/th>\n      <th>start<\/th>\n      <th>end<\/th>\n      <th>width<\/th>\n      <th>logFC<\/th>\n      <th>AveExpr<\/th>\n      <th>P.Value<\/th>\n      <th>annotation<\/th>\n      <th>geneId<\/th>\n      <th>SYMBOL<\/th>\n      <th>GENENAME<\/th>\n      <th>distanceToTSS<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"dom":"Blfrtip","buttons":["copy","csv","excel","pdf","print"],"lengthMenu":[[10,25,50,-1],["10","25","50","All"]],"columnDefs":[{"className":"dt-right","targets":[2,3,4,5,6,7,12]},{"orderable":false,"targets":0},{"name":" ","targets":0},{"name":"seqnames","targets":1},{"name":"start","targets":2},{"name":"end","targets":3},{"name":"width","targets":4},{"name":"logFC","targets":5},{"name":"AveExpr","targets":6},{"name":"P.Value","targets":7},{"name":"annotation","targets":8},{"name":"geneId","targets":9},{"name":"SYMBOL","targets":10},{"name":"GENENAME","targets":11},{"name":"distanceToTSS","targets":12}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 <pre class="r"><code>library(GenomicRanges)
 library(dplyr)
 
@@ -2080,7 +2126,7 @@ datatable(extensions = &#39;Buttons&#39;,
                            lengthMenu = list(c(10,25,50,-1),
                                              c(10,25,50,&quot;All&quot;))))</code></pre>
 <div class="datatables html-widget html-fill-item" id="htmlwidget-0e168ebcab47af9969ff" style="width:100%;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-0e168ebcab47af9969ff">{"x":{"filter":"none","vertical":false,"extensions":["Buttons"],"caption":"<caption><\/caption>","data":[["1","2","3","4","5","6","7","8","9","10"],["chr21","chr16","chr4","chr12","chr10","chr14","chr1","chr3","chr9","chr1"],[10273898,67053306,37865391,10153117,6474078,70871794,204544851,72454831,114995422,160480274],[10274266,67055046,37867046,10154410,6475313,70872898,204546659,72456095,114996593,160481517],["BAGE2","CBFB","PGM2","OLR1","PRKCQ","PCNX1","MDM4","RYBP","DELEC1","SLAMF6"],[7,7,7,8,7,8,6,5,6,7],["IF-03_Baseline, IF-04_Baseline, IF-05_Baseline, IF-06_Baseline, IF-06_Followup, IF-07_Baseline, IF-07_Followup","IF-03_Baseline, IF-04_Baseline, IF-04_Followup, IF-05_Baseline, IF-06_Baseline, IF-07_Baseline, IF-08_Baseline","IF-03_Baseline, IF-04_Baseline, IF-04_Followup, IF-05_Baseline, IF-06_Baseline, IF-07_Baseline, IF-08_Baseline","IF-03_Baseline, IF-03_Followup, IF-04_Baseline, IF-04_Followup, IF-05_Baseline, IF-06_Baseline, IF-07_Baseline, IF-08_Baseline","IF-03_Baseline, IF-04_Baseline, IF-04_Followup, IF-05_Baseline, IF-06_Baseline, IF-06_Followup, IF-08_Baseline","IF-03_Baseline, IF-03_Followup, IF-04_Baseline, IF-04_Followup, IF-05_Baseline, IF-06_Baseline, IF-07_Baseline, IF-08_Baseline","IF-03_Baseline, IF-04_Baseline, IF-04_Followup, IF-06_Baseline, IF-07_Baseline, IF-08_Baseline","IF-03_Baseline, IF-04_Baseline, IF-05_Baseline, IF-06_Baseline, IF-08_Baseline","IF-03_Baseline, IF-04_Baseline, IF-04_Followup, IF-05_Baseline, IF-06_Baseline, IF-08_Baseline","IF-03_Baseline, IF-04_Baseline, IF-04_Followup, IF-05_Baseline, IF-06_Baseline, IF-07_Baseline, IF-08_Baseline"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>seqnames<\/th>\n      <th>start<\/th>\n      <th>end<\/th>\n      <th>SYMBOL<\/th>\n      <th>contributing_sample_count<\/th>\n      <th>contributing_samples<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"dom":"Blfrtip","buttons":["copy","csv","excel","pdf","print"],"lengthMenu":[[10,25,50,-1],["10","25","50","All"]],"columnDefs":[{"className":"dt-right","targets":[2,3,5]},{"orderable":false,"targets":0},{"name":" ","targets":0},{"name":"seqnames","targets":1},{"name":"start","targets":2},{"name":"end","targets":3},{"name":"SYMBOL","targets":4},{"name":"contributing_sample_count","targets":5},{"name":"contributing_samples","targets":6}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+<script type="application/json" data-for="htmlwidget-0e168ebcab47af9969ff">{"x":{"filter":"none","vertical":false,"extensions":["Buttons"],"caption":"<caption><\/caption>","data":[["1","2","3","4","5","6","7","8","9","10"],["chr21","chr16","chr4","chr12","chr10","chrX","chr14","chr1","chr3","chr9"],[10273898,67053306,37865391,10153117,6474078,60082729,70871794,204544851,72454831,114995422],[10274266,67055046,37867046,10154410,6475313,60083382,70872898,204546659,72456095,114996593],["BAGE2","CBFB","PGM2","OLR1","PRKCQ","ZXDA","PCNX1","MDM4","RYBP","DELEC1"],[7,7,7,8,7,7,8,6,5,6],["IF-03_Baseline, IF-04_Baseline, IF-05_Baseline, IF-06_Baseline, IF-06_Followup, IF-07_Baseline, IF-07_Followup","IF-03_Baseline, IF-04_Baseline, IF-04_Followup, IF-05_Baseline, IF-06_Baseline, IF-07_Baseline, IF-08_Baseline","IF-03_Baseline, IF-04_Baseline, IF-04_Followup, IF-05_Baseline, IF-06_Baseline, IF-07_Baseline, IF-08_Baseline","IF-03_Baseline, IF-03_Followup, IF-04_Baseline, IF-04_Followup, IF-05_Baseline, IF-06_Baseline, IF-07_Baseline, IF-08_Baseline","IF-03_Baseline, IF-04_Baseline, IF-04_Followup, IF-05_Baseline, IF-06_Baseline, IF-06_Followup, IF-08_Baseline","IF-03_Followup, IF-05_Baseline, IF-05_Followup, IF-06_Baseline, IF-06_Followup, IF-07_Followup, IF-08_Followup","IF-03_Baseline, IF-03_Followup, IF-04_Baseline, IF-04_Followup, IF-05_Baseline, IF-06_Baseline, IF-07_Baseline, IF-08_Baseline","IF-03_Baseline, IF-04_Baseline, IF-04_Followup, IF-06_Baseline, IF-07_Baseline, IF-08_Baseline","IF-03_Baseline, IF-04_Baseline, IF-05_Baseline, IF-06_Baseline, IF-08_Baseline","IF-03_Baseline, IF-04_Baseline, IF-04_Followup, IF-05_Baseline, IF-06_Baseline, IF-08_Baseline"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>seqnames<\/th>\n      <th>start<\/th>\n      <th>end<\/th>\n      <th>SYMBOL<\/th>\n      <th>contributing_sample_count<\/th>\n      <th>contributing_samples<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"dom":"Blfrtip","buttons":["copy","csv","excel","pdf","print"],"lengthMenu":[[10,25,50,-1],["10","25","50","All"]],"columnDefs":[{"className":"dt-right","targets":[2,3,5]},{"orderable":false,"targets":0},{"name":" ","targets":0},{"name":"seqnames","targets":1},{"name":"start","targets":2},{"name":"end","targets":3},{"name":"SYMBOL","targets":4},{"name":"contributing_sample_count","targets":5},{"name":"contributing_samples","targets":6}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 <div id="peaks-distribution-gain-vs-lost" class="section level2">
@@ -2158,6 +2204,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/han16/BreastCancerEpigenetics/blob/ade8ccffd4a59dda3a27403645ed8d89c1da6d8e/docs/figure/four_patient_samples.Rmd/unnamed-chunk-16-1.png" target="_blank">ade8ccf</a>
+</td>
+<td>
+han
+</td>
+<td>
+2026-08-18
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/han16/BreastCancerEpigenetics/blob/ba108125fcb885c7d7daa74a0caa90b9e95b138f/docs/figure/four_patient_samples.Rmd/unnamed-chunk-16-1.png" target="_blank">ba10812</a>
@@ -2307,6 +2364,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/han16/BreastCancerEpigenetics/blob/ade8ccffd4a59dda3a27403645ed8d89c1da6d8e/docs/figure/four_patient_samples.Rmd/unnamed-chunk-18-1.png" target="_blank">ade8ccf</a>
+</td>
+<td>
+han
+</td>
+<td>
+2026-08-18
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/han16/BreastCancerEpigenetics/blob/106b7c08f5f98753ee62de4f6a0566234ed3a391/docs/figure/four_patient_samples.Rmd/unnamed-chunk-18-1.png" target="_blank">106b7c0</a>
 </td>
 <td>
@@ -2404,24 +2472,24 @@ anno_baseline &lt;- annotatePeak(baseline_unique_peaks,
                               TxDb = txdb, 
                               tssRegion = c(-3000, 3000), 
                               annoDb = &quot;org.Hs.eg.db&quot;)</code></pre>
-<pre><code>&gt;&gt; preparing features information...         2026-08-18 11:11:41 AM 
-&gt;&gt; identifying nearest features...       2026-08-18 11:11:41 AM 
-&gt;&gt; calculating distance from peak to TSS...  2026-08-18 11:11:41 AM 
-&gt;&gt; assigning genomic annotation...       2026-08-18 11:11:41 AM 
-&gt;&gt; adding gene annotation...             2026-08-18 11:11:44 AM 
-&gt;&gt; assigning chromosome lengths          2026-08-18 11:11:44 AM 
-&gt;&gt; done...                   2026-08-18 11:11:44 AM </code></pre>
+<pre><code>&gt;&gt; preparing features information...         2026-08-18 11:40:15 AM 
+&gt;&gt; identifying nearest features...       2026-08-18 11:40:15 AM 
+&gt;&gt; calculating distance from peak to TSS...  2026-08-18 11:40:15 AM 
+&gt;&gt; assigning genomic annotation...       2026-08-18 11:40:15 AM 
+&gt;&gt; adding gene annotation...             2026-08-18 11:40:18 AM 
+&gt;&gt; assigning chromosome lengths          2026-08-18 11:40:18 AM 
+&gt;&gt; done...                   2026-08-18 11:40:18 AM </code></pre>
 <pre class="r"><code>anno_followup &lt;- annotatePeak(followup_unique_peaks, 
                               TxDb = txdb, 
                               tssRegion = c(-3000, 3000), 
                               annoDb = &quot;org.Hs.eg.db&quot;)</code></pre>
-<pre><code>&gt;&gt; preparing features information...         2026-08-18 11:11:44 AM 
-&gt;&gt; identifying nearest features...       2026-08-18 11:11:44 AM 
-&gt;&gt; calculating distance from peak to TSS...  2026-08-18 11:11:45 AM 
-&gt;&gt; assigning genomic annotation...       2026-08-18 11:11:45 AM 
-&gt;&gt; adding gene annotation...             2026-08-18 11:11:48 AM 
-&gt;&gt; assigning chromosome lengths          2026-08-18 11:11:48 AM 
-&gt;&gt; done...                   2026-08-18 11:11:48 AM </code></pre>
+<pre><code>&gt;&gt; preparing features information...         2026-08-18 11:40:18 AM 
+&gt;&gt; identifying nearest features...       2026-08-18 11:40:18 AM 
+&gt;&gt; calculating distance from peak to TSS...  2026-08-18 11:40:19 AM 
+&gt;&gt; assigning genomic annotation...       2026-08-18 11:40:19 AM 
+&gt;&gt; adding gene annotation...             2026-08-18 11:40:22 AM 
+&gt;&gt; assigning chromosome lengths          2026-08-18 11:40:22 AM 
+&gt;&gt; done...                   2026-08-18 11:40:22 AM </code></pre>
 <pre class="r"><code># Convert to clean data frames
 df_baseline &lt;- as.data.frame(anno_baseline)
 df_followup &lt;- as.data.frame(anno_followup)
@@ -2508,6 +2576,43 @@ p_pathway &lt;- dotplot(go_comparison, showCategory = 10, includeAll = FALSE) +
 
 p_pathway</code></pre>
 <p><img src="figure/four_patient_samples.Rmd/unnamed-chunk-22-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-22-1">
+Past versions of unnamed-chunk-22-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-22-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/han16/BreastCancerEpigenetics/blob/ade8ccffd4a59dda3a27403645ed8d89c1da6d8e/docs/figure/four_patient_samples.Rmd/unnamed-chunk-22-1.png" target="_blank">ade8ccf</a>
+</td>
+<td>
+han
+</td>
+<td>
+2026-08-18
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code># Save visualization plot to disk
 #ggsave(&quot;biomarker_pathway_comparison.pdf&quot;, plot = p_pathway, width = 11, height = 8)</code></pre>
 <br>

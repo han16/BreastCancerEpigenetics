@@ -740,7 +740,7 @@ load(file.path(root, "..\\h3k27ac\\intermediate_data\\protein_coding_peaks.RData
 # 1. Identify top 10 most extreme genes to label on the plot
 top_genes <- protein_coding_peaks %>%
   filter(!is.na(SYMBOL)) %>%
-  arrange(logFC) %>%
+  arrange(desc(abs(logFC))) %>%   # rank by absolute values 
   head(10)
 
 # 2. Generate Volcano Plot
@@ -751,7 +751,7 @@ ggplot(protein_coding_peaks, aes(x = logFC, y = -log10(P.Value))) +
     values = c("TRUE" = "#2E8B57", "FALSE" = "#D95F02"),
     labels = c("TRUE" = "Gained", "FALSE" = "Lost"),
     name = "Peak Change"
-  ) +
+  )+ 
   # Add labels for top 10 genes
   geom_text_repel(
     data = top_genes,
@@ -769,7 +769,8 @@ ggplot(protein_coding_peaks, aes(x = logFC, y = -log10(P.Value))) +
   theme_classic(base_size = 14) +
   theme(
     plot.title = element_text(hjust = 0.5, face = "bold"),
-    legend.position = "top"
+    legend.position = "top", 
+    legend.text = element_text(size = 14)
   )
 ```
 
@@ -783,7 +784,7 @@ ggplot(protein_coding_peaks, aes(x = logFC, y = -log10(P.Value))) +
 ```{r, message=F, warning=F}
 top_genes <- protein_coding_peaks %>%
   filter(!is.na(SYMBOL)) %>%
-  arrange(logFC) %>%
+  arrange(desc(abs(logFC))) %>%
   head(10) 
 
 top_genes %>%
