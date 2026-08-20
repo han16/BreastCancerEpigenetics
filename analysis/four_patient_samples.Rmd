@@ -866,6 +866,52 @@ datatable(extensions = 'Buttons',
 ```
 
 
+### enichment analysis of lost peaks 
+
+
+```{r, message=F, warning=F}
+library(readxl)
+lost_peak_pathway=read_xlsx(file.path(root, "..\\h3k27ac\\Lost_Peaks_Pathway_Proc.xlsx"))
+
+
+library(dplyr)
+library(ggplot2)
+library(stringr) # For wrapping long pathway titles cleanly
+
+# 1. Prepare data and add -log10(P-Value)
+plot_data <- lost_peak_pathway %>%
+  mutate(
+    logP = -log10(`P-Value`),
+    # Clean and wrap long pathway titles so they don't clip
+    Term = str_wrap(Term, width = 35)
+  )
+
+# 2. Draw Faceted Bubble Plot
+ggplot(plot_data, aes(x = logP, y = reorder(Term, logP))) +
+  geom_point(aes(size = Count, color = `Fold Enrichment`), alpha = 0.85) +
+  scale_color_gradient(low = "#3182bd", high = "#de2d26") +
+  scale_size_continuous(range = c(3, 8)) +
+  facet_wrap(~ Category, scales = "free_y", ncol = 1) +
+  labs(
+    title = "Pathway Enrichment Analysis (Lost Peaks)",
+    x = expression(-log[10] ~ "(" * italic(P) * "-Value)"),
+    y = NULL,
+    size = "Gene Count",
+    color = "Fold Enrichment"
+  ) +
+  theme_bw(base_size = 12) +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold", size = 14),
+    strip.background = element_rect(fill = "#f0f0f0", color = "black"),
+    strip.text = element_text(face = "bold", size = 11),
+    axis.text.y = element_text(size = 7, color = "black"),
+    axis.text.x = element_text(color = "black"),
+    panel.grid.minor = element_blank()
+  )
+```
+
+
+
 
 ## peaks distribution: gain vs lost  
 
