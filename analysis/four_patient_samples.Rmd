@@ -896,7 +896,7 @@ ggplot(plot_data, aes(x = logP, y = reorder(Term, logP))) +
     title = "Pathway Enrichment Analysis (Lost Peaks)",
     x = expression(-log[10] ~ "(" * italic(P) * "-Value)"),
     y = NULL,
-    size = "Gene Count",
+    size = "Count",
     color = "Fold Enrichment"
   ) +
   theme_bw(base_size = 12) +
@@ -908,6 +908,15 @@ ggplot(plot_data, aes(x = logP, y = reorder(Term, logP))) +
     axis.text.x = element_text(color = "black"),
     panel.grid.minor = element_blank()
   )
+
+
+lost_peak_pathway%>% 
+datatable(extensions = 'Buttons',
+          caption = "", 
+            options = list(dom = 'Blfrtip',
+                           buttons = c('copy', 'csv', 'excel', 'pdf', 'print'),
+                           lengthMenu = list(c(10,25,50,-1),
+                                             c(10,25,50,"All"))))
 ```
 
 
