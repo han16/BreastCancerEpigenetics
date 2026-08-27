@@ -793,7 +793,7 @@ ggplot(protein_coding_peaks, aes(x = logFC, y = -log10(P.Value))) +
 
 top_genes_strengthened %>%
 datatable(extensions = 'Buttons',
-          caption = "", 
+          caption = " top 10 strengthened peaks", 
             options = list(dom = 'Blfrtip',
                            buttons = c('copy', 'csv', 'excel', 'pdf', 'print'),
                            lengthMenu = list(c(10,25,50,-1),
@@ -801,7 +801,7 @@ datatable(extensions = 'Buttons',
 
 top_genes_weakened%>%
 datatable(extensions = 'Buttons',
-          caption = "", 
+          caption = " top 10 weakened peaks", 
             options = list(dom = 'Blfrtip',
                            buttons = c('copy', 'csv', 'excel', 'pdf', 'print'),
                            lengthMenu = list(c(10,25,50,-1),
