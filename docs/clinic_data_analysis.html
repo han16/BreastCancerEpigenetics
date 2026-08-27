@@ -37,6 +37,23 @@
 <script src="site_libs/navigation-1.1/codefolding.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/htmltools-fill-0.5.8.1/fill.css" rel="stylesheet" />
+<script src="site_libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
+<link href="site_libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet" />
+<script src="site_libs/datatables-binding-0.33/datatables.js"></script>
+<link href="site_libs/dt-core-1.13.6/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="site_libs/dt-core-1.13.6/css/jquery.dataTables.extra.css" rel="stylesheet" />
+<script src="site_libs/dt-core-1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="site_libs/jszip-1.13.6/jszip.min.js"></script>
+<script src="site_libs/pdfmake-1.13.6/pdfmake.js"></script>
+<script src="site_libs/pdfmake-1.13.6/vfs_fonts.js"></script>
+<link href="site_libs/dt-ext-buttons-1.13.6/css/buttons.dataTables.min.css" rel="stylesheet" />
+<script src="site_libs/dt-ext-buttons-1.13.6/js/dataTables.buttons.min.js"></script>
+<script src="site_libs/dt-ext-buttons-1.13.6/js/buttons.html5.min.js"></script>
+<script src="site_libs/dt-ext-buttons-1.13.6/js/buttons.colVis.min.js"></script>
+<script src="site_libs/dt-ext-buttons-1.13.6/js/buttons.print.min.js"></script>
+<link href="site_libs/crosstalk-1.2.1/css/crosstalk.min.css" rel="stylesheet" />
+<script src="site_libs/crosstalk-1.2.1/js/crosstalk.min.js"></script>
 <link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
 <link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
 
@@ -400,7 +417,7 @@ aria-hidden="true"></span> </a>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2026-08-13
+<strong>Last updated:</strong> 2026-08-27
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -438,10 +455,10 @@ changes </a>
 <div id="strongRMarkdownfilestronguncommittedchanges"
 class="panel-collapse collapse">
 <div class="panel-body">
-<p>The R Markdown is untracked by Git. To know which version of the R
-Markdown file created these results, you’ll want to first commit it to
-the Git repo. If you’re still working on the analysis, you can ignore
-this warning. When you’re finished, you can run
+<p>The R Markdown file has unstaged changes. To know which version of
+the R Markdown file created these results, you’ll want to first commit
+it to the Git repo. If you’re still working on the analysis, you can
+ignore this warning. When you’re finished, you can run
 <code>wflow_publish</code> to commit the R Markdown file and build the
 HTML.</p>
 </div>
@@ -534,15 +551,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomhan16BreastCancerEpigeneticstree240a16e49ac3a1fcdc7d1219fd5fe922280d364atargetblank240a16ea">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomhan16BreastCancerEpigeneticstreededb387cbff2928eff1dd6d50642ce95094b38e0targetblankdedb387a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/han16/BreastCancerEpigenetics/tree/240a16e49ac3a1fcdc7d1219fd5fe922280d364a" target="_blank">240a16e</a>
+<a href="https://github.com/han16/BreastCancerEpigenetics/tree/dedb387cbff2928eff1dd6d50642ce95094b38e0" target="_blank">dedb387</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomhan16BreastCancerEpigeneticstree240a16e49ac3a1fcdc7d1219fd5fe922280d364atargetblank240a16ea"
+id="strongRepositoryversionstrongahrefhttpsgithubcomhan16BreastCancerEpigeneticstreededb387cbff2928eff1dd6d50642ce95094b38e0targetblankdedb387a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -552,7 +569,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/han16/BreastCancerEpigenetics/tree/240a16e49ac3a1fcdc7d1219fd5fe922280d364a" target="_blank">240a16e</a>.
+<a href="https://github.com/han16/BreastCancerEpigenetics/tree/dedb387cbff2928eff1dd6d50642ce95094b38e0" target="_blank">dedb387</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -570,11 +587,8 @@ Ignored files:
     Ignored:    analysis/patient_complete_sequencing_profiles.png
     Ignored:    analysis/peaks_venn_diagram.png
 
-Untracked files:
-    Untracked:  analysis/clinic_data_analysis.Rmd
-
 Unstaged changes:
-    Modified:   analysis/index.Rmd
+    Modified:   analysis/clinic_data_analysis.Rmd
 
 </code></pre>
 <p>
@@ -589,10 +603,74 @@ have uncommitted changes.
 <hr>
 </div>
 <div id="versions" class="tab-pane fade">
+
 <p>
-There are no past versions. Publish this analysis with
-<code>wflow_publish()</code> to start tracking its development.
+These are the previous versions of the repository in which changes were
+made to the R Markdown (<code>analysis/clinic_data_analysis.Rmd</code>)
+and HTML (<code>docs/clinic_data_analysis.html</code>) files. If you’ve
+configured a remote Git repository (see <code>?wflow_git_remote</code>),
+click on the hyperlinks in the table below to view the files as they
+were in that past version.
 </p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/han16/BreastCancerEpigenetics/blob/35c1ec49f113094147be8880af2d83ea71173f8b/analysis/clinic_data_analysis.Rmd" target="_blank">35c1ec4</a>
+</td>
+<td>
+han
+</td>
+<td>
+2026-08-13
+</td>
+<td>
+8/13/2026
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/han16/BreastCancerEpigenetics/35c1ec49f113094147be8880af2d83ea71173f8b/docs/clinic_data_analysis.html" target="_blank">35c1ec4</a>
+</td>
+<td>
+han
+</td>
+<td>
+2026-08-13
+</td>
+<td>
+8/13/2026
+</td>
+</tr>
+</tbody>
+</table>
+</div>
 <hr>
 </div>
 </div>
@@ -602,31 +680,75 @@ library(rprojroot)
 root &lt;- rprojroot::find_rstudio_root_file()
 library(dplyr)
 library(purrr)
-library(tidyr)</code></pre>
+library(tidyr)
+library(DT)</code></pre>
 <pre class="r"><code>library(readxl)
 clinic_data=read_excel(file.path(root, &quot;..\\fasting_project\\INT FASTING  PATIENT DATA.xlsx&quot;))
-clinic_data</code></pre>
-<pre><code># A tibble: 11 × 49
-   `IF-Ids` DOB                 RACE   AGE   MRN   ER    PR    HER2  Hist  STAGE
-   &lt;chr&gt;    &lt;dttm&gt;              &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;lgl&gt; &lt;chr&gt; &lt;chr&gt;
- 1 IF-02    1973-06-14 00:00:00 F,Whi… HB, … 7093… 91%+  1     NA    Duct… II   
- 2 IF-03    1975-11-05 00:00:00 F, W,… BD, … 9229… 81%+  91%+  NA    Lobu… I    
- 3 IF-04    1985-10-30 00:00:00 F, Wh… KG, … 1024… 95%+  95%+  NA    Lobu… II   
- 4 IF-01    1973-08-11 00:00:00 F, Af… CR, … 9466… 81%+  71%+  NA    Duct… III  
- 5 IF-05    1984-04-22 00:00:00 F, Me… GC, … 1069… 81%+  21%+  NA    Duct… II   
- 6 IF-07    1978-10-09 00:00:00 F, Mi… NK, … 1161… 95%+  95%+  NA    Duct… I    
- 7 IF-08    1950-11-19 00:00:00 F, W   CM, … 1040… 91%+  11%+  NA    Duct… I    
- 8 &lt;NA&gt;     1987-03-13 00:00:00 F, W   BI    1078… &lt;NA&gt;  &lt;NA&gt;  NA    Duct… III  
- 9 IF-10    1954-01-12 00:00:00 F, W   LY    5732… 100%+ 91-1… NA    Duct… I    
-10 IF-11    NA                  &lt;NA&gt;   DG    9061… &lt;NA&gt;  &lt;NA&gt;  NA    &lt;NA&gt;  &lt;NA&gt; 
-11 IF-06    NA                  &lt;NA&gt;   &lt;NA&gt;  1006… &lt;NA&gt;  &lt;NA&gt;  NA    &lt;NA&gt;  &lt;NA&gt; 
-# ℹ 39 more variables: XRT &lt;chr&gt;, AET &lt;chr&gt;, `Menstrual Status` &lt;chr&gt;,
-#   `Height -(in)` &lt;dbl&gt;, `WEIGHT Kg` &lt;chr&gt;, WEIGHT2 &lt;chr&gt;, `WEIGHT 3` &lt;chr&gt;,
-#   `BMI 1` &lt;dbl&gt;, `BMI 2` &lt;chr&gt;, `BMI 3` &lt;dbl&gt;, `WST CIRC 1` &lt;chr&gt;,
-#   `WT CIRC 2` &lt;chr&gt;, `WST CIRC 3` &lt;dbl&gt;, ECOG &lt;chr&gt;, Surgery &lt;chr&gt;,
-#   `Received Chemo` &lt;chr&gt;, Remarks &lt;chr&gt;, `IGF and IGF-Z pre study` &lt;chr&gt;,
-#   `IGF and IGF-Z score post study` &lt;chr&gt;, `IL 6 Pre` &lt;chr&gt;,
-#   `IL-6 post` &lt;chr&gt;, `Glucose Pre` &lt;dbl&gt;, `Glucose post` &lt;dbl&gt;, CRP &lt;chr&gt;, …</code></pre>
+#clinic_data
+clinic_data_cleaned=read.csv(file.path(root, &quot;..\\fasting_project\\INT FASTING  PATIENT DATA (1)_clean.csv&quot;), header=T)</code></pre>
+<pre class="r"><code>library(dplyr)
+library(tidyr)
+
+# 1. Map pre/post matching column names
+pre_cols  &lt;- grep(&quot;_pre(_study)?$&quot;, colnames(clinic_data_cleaned), value = TRUE, ignore.case = TRUE)
+post_cols &lt;- grep(&quot;_post_study$&quot;, colnames(clinic_data_cleaned), value = TRUE, ignore.case = TRUE)
+
+paired_vars &lt;- data.frame(pre = pre_cols, stringsAsFactors = FALSE) %&gt;%
+  mutate(base_name = gsub(&quot;_pre(_study)?$&quot;, &quot;&quot;, pre, ignore.case = TRUE)) %&gt;%
+  inner_join(
+    data.frame(post = post_cols, stringsAsFactors = FALSE) %&gt;%
+      mutate(base_name = gsub(&quot;_post_study$&quot;, &quot;&quot;, post, ignore.case = TRUE)),
+    by = &quot;base_name&quot;
+  )
+
+# 2. Run paired t-tests using base R lapply()
+results_list &lt;- lapply(1:nrow(paired_vars), function(i) {
+  pre_var  &lt;- paired_vars$pre[i]
+  post_var &lt;- paired_vars$post[i]
+  label    &lt;- paired_vars$base_name[i]
+  
+  # Ensure numeric data and drop incomplete pairs
+  df_subset &lt;- clinic_data_cleaned %&gt;%
+    dplyr::select(all_of(c(pre_var, post_var))) %&gt;%
+    mutate(across(everything(), as.numeric)) %&gt;%
+    drop_na()
+  
+  x_pre  &lt;- df_subset[[pre_var]]
+  x_post &lt;- df_subset[[post_var]]
+  
+  # Run paired t-test if enough complete pairs exist
+  if (length(x_pre) &gt; 2) {
+    test &lt;- t.test(x_post, x_pre, paired = TRUE)
+    
+    data.frame(
+      Biomarker   = label,
+      N_Pairs     = length(x_pre),
+      Mean_Pre    = round(mean(x_pre), 3),
+      Mean_Post   = round(mean(x_post), 3),
+      Mean_Diff   = round(test$estimate, 3), # Post - Pre
+      t_statistic = round(test$statistic, 3),
+      P_Value     = test$p.value
+    )
+  }
+})
+
+# 3. Combine list into a tidy dataframe and calculate FDR
+ttest_results &lt;- bind_rows(results_list) %&gt;%
+  mutate(
+    FDR = p.adjust(P_Value, method = &quot;BH&quot;)
+  ) %&gt;%
+  arrange(P_Value)
+
+# Print results
+ttest_results%&gt;% 
+datatable(extensions = &#39;Buttons&#39;,
+          caption = &quot;&quot;, 
+            options = list(dom = &#39;Blfrtip&#39;,
+                           buttons = c(&#39;copy&#39;, &#39;csv&#39;, &#39;excel&#39;, &#39;pdf&#39;, &#39;print&#39;),
+                           lengthMenu = list(c(10,25,50,-1),
+                                             c(10,25,50,&quot;All&quot;))))</code></pre>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-1673724887d97c678f91" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-1673724887d97c678f91">{"x":{"filter":"none","vertical":false,"extensions":["Buttons"],"caption":"<caption><\/caption>","data":[["mean difference...1","mean difference...2","mean difference...3","mean difference...4","mean difference...5","mean difference...6","mean difference...7"],["Insulin","HDL","Glucose","HbA1C","Chol.HDL","Trg","LDL"],[6,7,7,7,7,7,7],[127.767,53,105.286,5.471,3.931,129.286,121.143],[57.167,54.286,110,5.514,3.907,125.286,122],[-70.59999999999999,1.286,4.714,0.043,-0.024,-4,0.857],[-0.994,0.629,0.322,0.26,-0.173,-0.151,0.083],[0.3658090909882667,0.5524672764686901,0.7583346912979618,0.8032175225794602,0.8680479732013875,0.8846051067164813,0.9363787494225052],[0.9363787494225052,0.9363787494225052,0.9363787494225052,0.9363787494225052,0.9363787494225052,0.9363787494225052,0.9363787494225052]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>Biomarker<\/th>\n      <th>N_Pairs<\/th>\n      <th>Mean_Pre<\/th>\n      <th>Mean_Post<\/th>\n      <th>Mean_Diff<\/th>\n      <th>t_statistic<\/th>\n      <th>P_Value<\/th>\n      <th>FDR<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"dom":"Blfrtip","buttons":["copy","csv","excel","pdf","print"],"lengthMenu":[[10,25,50,-1],["10","25","50","All"]],"columnDefs":[{"className":"dt-right","targets":[2,3,4,5,6,7,8]},{"orderable":false,"targets":0},{"name":" ","targets":0},{"name":"Biomarker","targets":1},{"name":"N_Pairs","targets":2},{"name":"Mean_Pre","targets":3},{"name":"Mean_Post","targets":4},{"name":"Mean_Diff","targets":5},{"name":"t_statistic","targets":6},{"name":"P_Value","targets":7},{"name":"FDR","targets":8}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -657,20 +779,21 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
-[1] readxl_1.4.3    tidyr_1.3.1     purrr_1.0.2     dplyr_1.1.4    
-[5] rprojroot_2.0.4
+[1] readxl_1.4.3    DT_0.33         tidyr_1.3.1     purrr_1.0.2    
+[5] dplyr_1.1.4     rprojroot_2.0.4
 
 loaded via a namespace (and not attached):
  [1] jsonlite_1.8.8    compiler_4.4.0    promises_1.3.0    tidyselect_1.2.1 
  [5] Rcpp_1.0.12       stringr_1.5.1     git2r_0.33.0      later_1.3.2      
  [9] jquerylib_0.1.4   yaml_2.3.8        fastmap_1.1.1     R6_2.5.1         
-[13] generics_0.1.3    workflowr_1.7.1   knitr_1.46        tibble_3.2.1     
-[17] bslib_0.7.0       pillar_1.9.0      rlang_1.1.3       utf8_1.2.4       
-[21] cachem_1.0.8      stringi_1.8.4     httpuv_1.6.15     xfun_0.43        
-[25] fs_1.6.4          sass_0.4.9        cli_3.6.2         magrittr_2.0.3   
-[29] digest_0.6.35     rstudioapi_0.16.0 lifecycle_1.0.4   vctrs_0.6.5      
-[33] evaluate_0.23     glue_1.7.0        cellranger_1.1.0  fansi_1.0.6      
-[37] rmarkdown_2.26    tools_4.4.0       pkgconfig_2.0.3   htmltools_0.5.8.1</code></pre>
+[13] generics_0.1.3    workflowr_1.7.1   knitr_1.46        htmlwidgets_1.6.4
+[17] tibble_3.2.1      bslib_0.7.0       pillar_1.9.0      rlang_1.1.3      
+[21] utf8_1.2.4        cachem_1.0.8      stringi_1.8.4     httpuv_1.6.15    
+[25] xfun_0.43         fs_1.6.4          sass_0.4.9        cli_3.6.2        
+[29] withr_3.0.0       magrittr_2.0.3    crosstalk_1.2.1   digest_0.6.35    
+[33] rstudioapi_0.16.0 lifecycle_1.0.4   vctrs_0.6.5       evaluate_0.23    
+[37] glue_1.7.0        cellranger_1.1.0  whisker_0.4.1     fansi_1.0.6      
+[41] rmarkdown_2.26    tools_4.4.0       pkgconfig_2.0.3   htmltools_0.5.8.1</code></pre>
 </div>
 
 

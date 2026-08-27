@@ -14,7 +14,7 @@ root <- rprojroot::find_rstudio_root_file()
 library(dplyr)
 library(purrr)
 library(tidyr)
-
+library(DT)
 ```
 
 
@@ -22,5 +22,72 @@ library(tidyr)
 ```{r, message=F, warning=F}
 library(readxl)
 clinic_data=read_excel(file.path(root, "..\\fasting_project\\INT FASTING  PATIENT DATA.xlsx"))
-clinic_data
+#clinic_data
+clinic_data_cleaned=read.csv(file.path(root, "..\\fasting_project\\INT FASTING  PATIENT DATA (1)_clean.csv"), header=T)
+```
+
+
+
+```{r, message=F, warning=F}
+library(dplyr)
+library(tidyr)
+
+# 1. Map pre/post matching column names
+pre_cols  <- grep("_pre(_study)?$", colnames(clinic_data_cleaned), value = TRUE, ignore.case = TRUE)
+post_cols <- grep("_post_study$", colnames(clinic_data_cleaned), value = TRUE, ignore.case = TRUE)
+
+paired_vars <- data.frame(pre = pre_cols, stringsAsFactors = FALSE) %>%
+  mutate(base_name = gsub("_pre(_study)?$", "", pre, ignore.case = TRUE)) %>%
+  inner_join(
+    data.frame(post = post_cols, stringsAsFactors = FALSE) %>%
+      mutate(base_name = gsub("_post_study$", "", post, ignore.case = TRUE)),
+    by = "base_name"
+  )
+
+# 2. Run paired t-tests using base R lapply()
+results_list <- lapply(1:nrow(paired_vars), function(i) {
+  pre_var  <- paired_vars$pre[i]
+  post_var <- paired_vars$post[i]
+  label    <- paired_vars$base_name[i]
+  
+  # Ensure numeric data and drop incomplete pairs
+  df_subset <- clinic_data_cleaned %>%
+    dplyr::select(all_of(c(pre_var, post_var))) %>%
+    mutate(across(everything(), as.numeric)) %>%
+    drop_na()
+  
+  x_pre  <- df_subset[[pre_var]]
+  x_post <- df_subset[[post_var]]
+  
+  # Run paired t-test if enough complete pairs exist
+  if (length(x_pre) > 2) {
+    test <- t.test(x_post, x_pre, paired = TRUE)
+    
+    data.frame(
+      Biomarker   = label,
+      N_Pairs     = length(x_pre),
+      Mean_Pre    = round(mean(x_pre), 3),
+      Mean_Post   = round(mean(x_post), 3),
+      Mean_Diff   = round(test$estimate, 3), # Post - Pre
+      t_statistic = round(test$statistic, 3),
+      P_Value     = test$p.value
+    )
+  }
+})
+
+# 3. Combine list into a tidy dataframe and calculate FDR
+ttest_results <- bind_rows(results_list) %>%
+  mutate(
+    FDR = p.adjust(P_Value, method = "BH")
+  ) %>%
+  arrange(P_Value)
+
+# Print results
+ttest_results%>% 
+datatable(extensions = 'Buttons',
+          caption = "", 
+            options = list(dom = 'Blfrtip',
+                           buttons = c('copy', 'csv', 'excel', 'pdf', 'print'),
+                           lengthMenu = list(c(10,25,50,-1),
+                                             c(10,25,50,"All"))))
 ```
