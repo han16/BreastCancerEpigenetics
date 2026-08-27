@@ -789,6 +789,8 @@ ggplot(protein_coding_peaks, aes(x = logFC, y = -log10(P.Value))) +
 
 ### top 10 peaks (mapped to genes) by fold change 
 
+
+
 ```{r, message=F, warning=F}
 
 top_genes_strengthened %>%
@@ -1046,7 +1048,7 @@ datatable(extensions = 'Buttons',
 
 
 
-## peaks distribution: gain vs lost  
+## peaks distribution: strengthened vs weakened 
 
 
 
