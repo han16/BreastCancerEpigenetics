@@ -650,6 +650,11 @@ protein_coding_peaks <- final_mapped_peaks %>%
   # remove peaks within 2kb promoters 
   filter(annotation!="Promoter (<=1kb)") %>% filter(annotation!="Promoter (1-2kb)")
 
+protein_coding_peaks$logFC=round(protein_coding_peaks$logFC,4)
+protein_coding_peaks$AveExpr=round(protein_coding_peaks$AveExpr,4)
+protein_coding_peaks$P.Value=round(protein_coding_peaks$P.Value,4)
+
+
 library(DT)
 protein_coding_peaks%>%
   datatable(
@@ -664,11 +669,11 @@ protein_coding_peaks%>%
 cat("number of unique genes:", length(unique(protein_coding_peaks$SYMBOL)), "\n")
 
 #write.csv(protein_coding_peaks, paste0(peak_dir, "significant_peaks_mapped_to_genes.csv"))
-cat("Lost windows:", protein_coding_peaks %>% filter(logFC<0) %>% nrow(), "\n")
+cat("Weakened windows:", protein_coding_peaks %>% filter(logFC<0) %>% nrow(), "\n")
 
 protein_coding_lost_peaks=protein_coding_peaks %>% filter(logFC<0) %>% arrange(logFC)
 
-cat("Gain windows:", protein_coding_peaks %>% filter(logFC>0) %>% nrow())
+cat("Strengthened windows:", protein_coding_peaks %>% filter(logFC>0) %>% nrow())
 
 protein_coding_gain_peaks=protein_coding_peaks %>% filter(logFC>0) %>% arrange(desc(logFC))
 
@@ -682,50 +687,6 @@ protein_coding_gain_peaks=protein_coding_peaks %>% filter(logFC>0) %>% arrange(d
 
 
 
-```{r, message=F, warning=F, eval=F}
-library(ggplot2)
-library(dplyr)
-library(ggrepel) # For non-overlapping gene text labels
-
-# 1. Identify top 10 most extreme genes to label on the plot
-top_genes <- protein_coding_peaks %>%
-  filter(!is.na(SYMBOL)) %>%
-  arrange(P.Value) %>%
-  head(10)
-
-# 2. Generate Volcano Plot
-ggplot(protein_coding_peaks, aes(x = logFC, y = -log10(P.Value))) +
-  geom_point(aes(color = logFC > 0), alpha = 0.6, size = 1.8) +
-  geom_vline(xintercept = 0, linetype = "dashed", color = "grey40") +
-  scale_color_manual(
-    values = c("TRUE" = "#2E8B57", "FALSE" = "#D95F02"),
-    labels = c("TRUE" = "Gained", "FALSE" = "Lost"),
-    name = "Peak Change"
-  ) +
-  # Add labels for top 10 genes
-  geom_text_repel(
-    data = top_genes,
-    aes(label = SYMBOL),
-    size = 4,
-    fontface = "bold",
-    box.padding = 0.5,
-    max.overlaps = 15
-  ) +
-  labs(
-    title = "Volcano Plot: Log2 Fold Change vs. Significance",
-    x = "Log2 Fold Change (logFC)",
-    y = "-log10 (P-Value)"
-  ) +
-  theme_classic(base_size = 14) +
-  theme(
-    plot.title = element_text(hjust = 0.5, face = "bold"),
-    legend.position = "top"
-  )
-
-
-############### top 10 genes by p values 
-```
-
 
 
 
@@ -738,9 +699,9 @@ library(ggrepel) # For non-overlapping gene text labels
 load(file.path(root, "..\\h3k27ac\\intermediate_data\\protein_coding_peaks.RData"))
 
 # 1. Identify top 10 most extreme genes to label on the plot
-top_genes <- protein_coding_peaks %>%
+top_genes_strengthened <- protein_coding_peaks %>%
   filter(!is.na(SYMBOL)) %>%
-  arrange(desc(abs(logFC))) %>%   # rank by absolute values 
+  arrange(desc(logFC)) %>%   # rank by absolute values 
   head(10)
 
 # 2. Generate Volcano Plot
@@ -749,12 +710,12 @@ ggplot(protein_coding_peaks, aes(x = logFC, y = -log10(P.Value))) +
   geom_vline(xintercept = 0, linetype = "dashed", color = "grey40") +
   scale_color_manual(
     values = c("TRUE" = "#2E8B57", "FALSE" = "#D95F02"),
-    labels = c("TRUE" = "Gained", "FALSE" = "Lost"),
+    labels = c("TRUE" = "Strengthened", "FALSE" = "Weakened"),
     name = "Peak Change"
   )+ 
   # Add labels for top 10 genes
   geom_text_repel(
-    data = top_genes,
+    data = top_genes_strengthened,
     aes(label = SYMBOL),
     size = 4,
     fontface = "bold",
@@ -762,8 +723,8 @@ ggplot(protein_coding_peaks, aes(x = logFC, y = -log10(P.Value))) +
     max.overlaps = 15
   ) +
   labs(
-    title = "Volcano Plot: Log2 Fold Change vs. Significance",
-    x = "Log2 Fold Change (logFC)",
+    title = "Volcano Plot: Top 10 strengthened windows mapped to genes",
+    x = "Log2(Fold Change)",
     y = "-log10 (P-Value)"
   ) +
   theme_classic(base_size = 14) +
@@ -775,6 +736,53 @@ ggplot(protein_coding_peaks, aes(x = logFC, y = -log10(P.Value))) +
 ```
 
 
+```{r, message=F, warning=F}
+library(ggplot2)
+library(dplyr)
+library(ggrepel) # For non-overlapping gene text labels
+
+load(file.path(root, "..\\h3k27ac\\intermediate_data\\protein_coding_peaks.RData"))
+
+# 1. Identify top 10 most extreme genes to label on the plot
+top_genes_weakened <- protein_coding_peaks %>%
+  filter(!is.na(SYMBOL)) %>%
+  arrange(logFC) %>%  
+  head(10)
+
+# 2. Generate Volcano Plot
+ggplot(protein_coding_peaks, aes(x = logFC, y = -log10(P.Value))) +
+  geom_point(aes(color = logFC > 0), alpha = 0.6, size = 1.8) +
+  geom_vline(xintercept = 0, linetype = "dashed", color = "grey40") +
+  scale_color_manual(
+    values = c("TRUE" = "#2E8B57", "FALSE" = "#D95F02"),
+    labels = c("TRUE" = "Strengthened", "FALSE" = "Weakened"),
+    name = "Peak Change"
+  )+ 
+  # Add labels for top 10 genes
+  geom_text_repel(
+    data = top_genes_weakened,
+    aes(label = SYMBOL),
+    size = 4,
+    fontface = "bold",
+    box.padding = 0.5,
+    max.overlaps = 15
+  ) +
+  labs(
+    title = "Volcano Plot: Top 10 weakened windows mapped to genes",
+    x = "Log2(Fold Change)",
+    y = "-log10 (P-Value)"
+  ) +
+  theme_classic(base_size = 14) +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"),
+    legend.position = "top", 
+    legend.text = element_text(size = 14)
+  )
+```
+
+
+
+
 * top 10 genes by fold changes 
 
 
@@ -782,12 +790,16 @@ ggplot(protein_coding_peaks, aes(x = logFC, y = -log10(P.Value))) +
 ### top 10 peaks (mapped to genes) by fold change 
 
 ```{r, message=F, warning=F}
-top_genes <- protein_coding_peaks %>%
-  filter(!is.na(SYMBOL)) %>%
-  arrange(desc(abs(logFC))) %>%
-  head(10) 
 
-top_genes %>%
+top_genes_strengthened %>%
+datatable(extensions = 'Buttons',
+          caption = "", 
+            options = list(dom = 'Blfrtip',
+                           buttons = c('copy', 'csv', 'excel', 'pdf', 'print'),
+                           lengthMenu = list(c(10,25,50,-1),
+                                             c(10,25,50,"All"))))
+
+top_genes_weakened%>%
 datatable(extensions = 'Buttons',
           caption = "", 
             options = list(dom = 'Blfrtip',
@@ -799,29 +811,22 @@ datatable(extensions = 'Buttons',
 
 
 ```{r, message=F, warning=F}
-library(GenomicRanges)
-library(dplyr)
-
-
 load(file.path(root, "..\\h3k27ac\\intermediate_data\\peak_list.RData"))
 
 # ==================================================================
 # 1. Convert top_genes into a GRanges object
 # ==================================================================
 top_genes_gr <- GRanges(
-  seqnames = top_genes$seqnames,
-  ranges   = IRanges(start = top_genes$start, end = top_genes$end),
-  symbol   = top_genes$SYMBOL,
-  gene_id  = top_genes$geneId
+  seqnames = top_genes_strengthened$seqnames,
+  ranges   = IRanges(start = top_genes_strengthened$start, end = top_genes_strengthened$end),
+  symbol   = top_genes_strengthened$SYMBOL,
+  gene_id  = top_genes_strengthened$geneId
 )
 
 # ==================================================================
 # 2. Combine all original peaks into a single tagged GRanges object
 # ==================================================================
-# Convert list of GRanges into a single object tagged with sample names
 all_samples_gr <- unlist(GRangesList(peaks_list), use.names = TRUE)
-
-# Assign the list names (sample IDs) as a metadata column
 all_samples_gr$sample_id <- rep(names(peaks_list), lengths(peaks_list))
 
 # ==================================================================
@@ -830,43 +835,162 @@ all_samples_gr$sample_id <- rep(names(peaks_list), lengths(peaks_list))
 overlaps <- findOverlaps(top_genes_gr, all_samples_gr)
 
 # ==================================================================
-# 4. Map sample IDs back to top_genes
+# 4. Map and split sample IDs into Baseline and Followup columns
 # ==================================================================
 sample_mapping <- data.frame(
-  top_peak_idx = queryHits(overlaps),
-  sample_id    = all_samples_gr$sample_id[subjectHits(overlaps)],
+  top_peak_idx  = queryHits(overlaps),
+  sample_id     = all_samples_gr$sample_id[subjectHits(overlaps)],
   original_peak = all_samples_gr$name[subjectHits(overlaps)]
 ) %>%
   group_by(top_peak_idx) %>%
   summarise(
-    contributing_sample_count = n_distinct(sample_id),
-    contributing_samples       = paste(sort(unique(sample_id)), collapse = ", "),
-    original_peak_ids          = paste(original_peak, collapse = ", ")
+    contributing_sample_count     = n_distinct(sample_id),
+    
+    # Extract only samples containing 'Baseline'
+    contributing_samples_baseline = paste(
+      sort(unique(sample_id[grepl("Baseline", sample_id, ignore.case = TRUE)])), 
+      collapse = ", "
+    ),
+    
+    # Extract only samples containing 'Followup' (change regex if named differently, e.g. "Post" or "Treatment")
+    contributing_samples_followup = paste(
+      sort(unique(sample_id[grepl("Followup", sample_id, ignore.case = TRUE)])), 
+      collapse = ", "
+    ),
+    
+    original_peak_ids             = paste(original_peak, collapse = ", ")
+  )
+
+# Replace empty character strings with NA for cleaner display
+sample_mapping <- sample_mapping %>%
+  mutate(
+    contributing_samples_baseline = ifelse(contributing_samples_baseline == "", NA_character_, contributing_samples_baseline),
+    contributing_samples_followup = ifelse(contributing_samples_followup == "", NA_character_, contributing_samples_followup)
   )
 
 # ==================================================================
 # 5. Attach the results directly onto your top_genes table
 # ==================================================================
-# Join results back to top_genes by row position
-top_genes_annotated <- top_genes %>%
+top_genes_annotated <- top_genes_strengthened %>%
   mutate(top_peak_idx = row_number()) %>%
   left_join(sample_mapping, by = "top_peak_idx") %>%
   dplyr::select(-top_peak_idx)
 
-# View the final result
+# View the final result in DT datatable
 top_genes_annotated %>% 
-  dplyr::select(seqnames, start, end, SYMBOL, contributing_sample_count, contributing_samples)%>%
-datatable(extensions = 'Buttons',
-          caption = "", 
-            options = list(dom = 'Blfrtip',
-                           buttons = c('copy', 'csv', 'excel', 'pdf', 'print'),
-                           lengthMenu = list(c(10,25,50,-1),
-                                             c(10,25,50,"All"))))
-
+  dplyr::select(
+    seqnames, start, end, SYMBOL, 
+    contributing_sample_count, 
+    contributing_samples_baseline, 
+    contributing_samples_followup
+  ) %>%
+  datatable(
+    extensions = 'Buttons',
+    caption = "strengthened windows mapped to genes ", 
+    options = list(
+      dom = 'Blfrtip',
+      buttons = c('copy', 'csv', 'excel', 'pdf', 'print'),
+      lengthMenu = list(c(10, 25, 50, -1), c(10, 25, 50, "All"))
+    )
+  )
 ```
 
 
-### enichment analysis of lost peaks 
+
+
+```{r, message=F, warning=F}
+load(file.path(root, "..\\h3k27ac\\intermediate_data\\peak_list.RData"))
+
+# ==================================================================
+# 1. Convert top_genes into a GRanges object
+# ==================================================================
+top_genes_gr <- GRanges(
+  seqnames = top_genes_weakened$seqnames,
+  ranges   = IRanges(start = top_genes_weakened$start, end = top_genes_weakened$end),
+  symbol   = top_genes_weakened$SYMBOL,
+  gene_id  = top_genes_weakened$geneId
+)
+
+# ==================================================================
+# 2. Combine all original peaks into a single tagged GRanges object
+# ==================================================================
+all_samples_gr <- unlist(GRangesList(peaks_list), use.names = TRUE)
+all_samples_gr$sample_id <- rep(names(peaks_list), lengths(peaks_list))
+
+# ==================================================================
+# 3. Find overlaps between your top 10 peaks and original sample peaks
+# ==================================================================
+overlaps <- findOverlaps(top_genes_gr, all_samples_gr)
+
+# ==================================================================
+# 4. Map and split sample IDs into Baseline and Followup columns
+# ==================================================================
+sample_mapping <- data.frame(
+  top_peak_idx  = queryHits(overlaps),
+  sample_id     = all_samples_gr$sample_id[subjectHits(overlaps)],
+  original_peak = all_samples_gr$name[subjectHits(overlaps)]
+) %>%
+  group_by(top_peak_idx) %>%
+  summarise(
+    contributing_sample_count     = n_distinct(sample_id),
+    
+    # Extract only samples containing 'Baseline'
+    contributing_samples_baseline = paste(
+      sort(unique(sample_id[grepl("Baseline", sample_id, ignore.case = TRUE)])), 
+      collapse = ", "
+    ),
+    
+    # Extract only samples containing 'Followup' (change regex if named differently, e.g. "Post" or "Treatment")
+    contributing_samples_followup = paste(
+      sort(unique(sample_id[grepl("Followup", sample_id, ignore.case = TRUE)])), 
+      collapse = ", "
+    ),
+    
+    original_peak_ids             = paste(original_peak, collapse = ", ")
+  )
+
+# Replace empty character strings with NA for cleaner display
+sample_mapping <- sample_mapping %>%
+  mutate(
+    contributing_samples_baseline = ifelse(contributing_samples_baseline == "", NA_character_, contributing_samples_baseline),
+    contributing_samples_followup = ifelse(contributing_samples_followup == "", NA_character_, contributing_samples_followup)
+  )
+
+# ==================================================================
+# 5. Attach the results directly onto your top_genes table
+# ==================================================================
+top_genes_annotated <- top_genes_weakened %>%
+  mutate(top_peak_idx = row_number()) %>%
+  left_join(sample_mapping, by = "top_peak_idx") %>%
+  dplyr::select(-top_peak_idx)
+
+# View the final result in DT datatable
+top_genes_annotated %>% 
+  dplyr::select(
+    seqnames, start, end, SYMBOL, 
+    contributing_sample_count, 
+    contributing_samples_baseline, 
+    contributing_samples_followup
+  ) %>%
+  datatable(
+    extensions = 'Buttons',
+    caption = "weakened windows mapped to genes ", 
+    options = list(
+      dom = 'Blfrtip',
+      buttons = c('copy', 'csv', 'excel', 'pdf', 'print'),
+      lengthMenu = list(c(10, 25, 50, -1), c(10, 25, 50, "All"))
+    )
+  )
+```
+
+
+
+
+
+
+
+
+### enichment analysis of weakened peaks 
 
 
 ```{r, message=F, warning=F}
@@ -893,7 +1017,7 @@ ggplot(plot_data, aes(x = logP, y = reorder(Term, logP))) +
   scale_size_continuous(range = c(3, 8)) +
   facet_wrap(~ Category, scales = "free_y", ncol = 1) +
   labs(
-    title = "Pathway Enrichment Analysis (Lost Peaks)",
+    title = "Pathway Enrichment Analysis (Weakened Peaks)",
     x = expression(-log[10] ~ "(" * italic(P) * "-Value)"),
     y = NULL,
     size = "Count",
