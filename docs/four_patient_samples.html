@@ -551,15 +551,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomhan16BreastCancerEpigeneticstreeb4e9c670c5434c8fcac5c5b103bb1575a340f744targetblankb4e9c67a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomhan16BreastCancerEpigeneticstreecaabd2e5b701d0c332b27d52f246d3578d1b0a7etargetblankcaabd2ea">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/han16/BreastCancerEpigenetics/tree/b4e9c670c5434c8fcac5c5b103bb1575a340f744" target="_blank">b4e9c67</a>
+<a href="https://github.com/han16/BreastCancerEpigenetics/tree/caabd2e5b701d0c332b27d52f246d3578d1b0a7e" target="_blank">caabd2e</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomhan16BreastCancerEpigeneticstreeb4e9c670c5434c8fcac5c5b103bb1575a340f744targetblankb4e9c67a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomhan16BreastCancerEpigeneticstreecaabd2e5b701d0c332b27d52f246d3578d1b0a7etargetblankcaabd2ea"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -569,7 +569,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/han16/BreastCancerEpigenetics/tree/b4e9c670c5434c8fcac5c5b103bb1575a340f744" target="_blank">b4e9c67</a>.
+<a href="https://github.com/han16/BreastCancerEpigenetics/tree/caabd2e5b701d0c332b27d52f246d3578d1b0a7e" target="_blank">caabd2e</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -634,6 +634,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/han16/BreastCancerEpigenetics/blob/caabd2e5b701d0c332b27d52f246d3578d1b0a7e/analysis/four_patient_samples.Rmd" target="_blank">caabd2e</a>
+</td>
+<td>
+han
+</td>
+<td>
+2026-09-03
+</td>
+<td>
+9/3/2026
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/han16/BreastCancerEpigenetics/caabd2e5b701d0c332b27d52f246d3578d1b0a7e/docs/four_patient_samples.html" target="_blank">caabd2e</a>
+</td>
+<td>
+han
+</td>
+<td>
+2026-09-03
+</td>
+<td>
+9/3/2026
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -2559,13 +2593,84 @@ ggplot(plot_data_heatmap, aes(x = Sample_ID, y = SYMBOL, fill = Timepoint)) +
     axis.text.y = element_text(face = &quot;bold&quot;, color = &quot;black&quot;),
     panel.grid = element_blank()
   )</code></pre>
-<p><img src="figure/four_patient_samples.Rmd/unnamed-chunk-17-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>library(dplyr)
+library(tidyr)
+library(ggplot2)
+
+top_genes_annotated &lt;- top_genes_strengthened %&gt;%
+  mutate(top_peak_idx = row_number()) %&gt;%
+  left_join(sample_mapping, by = &quot;top_peak_idx&quot;) %&gt;%
+  dplyr::select(-top_peak_idx)
+
+# 1. Parse comma-separated strings into long format
+parsed_samples &lt;- top_genes_annotated %&gt;%
+  dplyr::select(SYMBOL, contributing_samples_baseline, contributing_samples_followup) %&gt;%
+  pivot_longer(
+    cols = c(contributing_samples_baseline, contributing_samples_followup),
+    names_to = &quot;Group&quot;,
+    values_to = &quot;Samples&quot;
+  ) %&gt;%
+  filter(!is.na(Samples) &amp; Samples != &quot;&lt;NA&gt;&quot;) %&gt;%
+  separate_rows(Samples, sep = &quot;,\\s*&quot;) %&gt;%
+  mutate(
+    Sample_ID = trimws(Samples),
+    Present = &quot;Yes&quot;
+  ) %&gt;%
+  dplyr::select(SYMBOL, Sample_ID, Present)
+
+# 2. Define the full list of expected individual sample columns (all Baseline &amp; Follow-up)
+all_samples &lt;- c(
+  &quot;IF-03_Baseline&quot;, &quot;IF-03_Followup&quot;,
+  &quot;IF-04_Baseline&quot;, &quot;IF-04_Followup&quot;,
+  &quot;IF-05_Baseline&quot;, &quot;IF-05_Followup&quot;,
+  &quot;IF-06_Baseline&quot;, &quot;IF-06_Followup&quot;,
+  &quot;IF-07_Baseline&quot;, &quot;IF-07_Followup&quot;,
+  &quot;IF-08_Baseline&quot;, &quot;IF-08_Followup&quot;
+)
+
+# 3. Create a complete grid (Gene x Sample) to ensure empty cells render properly
+heatmap_grid &lt;- expand.grid(
+  SYMBOL = unique(top_genes_annotated$SYMBOL),
+  Sample_ID = all_samples,
+  stringsAsFactors = FALSE
+) %&gt;%
+  left_join(parsed_samples, by = c(&quot;SYMBOL&quot;, &quot;Sample_ID&quot;)) %&gt;%
+  mutate(
+    # Set factor levels to keep paired patient samples side-by-side on x-axis
+    Sample_ID = factor(Sample_ID, levels = all_samples)
+  )
+
+# 4. Draw Binary Heatmap
+ggplot(heatmap_grid, aes(x = Sample_ID, y = reorder(SYMBOL, SYMBOL))) +
+  geom_tile(aes(fill = Present), color = &quot;grey85&quot;, size = 0.5) +
+  # Use one solid color for &#39;Yes&#39;, and treat missing/NA as completely empty (white)
+  scale_fill_manual(
+    values = c(&quot;Yes&quot; = &quot;#2B5C8F&quot;), 
+    na.value = &quot;white&quot;,
+    guide = &quot;none&quot; # Hide legend since it&#39;s a simple presence plot
+  ) +
+  labs(
+    title = &quot;Sample Contribution Grid Across Top Strengthened Genes&quot;,
+    subtitle = &quot;Dark blue = Contributing sample | Empty = Non-contributing&quot;,
+    x = &quot;Individual Patient Samples (Baseline &amp; Follow-up)&quot;,
+    y = &quot;Gene Symbol&quot;
+  ) +
+  theme_minimal(base_size = 13) +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = &quot;bold&quot;),
+    plot.subtitle = element_text(hjust = 0.5, color = &quot;gray30&quot;, margin = margin(b = 10)),
+    axis.text.x = element_text(angle = 45, hjust = 1, face = &quot;bold&quot;, color = &quot;black&quot;),
+    axis.text.y = element_text(face = &quot;bold&quot;, color = &quot;black&quot;),
+    panel.grid = element_blank(),
+    axis.ticks = element_line(color = &quot;gray80&quot;)
+  )</code></pre>
+<p><img src="figure/four_patient_samples.Rmd/unnamed-chunk-18-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-17-1">
-Past versions of unnamed-chunk-17-1.png
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-18-1">
+Past versions of unnamed-chunk-18-1.png
 </button>
 </p>
-<div id="fig-unnamed-chunk-17-1" class="collapse">
+<div id="fig-unnamed-chunk-18-1" class="collapse">
 <div class="table-responsive">
 <table class="table table-condensed table-hover">
 <thead>
@@ -2584,7 +2689,29 @@ Date
 <tbody>
 <tr>
 <td>
-<a href="https://github.com/han16/BreastCancerEpigenetics/blob/04c64c64fd79a444f9a7e39eb53d03d0d5cb0ca5/docs/figure/four_patient_samples.Rmd/unnamed-chunk-17-1.png" target="_blank">04c64c6</a>
+<a href="https://github.com/han16/BreastCancerEpigenetics/blob/caabd2e5b701d0c332b27d52f246d3578d1b0a7e/docs/figure/four_patient_samples.Rmd/unnamed-chunk-18-1.png" target="_blank">caabd2e</a>
+</td>
+<td>
+han
+</td>
+<td>
+2026-09-03
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/han16/BreastCancerEpigenetics/blob/b4e9c670c5434c8fcac5c5b103bb1575a340f744/docs/figure/four_patient_samples.Rmd/unnamed-chunk-18-1.png" target="_blank">b4e9c67</a>
+</td>
+<td>
+han
+</td>
+<td>
+2026-09-03
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/han16/BreastCancerEpigenetics/blob/04c64c64fd79a444f9a7e39eb53d03d0d5cb0ca5/docs/figure/four_patient_samples.Rmd/unnamed-chunk-18-1.png" target="_blank">04c64c6</a>
 </td>
 <td>
 han
@@ -2595,18 +2722,18 @@ han
 </tr>
 <tr>
 <td>
-<a href="https://github.com/han16/BreastCancerEpigenetics/blob/d7e833dec7b1c03138af6d1161fb6ccd4a1cd701/docs/figure/four_patient_samples.Rmd/unnamed-chunk-17-1.png" target="_blank">d7e833d</a>
+<a href="https://github.com/han16/BreastCancerEpigenetics/blob/ade8ccffd4a59dda3a27403645ed8d89c1da6d8e/docs/figure/four_patient_samples.Rmd/unnamed-chunk-18-1.png" target="_blank">ade8ccf</a>
 </td>
 <td>
 han
 </td>
 <td>
-2026-08-20
+2026-08-18
 </td>
 </tr>
 <tr>
 <td>
-<a href="https://github.com/han16/BreastCancerEpigenetics/blob/106b7c08f5f98753ee62de4f6a0566234ed3a391/docs/figure/four_patient_samples.Rmd/unnamed-chunk-17-1.png" target="_blank">106b7c0</a>
+<a href="https://github.com/han16/BreastCancerEpigenetics/blob/106b7c08f5f98753ee62de4f6a0566234ed3a391/docs/figure/four_patient_samples.Rmd/unnamed-chunk-18-1.png" target="_blank">106b7c0</a>
 </td>
 <td>
 han
@@ -2741,13 +2868,84 @@ ggplot(plot_data_heatmap, aes(x = Sample_ID, y = SYMBOL, fill = Timepoint)) +
     axis.text.y = element_text(face = &quot;bold&quot;, color = &quot;black&quot;),
     panel.grid = element_blank()
   )</code></pre>
-<p><img src="figure/four_patient_samples.Rmd/unnamed-chunk-19-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>library(dplyr)
+library(tidyr)
+library(ggplot2)
+
+top_genes_annotated &lt;- top_genes_weakened %&gt;%
+  mutate(top_peak_idx = row_number()) %&gt;%
+  left_join(sample_mapping, by = &quot;top_peak_idx&quot;) %&gt;%
+  dplyr::select(-top_peak_idx)
+
+# 1. Parse comma-separated strings into long format
+parsed_samples &lt;- top_genes_annotated %&gt;%
+  dplyr::select(SYMBOL, contributing_samples_baseline, contributing_samples_followup) %&gt;%
+  pivot_longer(
+    cols = c(contributing_samples_baseline, contributing_samples_followup),
+    names_to = &quot;Group&quot;,
+    values_to = &quot;Samples&quot;
+  ) %&gt;%
+  filter(!is.na(Samples) &amp; Samples != &quot;&lt;NA&gt;&quot;) %&gt;%
+  separate_rows(Samples, sep = &quot;,\\s*&quot;) %&gt;%
+  mutate(
+    Sample_ID = trimws(Samples),
+    Present = &quot;Yes&quot;
+  ) %&gt;%
+  dplyr::select(SYMBOL, Sample_ID, Present)
+
+# 2. Define the full list of expected individual sample columns (all Baseline &amp; Follow-up)
+all_samples &lt;- c(
+  &quot;IF-03_Baseline&quot;, &quot;IF-03_Followup&quot;,
+  &quot;IF-04_Baseline&quot;, &quot;IF-04_Followup&quot;,
+  &quot;IF-05_Baseline&quot;, &quot;IF-05_Followup&quot;,
+  &quot;IF-06_Baseline&quot;, &quot;IF-06_Followup&quot;,
+  &quot;IF-07_Baseline&quot;, &quot;IF-07_Followup&quot;,
+  &quot;IF-08_Baseline&quot;, &quot;IF-08_Followup&quot;
+)
+
+# 3. Create a complete grid (Gene x Sample) to ensure empty cells render properly
+heatmap_grid &lt;- expand.grid(
+  SYMBOL = unique(top_genes_annotated$SYMBOL),
+  Sample_ID = all_samples,
+  stringsAsFactors = FALSE
+) %&gt;%
+  left_join(parsed_samples, by = c(&quot;SYMBOL&quot;, &quot;Sample_ID&quot;)) %&gt;%
+  mutate(
+    # Set factor levels to keep paired patient samples side-by-side on x-axis
+    Sample_ID = factor(Sample_ID, levels = all_samples)
+  )
+
+# 4. Draw Binary Heatmap
+ggplot(heatmap_grid, aes(x = Sample_ID, y = reorder(SYMBOL, SYMBOL))) +
+  geom_tile(aes(fill = Present), color = &quot;grey85&quot;, size = 0.5) +
+  # Use one solid color for &#39;Yes&#39;, and treat missing/NA as completely empty (white)
+  scale_fill_manual(
+    values = c(&quot;Yes&quot; = &quot;#2B5C8F&quot;), 
+    na.value = &quot;white&quot;,
+    guide = &quot;none&quot; # Hide legend since it&#39;s a simple presence plot
+  ) +
+  labs(
+    title = &quot;Sample Contribution Grid Across Top Weakened Genes&quot;,
+    subtitle = &quot;Dark blue = Contributing sample | Empty = Non-contributing&quot;,
+    x = &quot;Individual Patient Samples (Baseline &amp; Follow-up)&quot;,
+    y = &quot;Gene Symbol&quot;
+  ) +
+  theme_minimal(base_size = 13) +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = &quot;bold&quot;),
+    plot.subtitle = element_text(hjust = 0.5, color = &quot;gray30&quot;, margin = margin(b = 10)),
+    axis.text.x = element_text(angle = 45, hjust = 1, face = &quot;bold&quot;, color = &quot;black&quot;),
+    axis.text.y = element_text(face = &quot;bold&quot;, color = &quot;black&quot;),
+    panel.grid = element_blank(),
+    axis.ticks = element_line(color = &quot;gray80&quot;)
+  )</code></pre>
+<p><img src="figure/four_patient_samples.Rmd/unnamed-chunk-21-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-19-1">
-Past versions of unnamed-chunk-19-1.png
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-21-1">
+Past versions of unnamed-chunk-21-1.png
 </button>
 </p>
-<div id="fig-unnamed-chunk-19-1" class="collapse">
+<div id="fig-unnamed-chunk-21-1" class="collapse">
 <div class="table-responsive">
 <table class="table table-condensed table-hover">
 <thead>
@@ -2766,7 +2964,7 @@ Date
 <tbody>
 <tr>
 <td>
-<a href="https://github.com/han16/BreastCancerEpigenetics/blob/b4e9c670c5434c8fcac5c5b103bb1575a340f744/docs/figure/four_patient_samples.Rmd/unnamed-chunk-19-1.png" target="_blank">b4e9c67</a>
+<a href="https://github.com/han16/BreastCancerEpigenetics/blob/caabd2e5b701d0c332b27d52f246d3578d1b0a7e/docs/figure/four_patient_samples.Rmd/unnamed-chunk-21-1.png" target="_blank">caabd2e</a>
 </td>
 <td>
 han
@@ -2777,24 +2975,13 @@ han
 </tr>
 <tr>
 <td>
-<a href="https://github.com/han16/BreastCancerEpigenetics/blob/d7e833dec7b1c03138af6d1161fb6ccd4a1cd701/docs/figure/four_patient_samples.Rmd/unnamed-chunk-19-1.png" target="_blank">d7e833d</a>
+<a href="https://github.com/han16/BreastCancerEpigenetics/blob/b4e9c670c5434c8fcac5c5b103bb1575a340f744/docs/figure/four_patient_samples.Rmd/unnamed-chunk-21-1.png" target="_blank">b4e9c67</a>
 </td>
 <td>
 han
 </td>
 <td>
-2026-08-20
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/han16/BreastCancerEpigenetics/blob/53a9a4561c2a3ad862f53837338ecac876702547/docs/figure/four_patient_samples.Rmd/unnamed-chunk-19-1.png" target="_blank">53a9a45</a>
-</td>
-<td>
-han
-</td>
-<td>
-2026-07-27
+2026-09-03
 </td>
 </tr>
 </tbody>
@@ -2874,13 +3061,13 @@ for (cat in categories) {
   
   print(p)
 }</code></pre>
-<p><img src="figure/four_patient_samples.Rmd/unnamed-chunk-20-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/four_patient_samples.Rmd/unnamed-chunk-22-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-20-1">
-Past versions of unnamed-chunk-20-1.png
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-22-1">
+Past versions of unnamed-chunk-22-1.png
 </button>
 </p>
-<div id="fig-unnamed-chunk-20-1" class="collapse">
+<div id="fig-unnamed-chunk-22-1" class="collapse">
 <div class="table-responsive">
 <table class="table table-condensed table-hover">
 <thead>
@@ -2899,31 +3086,31 @@ Date
 <tbody>
 <tr>
 <td>
-<a href="https://github.com/han16/BreastCancerEpigenetics/blob/04c64c64fd79a444f9a7e39eb53d03d0d5cb0ca5/docs/figure/four_patient_samples.Rmd/unnamed-chunk-20-1.png" target="_blank">04c64c6</a>
+<a href="https://github.com/han16/BreastCancerEpigenetics/blob/caabd2e5b701d0c332b27d52f246d3578d1b0a7e/docs/figure/four_patient_samples.Rmd/unnamed-chunk-22-1.png" target="_blank">caabd2e</a>
 </td>
 <td>
 han
 </td>
 <td>
-2026-08-27
+2026-09-03
 </td>
 </tr>
 <tr>
 <td>
-<a href="https://github.com/han16/BreastCancerEpigenetics/blob/ba108125fcb885c7d7daa74a0caa90b9e95b138f/docs/figure/four_patient_samples.Rmd/unnamed-chunk-20-1.png" target="_blank">ba10812</a>
+<a href="https://github.com/han16/BreastCancerEpigenetics/blob/ade8ccffd4a59dda3a27403645ed8d89c1da6d8e/docs/figure/four_patient_samples.Rmd/unnamed-chunk-22-1.png" target="_blank">ade8ccf</a>
 </td>
 <td>
 han
 </td>
 <td>
-2026-08-07
+2026-08-18
 </td>
 </tr>
 </tbody>
 </table>
 </div>
 </div>
-<p><img src="figure/four_patient_samples.Rmd/unnamed-chunk-20-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/four_patient_samples.Rmd/unnamed-chunk-20-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/four_patient_samples.Rmd/unnamed-chunk-22-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/four_patient_samples.Rmd/unnamed-chunk-22-3.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>lost_peak_pathway%&gt;% 
 datatable(extensions = &#39;Buttons&#39;,
           caption = &quot;&quot;, 
@@ -2988,13 +3175,13 @@ ggplot(pie_data, aes(x = &quot;&quot;, y = Count, fill = Direction)) +
     legend.title = element_text(face = &quot;bold&quot;),
     legend.position = &quot;bottom&quot;
   )</code></pre>
-<p><img src="figure/four_patient_samples.Rmd/unnamed-chunk-21-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/four_patient_samples.Rmd/unnamed-chunk-23-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-21-1">
-Past versions of unnamed-chunk-21-1.png
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-23-1">
+Past versions of unnamed-chunk-23-1.png
 </button>
 </p>
-<div id="fig-unnamed-chunk-21-1" class="collapse">
+<div id="fig-unnamed-chunk-23-1" class="collapse">
 <div class="table-responsive">
 <table class="table table-condensed table-hover">
 <thead>
@@ -3013,13 +3200,24 @@ Date
 <tbody>
 <tr>
 <td>
-<a href="https://github.com/han16/BreastCancerEpigenetics/blob/b4e9c670c5434c8fcac5c5b103bb1575a340f744/docs/figure/four_patient_samples.Rmd/unnamed-chunk-21-1.png" target="_blank">b4e9c67</a>
+<a href="https://github.com/han16/BreastCancerEpigenetics/blob/caabd2e5b701d0c332b27d52f246d3578d1b0a7e/docs/figure/four_patient_samples.Rmd/unnamed-chunk-23-1.png" target="_blank">caabd2e</a>
 </td>
 <td>
 han
 </td>
 <td>
 2026-09-03
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/han16/BreastCancerEpigenetics/blob/d7e833dec7b1c03138af6d1161fb6ccd4a1cd701/docs/figure/four_patient_samples.Rmd/unnamed-chunk-23-1.png" target="_blank">d7e833d</a>
+</td>
+<td>
+han
+</td>
+<td>
+2026-08-20
 </td>
 </tr>
 </tbody>
@@ -3124,13 +3322,13 @@ cat(&quot;Plotting horizontal Venn Diagram...\n&quot;)</code></pre>
 
 # Render the plot horizontally to your Viewer
 print(p)</code></pre>
-<p><img src="figure/four_patient_samples.Rmd/unnamed-chunk-23-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/four_patient_samples.Rmd/unnamed-chunk-25-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-23-1">
-Past versions of unnamed-chunk-23-1.png
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-25-1">
+Past versions of unnamed-chunk-25-1.png
 </button>
 </p>
-<div id="fig-unnamed-chunk-23-1" class="collapse">
+<div id="fig-unnamed-chunk-25-1" class="collapse">
 <div class="table-responsive">
 <table class="table table-condensed table-hover">
 <thead>
@@ -3149,13 +3347,13 @@ Date
 <tbody>
 <tr>
 <td>
-<a href="https://github.com/han16/BreastCancerEpigenetics/blob/d7e833dec7b1c03138af6d1161fb6ccd4a1cd701/docs/figure/four_patient_samples.Rmd/unnamed-chunk-23-1.png" target="_blank">d7e833d</a>
+<a href="https://github.com/han16/BreastCancerEpigenetics/blob/b4e9c670c5434c8fcac5c5b103bb1575a340f744/docs/figure/four_patient_samples.Rmd/unnamed-chunk-25-1.png" target="_blank">b4e9c67</a>
 </td>
 <td>
 han
 </td>
 <td>
-2026-08-20
+2026-09-03
 </td>
 </tr>
 </tbody>
@@ -3246,24 +3444,24 @@ anno_baseline &lt;- annotatePeak(baseline_unique_peaks,
                               TxDb = txdb, 
                               tssRegion = c(-3000, 3000), 
                               annoDb = &quot;org.Hs.eg.db&quot;)</code></pre>
-<pre><code>&gt;&gt; preparing features information...         2026-09-03 12:00:09 PM 
-&gt;&gt; identifying nearest features...       2026-09-03 12:00:09 PM 
-&gt;&gt; calculating distance from peak to TSS...  2026-09-03 12:00:09 PM 
-&gt;&gt; assigning genomic annotation...       2026-09-03 12:00:09 PM 
-&gt;&gt; adding gene annotation...             2026-09-03 12:00:12 PM 
-&gt;&gt; assigning chromosome lengths          2026-09-03 12:00:12 PM 
-&gt;&gt; done...                   2026-09-03 12:00:12 PM </code></pre>
+<pre><code>&gt;&gt; preparing features information...         2026-09-03 3:48:15 PM 
+&gt;&gt; identifying nearest features...       2026-09-03 3:48:15 PM 
+&gt;&gt; calculating distance from peak to TSS...  2026-09-03 3:48:15 PM 
+&gt;&gt; assigning genomic annotation...       2026-09-03 3:48:15 PM 
+&gt;&gt; adding gene annotation...             2026-09-03 3:48:19 PM 
+&gt;&gt; assigning chromosome lengths          2026-09-03 3:48:19 PM 
+&gt;&gt; done...                   2026-09-03 3:48:19 PM </code></pre>
 <pre class="r"><code>anno_followup &lt;- annotatePeak(followup_unique_peaks, 
                               TxDb = txdb, 
                               tssRegion = c(-3000, 3000), 
                               annoDb = &quot;org.Hs.eg.db&quot;)</code></pre>
-<pre><code>&gt;&gt; preparing features information...         2026-09-03 12:00:12 PM 
-&gt;&gt; identifying nearest features...       2026-09-03 12:00:12 PM 
-&gt;&gt; calculating distance from peak to TSS...  2026-09-03 12:00:12 PM 
-&gt;&gt; assigning genomic annotation...       2026-09-03 12:00:12 PM 
-&gt;&gt; adding gene annotation...             2026-09-03 12:00:15 PM 
-&gt;&gt; assigning chromosome lengths          2026-09-03 12:00:15 PM 
-&gt;&gt; done...                   2026-09-03 12:00:15 PM </code></pre>
+<pre><code>&gt;&gt; preparing features information...         2026-09-03 3:48:19 PM 
+&gt;&gt; identifying nearest features...       2026-09-03 3:48:19 PM 
+&gt;&gt; calculating distance from peak to TSS...  2026-09-03 3:48:19 PM 
+&gt;&gt; assigning genomic annotation...       2026-09-03 3:48:19 PM 
+&gt;&gt; adding gene annotation...             2026-09-03 3:48:22 PM 
+&gt;&gt; assigning chromosome lengths          2026-09-03 3:48:22 PM 
+&gt;&gt; done...                   2026-09-03 3:48:22 PM </code></pre>
 <pre class="r"><code># Convert to clean data frames
 df_baseline &lt;- as.data.frame(anno_baseline)
 df_followup &lt;- as.data.frame(anno_followup)
@@ -3349,7 +3547,7 @@ p_pathway &lt;- dotplot(go_comparison, showCategory = 10, includeAll = FALSE) +
   )
 
 p_pathway</code></pre>
-<p><img src="figure/four_patient_samples.Rmd/unnamed-chunk-27-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/four_patient_samples.Rmd/unnamed-chunk-29-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code># Save visualization plot to disk
 #ggsave(&quot;biomarker_pathway_comparison.pdf&quot;, plot = p_pathway, width = 11, height = 8)</code></pre>
 <br>

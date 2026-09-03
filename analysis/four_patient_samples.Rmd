@@ -937,7 +937,7 @@ top_genes_annotated %>%
 ```
 
 
-```{r, message=F, warning=F}
+```{r, message=F, warning=F, eval=F}
 # 1. Expand data to map exact Sample IDs to Genes
 
 top_genes_annotated <- top_genes_strengthened %>%
@@ -975,6 +975,83 @@ ggplot(plot_data_heatmap, aes(x = Sample_ID, y = SYMBOL, fill = Timepoint)) +
     axis.text.x = element_text(angle = 45, hjust = 1, face = "bold", color = "black"),
     axis.text.y = element_text(face = "bold", color = "black"),
     panel.grid = element_blank()
+  )
+```
+
+
+
+
+```{r, message=F, warning=F}
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+
+top_genes_annotated <- top_genes_strengthened %>%
+  mutate(top_peak_idx = row_number()) %>%
+  left_join(sample_mapping, by = "top_peak_idx") %>%
+  dplyr::select(-top_peak_idx)
+
+# 1. Parse comma-separated strings into long format
+parsed_samples <- top_genes_annotated %>%
+  dplyr::select(SYMBOL, contributing_samples_baseline, contributing_samples_followup) %>%
+  pivot_longer(
+    cols = c(contributing_samples_baseline, contributing_samples_followup),
+    names_to = "Group",
+    values_to = "Samples"
+  ) %>%
+  filter(!is.na(Samples) & Samples != "<NA>") %>%
+  separate_rows(Samples, sep = ",\\s*") %>%
+  mutate(
+    Sample_ID = trimws(Samples),
+    Present = "Yes"
+  ) %>%
+  dplyr::select(SYMBOL, Sample_ID, Present)
+
+# 2. Define the full list of expected individual sample columns (all Baseline & Follow-up)
+all_samples <- c(
+  "IF-03_Baseline", "IF-03_Followup",
+  "IF-04_Baseline", "IF-04_Followup",
+  "IF-05_Baseline", "IF-05_Followup",
+  "IF-06_Baseline", "IF-06_Followup",
+  "IF-07_Baseline", "IF-07_Followup",
+  "IF-08_Baseline", "IF-08_Followup"
+)
+
+# 3. Create a complete grid (Gene x Sample) to ensure empty cells render properly
+heatmap_grid <- expand.grid(
+  SYMBOL = unique(top_genes_annotated$SYMBOL),
+  Sample_ID = all_samples,
+  stringsAsFactors = FALSE
+) %>%
+  left_join(parsed_samples, by = c("SYMBOL", "Sample_ID")) %>%
+  mutate(
+    # Set factor levels to keep paired patient samples side-by-side on x-axis
+    Sample_ID = factor(Sample_ID, levels = all_samples)
+  )
+
+# 4. Draw Binary Heatmap
+ggplot(heatmap_grid, aes(x = Sample_ID, y = reorder(SYMBOL, SYMBOL))) +
+  geom_tile(aes(fill = Present), color = "grey85", size = 0.5) +
+  # Use one solid color for 'Yes', and treat missing/NA as completely empty (white)
+  scale_fill_manual(
+    values = c("Yes" = "#2B5C8F"), 
+    na.value = "white",
+    guide = "none" # Hide legend since it's a simple presence plot
+  ) +
+  labs(
+    title = "Sample Contribution Grid Across Top Strengthened Genes",
+    subtitle = "Dark blue = Contributing sample | Empty = Non-contributing",
+    x = "Individual Patient Samples (Baseline & Follow-up)",
+    y = "Gene Symbol"
+  ) +
+  theme_minimal(base_size = 13) +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"),
+    plot.subtitle = element_text(hjust = 0.5, color = "gray30", margin = margin(b = 10)),
+    axis.text.x = element_text(angle = 45, hjust = 1, face = "bold", color = "black"),
+    axis.text.y = element_text(face = "bold", color = "black"),
+    panel.grid = element_blank(),
+    axis.ticks = element_line(color = "gray80")
   )
 ```
 
@@ -1068,7 +1145,7 @@ top_genes_annotated %>%
 
 
 
-```{r, message=F, warning=F}
+```{r, message=F, warning=F, eval=F}
 # 1. Expand data to map exact Sample IDs to Genes
 
 top_genes_annotated <- top_genes_weakened %>%
@@ -1106,6 +1183,82 @@ ggplot(plot_data_heatmap, aes(x = Sample_ID, y = SYMBOL, fill = Timepoint)) +
     axis.text.x = element_text(angle = 45, hjust = 1, face = "bold", color = "black"),
     axis.text.y = element_text(face = "bold", color = "black"),
     panel.grid = element_blank()
+  )
+```
+
+
+
+```{r, message=F, warning=F}
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+
+top_genes_annotated <- top_genes_weakened %>%
+  mutate(top_peak_idx = row_number()) %>%
+  left_join(sample_mapping, by = "top_peak_idx") %>%
+  dplyr::select(-top_peak_idx)
+
+# 1. Parse comma-separated strings into long format
+parsed_samples <- top_genes_annotated %>%
+  dplyr::select(SYMBOL, contributing_samples_baseline, contributing_samples_followup) %>%
+  pivot_longer(
+    cols = c(contributing_samples_baseline, contributing_samples_followup),
+    names_to = "Group",
+    values_to = "Samples"
+  ) %>%
+  filter(!is.na(Samples) & Samples != "<NA>") %>%
+  separate_rows(Samples, sep = ",\\s*") %>%
+  mutate(
+    Sample_ID = trimws(Samples),
+    Present = "Yes"
+  ) %>%
+  dplyr::select(SYMBOL, Sample_ID, Present)
+
+# 2. Define the full list of expected individual sample columns (all Baseline & Follow-up)
+all_samples <- c(
+  "IF-03_Baseline", "IF-03_Followup",
+  "IF-04_Baseline", "IF-04_Followup",
+  "IF-05_Baseline", "IF-05_Followup",
+  "IF-06_Baseline", "IF-06_Followup",
+  "IF-07_Baseline", "IF-07_Followup",
+  "IF-08_Baseline", "IF-08_Followup"
+)
+
+# 3. Create a complete grid (Gene x Sample) to ensure empty cells render properly
+heatmap_grid <- expand.grid(
+  SYMBOL = unique(top_genes_annotated$SYMBOL),
+  Sample_ID = all_samples,
+  stringsAsFactors = FALSE
+) %>%
+  left_join(parsed_samples, by = c("SYMBOL", "Sample_ID")) %>%
+  mutate(
+    # Set factor levels to keep paired patient samples side-by-side on x-axis
+    Sample_ID = factor(Sample_ID, levels = all_samples)
+  )
+
+# 4. Draw Binary Heatmap
+ggplot(heatmap_grid, aes(x = Sample_ID, y = reorder(SYMBOL, SYMBOL))) +
+  geom_tile(aes(fill = Present), color = "grey85", size = 0.5) +
+  # Use one solid color for 'Yes', and treat missing/NA as completely empty (white)
+  scale_fill_manual(
+    values = c("Yes" = "#2B5C8F"), 
+    na.value = "white",
+    guide = "none" # Hide legend since it's a simple presence plot
+  ) +
+  labs(
+    title = "Sample Contribution Grid Across Top Weakened Genes",
+    subtitle = "Dark blue = Contributing sample | Empty = Non-contributing",
+    x = "Individual Patient Samples (Baseline & Follow-up)",
+    y = "Gene Symbol"
+  ) +
+  theme_minimal(base_size = 13) +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"),
+    plot.subtitle = element_text(hjust = 0.5, color = "gray30", margin = margin(b = 10)),
+    axis.text.x = element_text(angle = 45, hjust = 1, face = "bold", color = "black"),
+    axis.text.y = element_text(face = "bold", color = "black"),
+    panel.grid = element_blank(),
+    axis.ticks = element_line(color = "gray80")
   )
 ```
 
