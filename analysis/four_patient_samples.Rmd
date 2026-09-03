@@ -937,6 +937,48 @@ top_genes_annotated %>%
 ```
 
 
+```{r, message=F, warning=F}
+# 1. Expand data to map exact Sample IDs to Genes
+
+top_genes_annotated <- top_genes_strengthened %>%
+  mutate(top_peak_idx = row_number()) %>%
+  left_join(sample_mapping, by = "top_peak_idx") %>%
+  dplyr::select(-top_peak_idx)
+
+plot_data_heatmap <- top_genes_annotated %>%
+  dplyr::select(SYMBOL, contributing_samples_baseline, contributing_samples_followup) %>%
+  pivot_longer(
+    cols = c(contributing_samples_baseline, contributing_samples_followup),
+    names_to = "Group",
+    values_to = "Samples"
+  ) %>%
+  filter(!is.na(Samples) & Samples != "<NA>") %>%
+  separate_rows(Samples, sep = ",\\s*") %>%
+  mutate(
+    Sample_ID = trimws(Samples),
+    Timepoint = ifelse(grepl("Baseline", Sample_ID), "Baseline", "Follow-up")
+  )
+
+# 2. Draw Binary Heatmap
+ggplot(plot_data_heatmap, aes(x = Sample_ID, y = SYMBOL, fill = Timepoint)) +
+  geom_tile(color = "white", size = 0.8) +
+  scale_fill_manual(values = c("Baseline" = "#2b5c8f", "Follow-up" = "#d95f02")) +
+  labs(
+    title = "Sample Presence Across Top Strengthed Genes",
+    x = "Individual Sample",
+    y = "Gene Symbol",
+    fill = "Timepoint"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"),
+    axis.text.x = element_text(angle = 45, hjust = 1, face = "bold", color = "black"),
+    axis.text.y = element_text(face = "bold", color = "black"),
+    panel.grid = element_blank()
+  )
+```
+
+
 
 
 ```{r, message=F, warning=F}
@@ -1026,7 +1068,46 @@ top_genes_annotated %>%
 
 
 
+```{r, message=F, warning=F}
+# 1. Expand data to map exact Sample IDs to Genes
 
+top_genes_annotated <- top_genes_weakened %>%
+  mutate(top_peak_idx = row_number()) %>%
+  left_join(sample_mapping, by = "top_peak_idx") %>%
+  dplyr::select(-top_peak_idx)
+
+plot_data_heatmap <- top_genes_annotated %>%
+  dplyr::select(SYMBOL, contributing_samples_baseline, contributing_samples_followup) %>%
+  pivot_longer(
+    cols = c(contributing_samples_baseline, contributing_samples_followup),
+    names_to = "Group",
+    values_to = "Samples"
+  ) %>%
+  filter(!is.na(Samples) & Samples != "<NA>") %>%
+  separate_rows(Samples, sep = ",\\s*") %>%
+  mutate(
+    Sample_ID = trimws(Samples),
+    Timepoint = ifelse(grepl("Baseline", Sample_ID), "Baseline", "Follow-up")
+  )
+
+# 2. Draw Binary Heatmap
+ggplot(plot_data_heatmap, aes(x = Sample_ID, y = SYMBOL, fill = Timepoint)) +
+  geom_tile(color = "white", size = 0.8) +
+  scale_fill_manual(values = c("Baseline" = "#2b5c8f", "Follow-up" = "#d95f02")) +
+  labs(
+    title = "Sample Presence Across Top Weakened Genes",
+    x = "Individual Sample",
+    y = "Gene Symbol",
+    fill = "Timepoint"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"),
+    axis.text.x = element_text(angle = 45, hjust = 1, face = "bold", color = "black"),
+    axis.text.y = element_text(face = "bold", color = "black"),
+    panel.grid = element_blank()
+  )
+```
 
 
 
