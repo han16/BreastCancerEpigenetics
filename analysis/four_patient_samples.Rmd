@@ -448,6 +448,45 @@ Result:   [100 ======================= 250]   [300 ===== 400]
 ```
 
 
+```{r, message=F, warning=F}
+library(GenomicRanges)
+library(ggplot2)
+library(dplyr)
+
+# 1. Extract peak widths into a dataframe
+peak_widths <- data.frame(width = width(consensus_peaks))
+
+# Calculate summary metrics for annotation
+med_width  <- median(peak_widths$width)
+mean_width <- mean(peak_widths$width)
+
+# 2. Draw Width Distribution Plot
+ggplot(peak_widths, aes(x = width)) +
+  geom_histogram(binwidth = 50, fill = "#2b5c8f", color = "white", alpha = 0.85) +
+  geom_vline(xintercept = med_width, color = "#d95f02", linetype = "dashed", size = 1) +
+  scale_x_continuous(labels = scales::comma) +
+  scale_y_continuous(labels = scales::comma, expand = expansion(mult = c(0, 0.05))) +
+  labs(
+    title = "Consensus Peak Window Length Distribution",
+    subtitle = paste0("Total Peaks: ", scales::comma(nrow(peak_widths)), 
+                      " | Median: ", med_width, " bp | Mean: ", round(mean_width, 1), " bp"),
+    x = "Peak Window Length (bp)",
+    y = "Number of Peaks"
+  ) +
+  theme_classic(base_size = 14) +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"),
+    plot.subtitle = element_text(hjust = 0.5, color = "gray30"),
+    axis.text = element_text(color = "black")
+  )
+```
+
+
+
+
+
+
+
 
 
 
@@ -1013,27 +1052,59 @@ plot_data <- lost_peak_pathway %>%
   )
 
 # 2. Draw Faceted Bubble Plot
-ggplot(plot_data, aes(x = logP, y = reorder(Term, logP))) +
-  geom_point(aes(size = Count, color = `Fold Enrichment`), alpha = 0.85) +
-  scale_color_gradient(low = "#3182bd", high = "#de2d26") +
-  scale_size_continuous(range = c(3, 8)) +
-  facet_wrap(~ Category, scales = "free_y", ncol = 1) +
-  labs(
-    title = "Pathway Enrichment Analysis (Weakened Peaks)",
-    x = expression(-log[10] ~ "(" * italic(P) * "-Value)"),
-    y = NULL,
-    size = "Count",
-    color = "Fold Enrichment"
-  ) +
-  theme_bw(base_size = 12) +
-  theme(
-    plot.title = element_text(hjust = 0.5, face = "bold", size = 14),
-    strip.background = element_rect(fill = "#f0f0f0", color = "black"),
-    strip.text = element_text(face = "bold", size = 11),
-    axis.text.y = element_text(size = 7, color = "black"),
-    axis.text.x = element_text(color = "black"),
-    panel.grid.minor = element_blank()
-  )
+#ggplot(plot_data, aes(x = logP, y = reorder(Term, logP))) +
+#  geom_point(aes(size = Count, color = `Fold Enrichment`), alpha = 0.85) +
+#  scale_color_gradient(low = "#3182bd", high = "#de2d26") +
+#  scale_size_continuous(range = c(3, 8)) +
+#  facet_wrap(~ Category, scales = "free_y", ncol = 1) +
+#  labs(
+#    title = "Pathway Enrichment Analysis (Weakened genes)",
+#    x = expression(-log[10] ~ "(" * italic(P) * "-Value)"),
+#    y = NULL,
+#    size = "Count",
+#    color = "Fold Enrichment"
+#  ) +
+#  theme_bw(base_size = 12) +
+#  theme(
+#    plot.title = element_text(hjust = 0.5, face = "bold", size = 14),
+#    strip.background = element_rect(fill = "#f0f0f0", color = "black"),
+#    strip.text = element_text(face = "bold", size = 11),
+#    axis.text.y = element_text(size = 7, color = "black"),
+#    axis.text.x = element_text(color = "black"),
+#    panel.grid.minor = element_blank()
+#  )
+
+# 2. Extract unique categories
+categories <- unique(plot_data$Category)
+
+# 3. Loop through categories and print individual plots
+for (cat in categories) {
+  
+  sub_data <- plot_data %>% filter(Category == cat)
+  
+  p <- ggplot(sub_data, aes(x = logP, y = reorder(Term, logP))) +
+    geom_point(aes(size = Count, color = `Fold Enrichment`), alpha = 0.85) +
+    scale_color_gradient(low = "#3182bd", high = "#de2d26") +
+    scale_size_continuous(range = c(3, 8)) +
+    labs(
+      title = paste("Pathway Enrichment Analysis -", cat),
+      subtitle = "Weakened genes",
+      x = expression(-log[10] ~ "(" * italic(P) * "-Value)"),
+      y = NULL,
+      size = "Count",
+      color = "Fold Enrichment"
+    ) +
+    theme_bw(base_size = 12) +
+    theme(
+      plot.title = element_text(hjust = 0.5, face = "bold", size = 14),
+      plot.subtitle = element_text(hjust = 0.5, size = 11, color = "gray30"),
+      axis.text.y = element_text(size = 10.5, color = "black"),
+      axis.text.x = element_text(color = "black"),
+      panel.grid.minor = element_blank()
+    )
+  
+  print(p)
+}
 
 
 lost_peak_pathway%>% 
