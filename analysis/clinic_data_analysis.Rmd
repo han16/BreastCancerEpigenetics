@@ -21,19 +21,20 @@ library(DT)
 
 ```{r, message=F, warning=F}
 library(readxl)
-clinic_data=read_excel(file.path(root, "..\\fasting_project\\INT FASTING  PATIENT DATA.xlsx"))
+#clinic_data=read_excel(file.path(root, "..\\fasting_project\\INT FASTING  PATIENT DATA.xlsx"))
 #clinic_data
-clinic_data_cleaned=read.csv(file.path(root, "..\\fasting_project\\INT FASTING  PATIENT DATA (1)_clean.csv"), header=T)
+#clinic_data_cleaned=read.csv(file.path(root, "..\\fasting_project\\INT FASTING  PATIENT DATA (1)_clean.csv"), header=T)
+clinic_data=read_xlsx(file.path(root, "..\\fasting_project\\INT FASTING  Clinical Data VJIN.xlsx"))
 ```
 
 
 
-```{r, message=F, warning=F}
+```{r, message=F, warning=F, eval=F}
 library(dplyr)
 library(tidyr)
 
 # 1. Map pre/post matching column names
-pre_cols  <- grep("_pre(_study)?$", colnames(clinic_data_cleaned), value = TRUE, ignore.case = TRUE)
+pre_cols  <- grep("_pre(_study?$", colnames(clinic_data_cleaned), value = TRUE, ignore.case = TRUE)
 post_cols <- grep("_post_study$", colnames(clinic_data_cleaned), value = TRUE, ignore.case = TRUE)
 
 paired_vars <- data.frame(pre = pre_cols, stringsAsFactors = FALSE) %>%
@@ -96,23 +97,90 @@ datatable(extensions = 'Buttons',
 
 
 
+```{r, message=F, warning=F, eval=T}
+library(dplyr)
+library(tidyr)
+
+# 1. Map pre/post matching column names
+pre_cols  <- grep("Pre$", colnames(clinic_data), value = TRUE, ignore.case = TRUE)
+post_cols <- grep("Post$", colnames(clinic_data), value = TRUE, ignore.case = TRUE)
+
+paired_vars <- data.frame(pre = pre_cols, stringsAsFactors = FALSE) %>%
+  mutate(base_name = gsub("Pre$", "", pre, ignore.case = TRUE)) %>%
+  inner_join(
+    data.frame(post = post_cols, stringsAsFactors = FALSE) %>%
+      mutate(base_name = gsub("Post$", "", post, ignore.case = TRUE)),
+    by = "base_name"
+  )
+
+# 2. Run paired t-tests using base R lapply()
+results_list <- lapply(1:nrow(paired_vars), function(i) {
+  pre_var  <- paired_vars$pre[i]
+  post_var <- paired_vars$post[i]
+  label    <- paired_vars$base_name[i]
+  
+  # Ensure numeric data and drop incomplete pairs
+  df_subset <- clinic_data %>%
+    dplyr::select(all_of(c(pre_var, post_var))) %>%
+    mutate(across(everything(), as.numeric)) %>%
+    drop_na()
+  
+  x_pre  <- df_subset[[pre_var]]
+  x_post <- df_subset[[post_var]]
+  
+  # Run paired t-test if enough complete pairs exist
+  if (length(x_pre) > 2) {
+    test <- t.test(x_post, x_pre, paired = TRUE)
+    
+    data.frame(
+      Biomarker   = label,
+      N_Pairs     = length(x_pre),
+      Mean_Pre    = round(mean(x_pre), 3),
+      Mean_Post   = round(mean(x_post), 3),
+      Mean_Diff   = round(test$estimate, 3), # Post - Pre
+      t_statistic = round(test$statistic, 3),
+      P_Value     = test$p.value
+    )
+  }
+})
+
+# 3. Combine list into a tidy dataframe and calculate FDR
+ttest_results <- bind_rows(results_list) %>%
+  mutate(
+    FDR = p.adjust(P_Value, method = "BH")
+  ) %>%
+  arrange(P_Value)
+
+# Print results
+ttest_results%>% 
+datatable(extensions = 'Buttons',
+          caption = "", 
+            options = list(dom = 'Blfrtip',
+                           buttons = c('copy', 'csv', 'excel', 'pdf', 'print'),
+                           lengthMenu = list(c(10,25,50,-1),
+                                             c(10,25,50,"All"))))
+```
+
+
+
+
 ```{r, message=F, warning=F}
 library(dplyr)
 library(tidyr)
 library(ggplot2)
 
 # 1. Add unique patient ID and pair pre/post variables
-clinic_with_id <- clinic_data_cleaned %>%
-  mutate(Patient_ID = paste0("Patient_", row_number()))
+colnames(clinic_data)[1]="Patient_ID"
+clinic_with_id <- clinic_data
 
-pre_cols <- grep("_pre(_study)?$", colnames(clinic_data_cleaned), value = TRUE, ignore.case = TRUE)
-post_cols <- grep("_post_study$", colnames(clinic_data_cleaned), value = TRUE, ignore.case = TRUE)
+pre_cols <- grep("Pre$", colnames(clinic_data), value = TRUE, ignore.case = TRUE)
+post_cols <- grep("Post$", colnames(clinic_data), value = TRUE, ignore.case = TRUE)
 
 paired_map <- data.frame(pre = pre_cols, stringsAsFactors = FALSE) %>%
-  mutate(base_name = gsub("_pre(_study)?$", "", pre, ignore.case = TRUE)) %>%
+  mutate(base_name = gsub("Pre$", "", pre, ignore.case = TRUE)) %>%
   inner_join(
     data.frame(post = post_cols, stringsAsFactors = FALSE) %>%
-      mutate(base_name = gsub("_post_study$", "", post, ignore.case = TRUE)),
+      mutate(base_name = gsub("Post$", "", post, ignore.case = TRUE)),
     by = "base_name"
   )
 
@@ -135,13 +203,14 @@ long_clinic_data <- lapply(1:nrow(paired_map), function(i) {
   bind_rows()
 
 # 3. Generate and output all figures in a named R list
+library(ggrepel) # Ensures labels don't overlap if points are close
 plot_list <- list()
 biomarkers <- unique(long_clinic_data$Biomarker)
 
 for (bm in biomarkers) {
   df_sub <- long_clinic_data %>% filter(Biomarker == bm)
   
-  # Calculate paired t-test by passing vectors directly (ensuring matched patient order)
+  # 1. Calculate paired t-test
   df_paired <- df_sub %>%
     dplyr::select(Patient_ID, Timepoint, Value) %>%
     pivot_wider(names_from = Timepoint, values_from = Value) %>%
@@ -151,13 +220,34 @@ for (bm in biomarkers) {
     p_val <- t.test(df_paired$Post, df_paired$Pre, paired = TRUE)$p.value
     p_label <- ifelse(p_val < 0.001, "P < 0.001", paste0("P = ", round(p_val, 3)))
   } else {
-    p_label <- "N/A (insufficient pairs)"
+    p_label <- "N/A"
   }
   
-  p <- ggplot(df_sub, aes(x = Timepoint, y = Value, fill = Timepoint)) +
-    geom_boxplot(outlier.shape = NA, alpha = 0.5, width = 0.35) +
+  # 2. Calculate midpoints for patient line labels
+  label_data <- df_paired %>%
+    mutate(
+      Mid_Value = (Pre + Post) / 2,
+      # Convert Patient_ID format if needed (e.g., "Patient_1" to "P1" for cleaner rendering)
+      Short_ID = gsub("Patient_", "P", Patient_ID) 
+    )
+
+  # 3. Build Plot with Patient Labels on Lines
+  p <- ggplot(df_sub, aes(x = Timepoint, y = Value)) +
+    geom_boxplot(aes(fill = Timepoint), outlier.shape = NA, alpha = 0.4, width = 0.35) +
+    # Paired connecting lines
     geom_line(aes(group = Patient_ID), color = "gray50", alpha = 0.7, linewidth = 0.6) +
+    # Points
     geom_point(aes(color = Timepoint), size = 3, alpha = 0.9) +
+    # Patient ID labels along the connecting lines
+    geom_text_repel(
+      data = label_data,
+      aes(x = 1.5, y = Mid_Value, label = Short_ID),
+      size = 3.2,
+      fontface = "bold",
+      color = "gray20",
+      segment.color = "transparent", # No extra leader lines needed
+      box.padding = 0.2
+    ) +
     scale_fill_manual(values = c("Pre" = "#2B5C8F", "Post" = "#D95F02")) +
     scale_color_manual(values = c("Pre" = "#1F4268", "Post" = "#A64300")) +
     labs(
@@ -177,5 +267,7 @@ for (bm in biomarkers) {
   # Store plot in list
   plot_list[[bm]] <- p
 }
+
+
 plot_list
 ```

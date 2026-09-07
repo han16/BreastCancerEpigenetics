@@ -551,15 +551,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomhan16BreastCancerEpigeneticstreec5fb25adc73f0f39df0503ac86f74d2913add814targetblankc5fb25aa">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomhan16BreastCancerEpigeneticstreea4a09e287aa71c51cf3f7e442b4da640760d951etargetblanka4a09e2a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/han16/BreastCancerEpigenetics/tree/c5fb25adc73f0f39df0503ac86f74d2913add814" target="_blank">c5fb25a</a>
+<a href="https://github.com/han16/BreastCancerEpigenetics/tree/a4a09e287aa71c51cf3f7e442b4da640760d951e" target="_blank">a4a09e2</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomhan16BreastCancerEpigeneticstreec5fb25adc73f0f39df0503ac86f74d2913add814targetblankc5fb25aa"
+id="strongRepositoryversionstrongahrefhttpsgithubcomhan16BreastCancerEpigeneticstreea4a09e287aa71c51cf3f7e442b4da640760d951etargetblanka4a09e2a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -569,7 +569,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/han16/BreastCancerEpigenetics/tree/c5fb25adc73f0f39df0503ac86f74d2913add814" target="_blank">c5fb25a</a>.
+<a href="https://github.com/han16/BreastCancerEpigenetics/tree/a4a09e287aa71c51cf3f7e442b4da640760d951e" target="_blank">a4a09e2</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -589,7 +589,6 @@ Ignored files:
 
 Unstaged changes:
     Modified:   analysis/clinic_data_analysis.Rmd
-    Modified:   analysis/four_patient_samples.Rmd
 
 </code></pre>
 <p>
@@ -635,6 +634,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/han16/BreastCancerEpigenetics/blob/a4a09e287aa71c51cf3f7e442b4da640760d951e/analysis/clinic_data_analysis.Rmd" target="_blank">a4a09e2</a>
+</td>
+<td>
+han
+</td>
+<td>
+2026-09-07
+</td>
+<td>
+9/7/2026
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/han16/BreastCancerEpigenetics/a4a09e287aa71c51cf3f7e442b4da640760d951e/docs/clinic_data_analysis.html" target="_blank">a4a09e2</a>
+</td>
+<td>
+han
+</td>
+<td>
+2026-09-07
+</td>
+<td>
+9/7/2026
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -718,14 +751,15 @@ library(purrr)
 library(tidyr)
 library(DT)</code></pre>
 <pre class="r"><code>library(readxl)
-clinic_data=read_excel(file.path(root, &quot;..\\fasting_project\\INT FASTING  PATIENT DATA.xlsx&quot;))
+#clinic_data=read_excel(file.path(root, &quot;..\\fasting_project\\INT FASTING  PATIENT DATA.xlsx&quot;))
 #clinic_data
-clinic_data_cleaned=read.csv(file.path(root, &quot;..\\fasting_project\\INT FASTING  PATIENT DATA (1)_clean.csv&quot;), header=T)</code></pre>
+#clinic_data_cleaned=read.csv(file.path(root, &quot;..\\fasting_project\\INT FASTING  PATIENT DATA (1)_clean.csv&quot;), header=T)
+clinic_data=read_xlsx(file.path(root, &quot;..\\fasting_project\\INT FASTING  Clinical Data VJIN.xlsx&quot;))</code></pre>
 <pre class="r"><code>library(dplyr)
 library(tidyr)
 
 # 1. Map pre/post matching column names
-pre_cols  &lt;- grep(&quot;_pre(_study)?$&quot;, colnames(clinic_data_cleaned), value = TRUE, ignore.case = TRUE)
+pre_cols  &lt;- grep(&quot;_pre(_study?$&quot;, colnames(clinic_data_cleaned), value = TRUE, ignore.case = TRUE)
 post_cols &lt;- grep(&quot;_post_study$&quot;, colnames(clinic_data_cleaned), value = TRUE, ignore.case = TRUE)
 
 paired_vars &lt;- data.frame(pre = pre_cols, stringsAsFactors = FALSE) %&gt;%
@@ -782,24 +816,85 @@ datatable(extensions = &#39;Buttons&#39;,
                            buttons = c(&#39;copy&#39;, &#39;csv&#39;, &#39;excel&#39;, &#39;pdf&#39;, &#39;print&#39;),
                            lengthMenu = list(c(10,25,50,-1),
                                              c(10,25,50,&quot;All&quot;))))</code></pre>
+<pre class="r"><code>library(dplyr)
+library(tidyr)
+
+# 1. Map pre/post matching column names
+pre_cols  &lt;- grep(&quot;Pre$&quot;, colnames(clinic_data), value = TRUE, ignore.case = TRUE)
+post_cols &lt;- grep(&quot;Post$&quot;, colnames(clinic_data), value = TRUE, ignore.case = TRUE)
+
+paired_vars &lt;- data.frame(pre = pre_cols, stringsAsFactors = FALSE) %&gt;%
+  mutate(base_name = gsub(&quot;Pre$&quot;, &quot;&quot;, pre, ignore.case = TRUE)) %&gt;%
+  inner_join(
+    data.frame(post = post_cols, stringsAsFactors = FALSE) %&gt;%
+      mutate(base_name = gsub(&quot;Post$&quot;, &quot;&quot;, post, ignore.case = TRUE)),
+    by = &quot;base_name&quot;
+  )
+
+# 2. Run paired t-tests using base R lapply()
+results_list &lt;- lapply(1:nrow(paired_vars), function(i) {
+  pre_var  &lt;- paired_vars$pre[i]
+  post_var &lt;- paired_vars$post[i]
+  label    &lt;- paired_vars$base_name[i]
+  
+  # Ensure numeric data and drop incomplete pairs
+  df_subset &lt;- clinic_data %&gt;%
+    dplyr::select(all_of(c(pre_var, post_var))) %&gt;%
+    mutate(across(everything(), as.numeric)) %&gt;%
+    drop_na()
+  
+  x_pre  &lt;- df_subset[[pre_var]]
+  x_post &lt;- df_subset[[post_var]]
+  
+  # Run paired t-test if enough complete pairs exist
+  if (length(x_pre) &gt; 2) {
+    test &lt;- t.test(x_post, x_pre, paired = TRUE)
+    
+    data.frame(
+      Biomarker   = label,
+      N_Pairs     = length(x_pre),
+      Mean_Pre    = round(mean(x_pre), 3),
+      Mean_Post   = round(mean(x_post), 3),
+      Mean_Diff   = round(test$estimate, 3), # Post - Pre
+      t_statistic = round(test$statistic, 3),
+      P_Value     = test$p.value
+    )
+  }
+})
+
+# 3. Combine list into a tidy dataframe and calculate FDR
+ttest_results &lt;- bind_rows(results_list) %&gt;%
+  mutate(
+    FDR = p.adjust(P_Value, method = &quot;BH&quot;)
+  ) %&gt;%
+  arrange(P_Value)
+
+# Print results
+ttest_results%&gt;% 
+datatable(extensions = &#39;Buttons&#39;,
+          caption = &quot;&quot;, 
+            options = list(dom = &#39;Blfrtip&#39;,
+                           buttons = c(&#39;copy&#39;, &#39;csv&#39;, &#39;excel&#39;, &#39;pdf&#39;, &#39;print&#39;),
+                           lengthMenu = list(c(10,25,50,-1),
+                                             c(10,25,50,&quot;All&quot;))))</code></pre>
 <div class="datatables html-widget html-fill-item" id="htmlwidget-1673724887d97c678f91" style="width:100%;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-1673724887d97c678f91">{"x":{"filter":"none","vertical":false,"extensions":["Buttons"],"caption":"<caption><\/caption>","data":[["mean difference...1","mean difference...2","mean difference...3","mean difference...4","mean difference...5","mean difference...6","mean difference...7","mean difference...8","mean difference...9","mean difference...10","mean difference...11"],["IGF.Z","Insulin","ADIPNONECTIN","HDL","CRP","IGF","Glucose","HbA1C","Chol.HDL","Trg","LDL"],[7,6,7,7,4,7,7,7,7,7,7],[0.757,127.767,9.616,53,0.667,115.769,105.286,5.471,3.931,129.286,121.143],[0.386,57.167,10.474,54.286,0.867,131,110,5.514,3.907,125.286,122],[-0.371,-70.59999999999999,0.859,1.286,0.2,15.231,4.714,0.043,-0.024,-4,0.857],[-3.495,-0.994,0.669,0.629,0.61,0.426,0.322,0.26,-0.173,-0.151,0.083],[0.0129004466878916,0.3658090909882667,0.5281755794345327,0.5524672764686901,0.5847450176922532,0.6848124270777755,0.7583346912979618,0.8032175225794602,0.8680479732013875,0.8846051067164813,0.9363787494225052],[0.1419049135668076,0.9363787494225052,0.9363787494225052,0.9363787494225052,0.9363787494225052,0.9363787494225052,0.9363787494225052,0.9363787494225052,0.9363787494225052,0.9363787494225052,0.9363787494225052]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>Biomarker<\/th>\n      <th>N_Pairs<\/th>\n      <th>Mean_Pre<\/th>\n      <th>Mean_Post<\/th>\n      <th>Mean_Diff<\/th>\n      <th>t_statistic<\/th>\n      <th>P_Value<\/th>\n      <th>FDR<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"dom":"Blfrtip","buttons":["copy","csv","excel","pdf","print"],"lengthMenu":[[10,25,50,-1],["10","25","50","All"]],"columnDefs":[{"className":"dt-right","targets":[2,3,4,5,6,7,8]},{"orderable":false,"targets":0},{"name":" ","targets":0},{"name":"Biomarker","targets":1},{"name":"N_Pairs","targets":2},{"name":"Mean_Pre","targets":3},{"name":"Mean_Post","targets":4},{"name":"Mean_Diff","targets":5},{"name":"t_statistic","targets":6},{"name":"P_Value","targets":7},{"name":"FDR","targets":8}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+<script type="application/json" data-for="htmlwidget-1673724887d97c678f91">{"x":{"filter":"none","vertical":false,"extensions":["Buttons"],"caption":"<caption><\/caption>","data":[["mean difference...1","mean difference...2","mean difference...3","mean difference...4","mean difference...5","mean difference...6","mean difference...7","mean difference...8","mean difference...9","mean difference...10","mean difference...11"],["IGF-Z ","IGF ","Trg ","Insulin ","CRP ","Glucose ","Chol/HDL ","LDL ","HDL ","HbA1C ","ADIPNONECTIN "],[6,6,6,5,5,6,6,6,6,6,6],[0.85,150.833,121.333,133.84,0.644,109.833,3.76,105.833,49.5,5.633,11.517],[0.45,129,96,47.22,0.846,121.833,3.658,102,50.333,5.7,11.417],[-0.4,-21.833,-25.333,-86.62,0.202,12,-0.102,-3.833,0.833,0.067,-0.1],[-3.554,-1.823,-1.501,-1.039,0.796,0.759,-0.6929999999999999,-0.466,0.36,0.34,-0.059],[0.01631646816484956,0.1279028911667717,0.1935607336220546,0.3575536436805403,0.4706821472696497,0.481998149589332,0.5191779103283216,0.6608723801316916,0.7336185776864798,0.7476671050593371,0.9554645827809269],[0.1794811498133451,0.7034659014172442,0.7097226899475334,0.8158510019445053,0.8158510019445053,0.8158510019445053,0.8158510019445053,0.8224338155652708,0.8224338155652708,0.8224338155652708,0.9554645827809269]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>Biomarker<\/th>\n      <th>N_Pairs<\/th>\n      <th>Mean_Pre<\/th>\n      <th>Mean_Post<\/th>\n      <th>Mean_Diff<\/th>\n      <th>t_statistic<\/th>\n      <th>P_Value<\/th>\n      <th>FDR<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"dom":"Blfrtip","buttons":["copy","csv","excel","pdf","print"],"lengthMenu":[[10,25,50,-1],["10","25","50","All"]],"columnDefs":[{"className":"dt-right","targets":[2,3,4,5,6,7,8]},{"orderable":false,"targets":0},{"name":" ","targets":0},{"name":"Biomarker","targets":1},{"name":"N_Pairs","targets":2},{"name":"Mean_Pre","targets":3},{"name":"Mean_Post","targets":4},{"name":"Mean_Diff","targets":5},{"name":"t_statistic","targets":6},{"name":"P_Value","targets":7},{"name":"FDR","targets":8}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 <pre class="r"><code>library(dplyr)
 library(tidyr)
 library(ggplot2)
 
 # 1. Add unique patient ID and pair pre/post variables
-clinic_with_id &lt;- clinic_data_cleaned %&gt;%
-  mutate(Patient_ID = paste0(&quot;Patient_&quot;, row_number()))
+colnames(clinic_data)[1]=&quot;Patient_ID&quot;
+clinic_with_id &lt;- clinic_data
 
-pre_cols &lt;- grep(&quot;_pre(_study)?$&quot;, colnames(clinic_data_cleaned), value = TRUE, ignore.case = TRUE)
-post_cols &lt;- grep(&quot;_post_study$&quot;, colnames(clinic_data_cleaned), value = TRUE, ignore.case = TRUE)
+pre_cols &lt;- grep(&quot;Pre$&quot;, colnames(clinic_data), value = TRUE, ignore.case = TRUE)
+post_cols &lt;- grep(&quot;Post$&quot;, colnames(clinic_data), value = TRUE, ignore.case = TRUE)
 
 paired_map &lt;- data.frame(pre = pre_cols, stringsAsFactors = FALSE) %&gt;%
-  mutate(base_name = gsub(&quot;_pre(_study)?$&quot;, &quot;&quot;, pre, ignore.case = TRUE)) %&gt;%
+  mutate(base_name = gsub(&quot;Pre$&quot;, &quot;&quot;, pre, ignore.case = TRUE)) %&gt;%
   inner_join(
     data.frame(post = post_cols, stringsAsFactors = FALSE) %&gt;%
-      mutate(base_name = gsub(&quot;_post_study$&quot;, &quot;&quot;, post, ignore.case = TRUE)),
+      mutate(base_name = gsub(&quot;Post$&quot;, &quot;&quot;, post, ignore.case = TRUE)),
     by = &quot;base_name&quot;
   )
 
@@ -822,13 +917,14 @@ long_clinic_data &lt;- lapply(1:nrow(paired_map), function(i) {
   bind_rows()
 
 # 3. Generate and output all figures in a named R list
+library(ggrepel) # Ensures labels don&#39;t overlap if points are close
 plot_list &lt;- list()
 biomarkers &lt;- unique(long_clinic_data$Biomarker)
 
 for (bm in biomarkers) {
   df_sub &lt;- long_clinic_data %&gt;% filter(Biomarker == bm)
   
-  # Calculate paired t-test by passing vectors directly (ensuring matched patient order)
+  # 1. Calculate paired t-test
   df_paired &lt;- df_sub %&gt;%
     dplyr::select(Patient_ID, Timepoint, Value) %&gt;%
     pivot_wider(names_from = Timepoint, values_from = Value) %&gt;%
@@ -838,13 +934,34 @@ for (bm in biomarkers) {
     p_val &lt;- t.test(df_paired$Post, df_paired$Pre, paired = TRUE)$p.value
     p_label &lt;- ifelse(p_val &lt; 0.001, &quot;P &lt; 0.001&quot;, paste0(&quot;P = &quot;, round(p_val, 3)))
   } else {
-    p_label &lt;- &quot;N/A (insufficient pairs)&quot;
+    p_label &lt;- &quot;N/A&quot;
   }
   
-  p &lt;- ggplot(df_sub, aes(x = Timepoint, y = Value, fill = Timepoint)) +
-    geom_boxplot(outlier.shape = NA, alpha = 0.5, width = 0.35) +
+  # 2. Calculate midpoints for patient line labels
+  label_data &lt;- df_paired %&gt;%
+    mutate(
+      Mid_Value = (Pre + Post) / 2,
+      # Convert Patient_ID format if needed (e.g., &quot;Patient_1&quot; to &quot;P1&quot; for cleaner rendering)
+      Short_ID = gsub(&quot;Patient_&quot;, &quot;P&quot;, Patient_ID) 
+    )
+
+  # 3. Build Plot with Patient Labels on Lines
+  p &lt;- ggplot(df_sub, aes(x = Timepoint, y = Value)) +
+    geom_boxplot(aes(fill = Timepoint), outlier.shape = NA, alpha = 0.4, width = 0.35) +
+    # Paired connecting lines
     geom_line(aes(group = Patient_ID), color = &quot;gray50&quot;, alpha = 0.7, linewidth = 0.6) +
+    # Points
     geom_point(aes(color = Timepoint), size = 3, alpha = 0.9) +
+    # Patient ID labels along the connecting lines
+    geom_text_repel(
+      data = label_data,
+      aes(x = 1.5, y = Mid_Value, label = Short_ID),
+      size = 3.2,
+      fontface = &quot;bold&quot;,
+      color = &quot;gray20&quot;,
+      segment.color = &quot;transparent&quot;, # No extra leader lines needed
+      box.padding = 0.2
+    ) +
     scale_fill_manual(values = c(&quot;Pre&quot; = &quot;#2B5C8F&quot;, &quot;Post&quot; = &quot;#D95F02&quot;)) +
     scale_color_manual(values = c(&quot;Pre&quot; = &quot;#1F4268&quot;, &quot;Post&quot; = &quot;#A64300&quot;)) +
     labs(
@@ -864,42 +981,41 @@ for (bm in biomarkers) {
   # Store plot in list
   plot_list[[bm]] &lt;- p
 }
+
+
 plot_list</code></pre>
-<pre><code>$IGF</code></pre>
-<p><img src="figure/clinic_data_analysis.Rmd/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>$`IGF `</code></pre>
+<p><img src="figure/clinic_data_analysis.Rmd/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code>
-$IGF.Z</code></pre>
-<p><img src="figure/clinic_data_analysis.Rmd/unnamed-chunk-4-2.png" width="672" style="display: block; margin: auto;" /></p>
+$`IGF-Z `</code></pre>
+<p><img src="figure/clinic_data_analysis.Rmd/unnamed-chunk-5-2.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code>
-$IL.6</code></pre>
-<p><img src="figure/clinic_data_analysis.Rmd/unnamed-chunk-4-3.png" width="672" style="display: block; margin: auto;" /></p>
+$`Glucose `</code></pre>
+<p><img src="figure/clinic_data_analysis.Rmd/unnamed-chunk-5-3.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code>
-$Glucose</code></pre>
-<p><img src="figure/clinic_data_analysis.Rmd/unnamed-chunk-4-4.png" width="672" style="display: block; margin: auto;" /></p>
+$`CRP `</code></pre>
+<p><img src="figure/clinic_data_analysis.Rmd/unnamed-chunk-5-4.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code>
-$CRP</code></pre>
-<p><img src="figure/clinic_data_analysis.Rmd/unnamed-chunk-4-5.png" width="672" style="display: block; margin: auto;" /></p>
+$`ADIPNONECTIN `</code></pre>
+<p><img src="figure/clinic_data_analysis.Rmd/unnamed-chunk-5-5.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code>
-$ADIPNONECTIN</code></pre>
-<p><img src="figure/clinic_data_analysis.Rmd/unnamed-chunk-4-6.png" width="672" style="display: block; margin: auto;" /></p>
+$`Insulin `</code></pre>
+<p><img src="figure/clinic_data_analysis.Rmd/unnamed-chunk-5-6.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code>
-$Insulin</code></pre>
-<p><img src="figure/clinic_data_analysis.Rmd/unnamed-chunk-4-7.png" width="672" style="display: block; margin: auto;" /></p>
+$`HbA1C `</code></pre>
+<p><img src="figure/clinic_data_analysis.Rmd/unnamed-chunk-5-7.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code>
-$HbA1C</code></pre>
-<p><img src="figure/clinic_data_analysis.Rmd/unnamed-chunk-4-8.png" width="672" style="display: block; margin: auto;" /></p>
+$`Trg `</code></pre>
+<p><img src="figure/clinic_data_analysis.Rmd/unnamed-chunk-5-8.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code>
-$Trg</code></pre>
-<p><img src="figure/clinic_data_analysis.Rmd/unnamed-chunk-4-9.png" width="672" style="display: block; margin: auto;" /></p>
+$`HDL `</code></pre>
+<p><img src="figure/clinic_data_analysis.Rmd/unnamed-chunk-5-9.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code>
-$HDL</code></pre>
-<p><img src="figure/clinic_data_analysis.Rmd/unnamed-chunk-4-10.png" width="672" style="display: block; margin: auto;" /></p>
+$`LDL `</code></pre>
+<p><img src="figure/clinic_data_analysis.Rmd/unnamed-chunk-5-10.png" width="672" style="display: block; margin: auto;" /></p>
 <pre><code>
-$LDL</code></pre>
-<p><img src="figure/clinic_data_analysis.Rmd/unnamed-chunk-4-11.png" width="672" style="display: block; margin: auto;" /></p>
-<pre><code>
-$Chol.HDL</code></pre>
-<p><img src="figure/clinic_data_analysis.Rmd/unnamed-chunk-4-12.png" width="672" style="display: block; margin: auto;" /></p>
+$`Chol/HDL `</code></pre>
+<p><img src="figure/clinic_data_analysis.Rmd/unnamed-chunk-5-11.png" width="672" style="display: block; margin: auto;" /></p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -930,8 +1046,8 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
-[1] ggplot2_3.5.1   readxl_1.4.3    DT_0.33         tidyr_1.3.1    
-[5] purrr_1.0.2     dplyr_1.1.4     rprojroot_2.0.4
+[1] ggrepel_0.9.5   ggplot2_3.5.1   readxl_1.4.3    DT_0.33        
+[5] tidyr_1.3.1     purrr_1.0.2     dplyr_1.1.4     rprojroot_2.0.4
 
 loaded via a namespace (and not attached):
  [1] sass_0.4.9        utf8_1.2.4        generics_0.1.3    stringi_1.8.4    
