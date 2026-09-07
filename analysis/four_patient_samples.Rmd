@@ -937,47 +937,6 @@ top_genes_annotated %>%
 ```
 
 
-```{r, message=F, warning=F, eval=F}
-# 1. Expand data to map exact Sample IDs to Genes
-
-top_genes_annotated <- top_genes_strengthened %>%
-  mutate(top_peak_idx = row_number()) %>%
-  left_join(sample_mapping, by = "top_peak_idx") %>%
-  dplyr::select(-top_peak_idx)
-
-plot_data_heatmap <- top_genes_annotated %>%
-  dplyr::select(SYMBOL, contributing_samples_baseline, contributing_samples_followup) %>%
-  pivot_longer(
-    cols = c(contributing_samples_baseline, contributing_samples_followup),
-    names_to = "Group",
-    values_to = "Samples"
-  ) %>%
-  filter(!is.na(Samples) & Samples != "<NA>") %>%
-  separate_rows(Samples, sep = ",\\s*") %>%
-  mutate(
-    Sample_ID = trimws(Samples),
-    Timepoint = ifelse(grepl("Baseline", Sample_ID), "Baseline", "Follow-up")
-  )
-
-# 2. Draw Binary Heatmap
-ggplot(plot_data_heatmap, aes(x = Sample_ID, y = SYMBOL, fill = Timepoint)) +
-  geom_tile(color = "white", size = 0.8) +
-  scale_fill_manual(values = c("Baseline" = "#2b5c8f", "Follow-up" = "#d95f02")) +
-  labs(
-    title = "Sample Presence Across Top Strengthed Genes",
-    x = "Individual Sample",
-    y = "Gene Symbol",
-    fill = "Timepoint"
-  ) +
-  theme_minimal(base_size = 12) +
-  theme(
-    plot.title = element_text(hjust = 0.5, face = "bold"),
-    axis.text.x = element_text(angle = 45, hjust = 1, face = "bold", color = "black"),
-    axis.text.y = element_text(face = "bold", color = "black"),
-    panel.grid = element_blank()
-  )
-```
-
 
 
 
@@ -991,6 +950,7 @@ top_genes_annotated <- top_genes_strengthened %>%
   left_join(sample_mapping, by = "top_peak_idx") %>%
   dplyr::select(-top_peak_idx)
 
+
 # 1. Parse comma-separated strings into long format
 parsed_samples <- top_genes_annotated %>%
   dplyr::select(SYMBOL, contributing_samples_baseline, contributing_samples_followup) %>%
@@ -1003,11 +963,12 @@ parsed_samples <- top_genes_annotated %>%
   separate_rows(Samples, sep = ",\\s*") %>%
   mutate(
     Sample_ID = trimws(Samples),
-    Present = "Yes"
+    # Fixed parameter: ignore.case = TRUE
+    Status = ifelse(grepl("Baseline", Sample_ID, ignore.case = TRUE), "Baseline", "Follow-up")
   ) %>%
-  dplyr::select(SYMBOL, Sample_ID, Present)
+  dplyr::select(SYMBOL, Sample_ID, Status)
 
-# 2. Define the full list of expected individual sample columns (all Baseline & Follow-up)
+# 2. Define expected order of individual sample columns (paired by patient)
 all_samples <- c(
   "IF-03_Baseline", "IF-03_Followup",
   "IF-04_Baseline", "IF-04_Followup",
@@ -1017,7 +978,7 @@ all_samples <- c(
   "IF-08_Baseline", "IF-08_Followup"
 )
 
-# 3. Create a complete grid (Gene x Sample) to ensure empty cells render properly
+# 3. Build complete grid (Gene x Sample)
 heatmap_grid <- expand.grid(
   SYMBOL = unique(top_genes_annotated$SYMBOL),
   Sample_ID = all_samples,
@@ -1025,35 +986,37 @@ heatmap_grid <- expand.grid(
 ) %>%
   left_join(parsed_samples, by = c("SYMBOL", "Sample_ID")) %>%
   mutate(
-    # Set factor levels to keep paired patient samples side-by-side on x-axis
-    Sample_ID = factor(Sample_ID, levels = all_samples)
+    Sample_ID = factor(Sample_ID, levels = all_samples),
+    Status = factor(Status, levels = c("Baseline", "Follow-up"))
   )
 
-# 4. Draw Binary Heatmap
+# 4. Draw Two-Color Binary Heatmap
 ggplot(heatmap_grid, aes(x = Sample_ID, y = reorder(SYMBOL, SYMBOL))) +
-  geom_tile(aes(fill = Present), color = "grey85", size = 0.5) +
-  # Use one solid color for 'Yes', and treat missing/NA as completely empty (white)
+  geom_tile(aes(fill = Status), color = "gray90", size = 0.5) +
+  # Two explicit colors: grey85 for Baseline, orange for Follow-up, NA (empty) is white
   scale_fill_manual(
-    values = c("Yes" = "#2B5C8F"), 
+    values = c("Baseline" = "#2B5C8F", "Follow-up" = "#D95F02"),
     na.value = "white",
-    guide = "none" # Hide legend since it's a simple presence plot
+    breaks = c("Baseline", "Follow-up")
   ) +
   labs(
-    title = "Sample Contribution Grid Across Top Strengthened Genes",
-    subtitle = "Dark blue = Contributing sample | Empty = Non-contributing",
-    x = "Individual Patient Samples (Baseline & Follow-up)",
-    y = "Gene Symbol"
+    title = "Sample Contribution to Top  Strengthened Genes",
+    x = "Individual Patient Samples",
+    y = "Gene Symbol",
+    fill = "Contributing Timepoint"
   ) +
   theme_minimal(base_size = 13) +
   theme(
     plot.title = element_text(hjust = 0.5, face = "bold"),
-    plot.subtitle = element_text(hjust = 0.5, color = "gray30", margin = margin(b = 10)),
     axis.text.x = element_text(angle = 45, hjust = 1, face = "bold", color = "black"),
     axis.text.y = element_text(face = "bold", color = "black"),
+    legend.position = "top",
     panel.grid = element_blank(),
     axis.ticks = element_line(color = "gray80")
   )
 ```
+
+
 
 
 
@@ -1145,46 +1108,8 @@ top_genes_annotated %>%
 
 
 
-```{r, message=F, warning=F, eval=F}
-# 1. Expand data to map exact Sample IDs to Genes
 
-top_genes_annotated <- top_genes_weakened %>%
-  mutate(top_peak_idx = row_number()) %>%
-  left_join(sample_mapping, by = "top_peak_idx") %>%
-  dplyr::select(-top_peak_idx)
 
-plot_data_heatmap <- top_genes_annotated %>%
-  dplyr::select(SYMBOL, contributing_samples_baseline, contributing_samples_followup) %>%
-  pivot_longer(
-    cols = c(contributing_samples_baseline, contributing_samples_followup),
-    names_to = "Group",
-    values_to = "Samples"
-  ) %>%
-  filter(!is.na(Samples) & Samples != "<NA>") %>%
-  separate_rows(Samples, sep = ",\\s*") %>%
-  mutate(
-    Sample_ID = trimws(Samples),
-    Timepoint = ifelse(grepl("Baseline", Sample_ID), "Baseline", "Follow-up")
-  )
-
-# 2. Draw Binary Heatmap
-ggplot(plot_data_heatmap, aes(x = Sample_ID, y = SYMBOL, fill = Timepoint)) +
-  geom_tile(color = "white", size = 0.8) +
-  scale_fill_manual(values = c("Baseline" = "#2b5c8f", "Follow-up" = "#d95f02")) +
-  labs(
-    title = "Sample Presence Across Top Weakened Genes",
-    x = "Individual Sample",
-    y = "Gene Symbol",
-    fill = "Timepoint"
-  ) +
-  theme_minimal(base_size = 12) +
-  theme(
-    plot.title = element_text(hjust = 0.5, face = "bold"),
-    axis.text.x = element_text(angle = 45, hjust = 1, face = "bold", color = "black"),
-    axis.text.y = element_text(face = "bold", color = "black"),
-    panel.grid = element_blank()
-  )
-```
 
 
 
@@ -1198,6 +1123,7 @@ top_genes_annotated <- top_genes_weakened %>%
   left_join(sample_mapping, by = "top_peak_idx") %>%
   dplyr::select(-top_peak_idx)
 
+
 # 1. Parse comma-separated strings into long format
 parsed_samples <- top_genes_annotated %>%
   dplyr::select(SYMBOL, contributing_samples_baseline, contributing_samples_followup) %>%
@@ -1210,11 +1136,12 @@ parsed_samples <- top_genes_annotated %>%
   separate_rows(Samples, sep = ",\\s*") %>%
   mutate(
     Sample_ID = trimws(Samples),
-    Present = "Yes"
+    # Fixed parameter: ignore.case = TRUE
+    Status = ifelse(grepl("Baseline", Sample_ID, ignore.case = TRUE), "Baseline", "Follow-up")
   ) %>%
-  dplyr::select(SYMBOL, Sample_ID, Present)
+  dplyr::select(SYMBOL, Sample_ID, Status)
 
-# 2. Define the full list of expected individual sample columns (all Baseline & Follow-up)
+# 2. Define expected order of individual sample columns (paired by patient)
 all_samples <- c(
   "IF-03_Baseline", "IF-03_Followup",
   "IF-04_Baseline", "IF-04_Followup",
@@ -1224,7 +1151,7 @@ all_samples <- c(
   "IF-08_Baseline", "IF-08_Followup"
 )
 
-# 3. Create a complete grid (Gene x Sample) to ensure empty cells render properly
+# 3. Build complete grid (Gene x Sample)
 heatmap_grid <- expand.grid(
   SYMBOL = unique(top_genes_annotated$SYMBOL),
   Sample_ID = all_samples,
@@ -1232,31 +1159,31 @@ heatmap_grid <- expand.grid(
 ) %>%
   left_join(parsed_samples, by = c("SYMBOL", "Sample_ID")) %>%
   mutate(
-    # Set factor levels to keep paired patient samples side-by-side on x-axis
-    Sample_ID = factor(Sample_ID, levels = all_samples)
+    Sample_ID = factor(Sample_ID, levels = all_samples),
+    Status = factor(Status, levels = c("Baseline", "Follow-up"))
   )
 
-# 4. Draw Binary Heatmap
+# 4. Draw Two-Color Binary Heatmap
 ggplot(heatmap_grid, aes(x = Sample_ID, y = reorder(SYMBOL, SYMBOL))) +
-  geom_tile(aes(fill = Present), color = "grey85", size = 0.5) +
-  # Use one solid color for 'Yes', and treat missing/NA as completely empty (white)
+  geom_tile(aes(fill = Status), color = "gray90", size = 0.5) +
+  # Two explicit colors: grey85 for Baseline, orange for Follow-up, NA (empty) is white
   scale_fill_manual(
-    values = c("Yes" = "#2B5C8F"), 
+    values = c("Baseline" = "#2B5C8F", "Follow-up" = "#D95F02"),
     na.value = "white",
-    guide = "none" # Hide legend since it's a simple presence plot
+    breaks = c("Baseline", "Follow-up")
   ) +
   labs(
-    title = "Sample Contribution Grid Across Top Weakened Genes",
-    subtitle = "Dark blue = Contributing sample | Empty = Non-contributing",
-    x = "Individual Patient Samples (Baseline & Follow-up)",
-    y = "Gene Symbol"
+    title = "Sample Contribution to Top  Weakened Genes",
+    x = "Individual Patient Samples",
+    y = "Gene Symbol",
+    fill = "Contributing Timepoint"
   ) +
   theme_minimal(base_size = 13) +
   theme(
     plot.title = element_text(hjust = 0.5, face = "bold"),
-    plot.subtitle = element_text(hjust = 0.5, color = "gray30", margin = margin(b = 10)),
     axis.text.x = element_text(angle = 45, hjust = 1, face = "bold", color = "black"),
     axis.text.y = element_text(face = "bold", color = "black"),
+    legend.position = "top",
     panel.grid = element_blank(),
     axis.ticks = element_line(color = "gray80")
   )

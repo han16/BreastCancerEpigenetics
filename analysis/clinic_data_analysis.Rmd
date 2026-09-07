@@ -91,3 +91,91 @@ datatable(extensions = 'Buttons',
                            lengthMenu = list(c(10,25,50,-1),
                                              c(10,25,50,"All"))))
 ```
+
+
+
+
+
+```{r, message=F, warning=F}
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+
+# 1. Add unique patient ID and pair pre/post variables
+clinic_with_id <- clinic_data_cleaned %>%
+  mutate(Patient_ID = paste0("Patient_", row_number()))
+
+pre_cols <- grep("_pre(_study)?$", colnames(clinic_data_cleaned), value = TRUE, ignore.case = TRUE)
+post_cols <- grep("_post_study$", colnames(clinic_data_cleaned), value = TRUE, ignore.case = TRUE)
+
+paired_map <- data.frame(pre = pre_cols, stringsAsFactors = FALSE) %>%
+  mutate(base_name = gsub("_pre(_study)?$", "", pre, ignore.case = TRUE)) %>%
+  inner_join(
+    data.frame(post = post_cols, stringsAsFactors = FALSE) %>%
+      mutate(base_name = gsub("_post_study$", "", post, ignore.case = TRUE)),
+    by = "base_name"
+  )
+
+# 2. Reshape into long format
+long_clinic_data <- lapply(1:nrow(paired_map), function(i) {
+  pre_var  <- paired_map$pre[i]
+  post_var <- paired_map$post[i]
+  label    <- paired_map$base_name[i]
+  
+  clinic_with_id %>%
+    dplyr::select(Patient_ID, Pre = all_of(pre_var), Post = all_of(post_var)) %>%
+    mutate(Pre = as.numeric(Pre), Post = as.numeric(Post)) %>%
+    filter(!is.na(Pre) & !is.na(Post)) %>%
+    pivot_longer(cols = c("Pre", "Post"), names_to = "Timepoint", values_to = "Value") %>%
+    mutate(
+      Biomarker = label,
+      Timepoint = factor(Timepoint, levels = c("Pre", "Post"))
+    )
+}) %>%
+  bind_rows()
+
+# 3. Generate and output all figures in a named R list
+plot_list <- list()
+biomarkers <- unique(long_clinic_data$Biomarker)
+
+for (bm in biomarkers) {
+  df_sub <- long_clinic_data %>% filter(Biomarker == bm)
+  
+  # Calculate paired t-test by passing vectors directly (ensuring matched patient order)
+  df_paired <- df_sub %>%
+    dplyr::select(Patient_ID, Timepoint, Value) %>%
+    pivot_wider(names_from = Timepoint, values_from = Value) %>%
+    drop_na(Pre, Post)
+  
+  if (nrow(df_paired) >= 2) {
+    p_val <- t.test(df_paired$Post, df_paired$Pre, paired = TRUE)$p.value
+    p_label <- ifelse(p_val < 0.001, "P < 0.001", paste0("P = ", round(p_val, 3)))
+  } else {
+    p_label <- "N/A (insufficient pairs)"
+  }
+  
+  p <- ggplot(df_sub, aes(x = Timepoint, y = Value, fill = Timepoint)) +
+    geom_boxplot(outlier.shape = NA, alpha = 0.5, width = 0.35) +
+    geom_line(aes(group = Patient_ID), color = "gray50", alpha = 0.7, linewidth = 0.6) +
+    geom_point(aes(color = Timepoint), size = 3, alpha = 0.9) +
+    scale_fill_manual(values = c("Pre" = "#2B5C8F", "Post" = "#D95F02")) +
+    scale_color_manual(values = c("Pre" = "#1F4268", "Post" = "#A64300")) +
+    labs(
+      title = paste0(bm),
+      subtitle = paste0("Paired t-test: ", p_label),
+      x = "Study Timepoint",
+      y = "Value"
+    ) +
+    theme_classic(base_size = 14) +
+    theme(
+      plot.title = element_text(hjust = 0.5, face = "bold"),
+      plot.subtitle = element_text(hjust = 0.5, color = "gray30", size = 11),
+      legend.position = "none",
+      axis.text = element_text(color = "black")
+    )
+  
+  # Store plot in list
+  plot_list[[bm]] <- p
+}
+plot_list
+```
