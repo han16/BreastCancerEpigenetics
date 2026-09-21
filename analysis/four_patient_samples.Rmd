@@ -613,7 +613,8 @@ ggplot(plot_data, aes(x = Cutoff, y = Count, fill = Cutoff)) +
 
 
 
-```{r, message=F, warning=F}
+```{r, message=F, warning=F, eval=F}
+############################ old script ###########################
 library(dplyr)
 library(GenomicRanges)
 library(ChIPseeker)
@@ -678,16 +679,105 @@ final_mapped_peaks <- annotated_df %>%
 #write.csv(final_mapped_peaks, "significant_peaks_mapped_to_genes.csv", row.names = FALSE)
 ```
 
+```{r, message=F, warning=F}
+library(dplyr)
+library(GenomicRanges)
+library(ChIPseeker)
+library(TxDb.Hsapiens.UCSC.hg38.knownGene)
+library(org.Hs.eg.db)
+
+#if (!requireNamespace("BiocManager", quietly = TRUE)) {
+#  install.packages("BiocManager")
+#}
+
+#BiocManager::install("EnsDb.Hsapiens.v86")
+
+
+library(EnsDb.Hsapiens.v86) # For restricting mapping strictly to protein-coding genes
+
+load(file.path(root, "..", "h3k27ac", "intermediate_data", "results_table.RData"))
+
+# 1. Attach genomic coordinates from consensus_peaks using row indices
+peak_indices <- as.numeric(rownames(results_table))
+
+results_with_coords <- results_table %>%
+  mutate(
+    seqnames = as.character(seqnames(consensus_peaks[peak_indices])),
+    start    = start(consensus_peaks[peak_indices]),
+    end      = end(consensus_peaks[peak_indices]),
+    strand   = as.character(strand(consensus_peaks[peak_indices]))
+  )
+
+# 2. Filter for significant peaks (P.Value < 0.05)
+sig_peaks_df <- results_with_coords %>% 
+  dplyr::filter(P.Value < 0.05)
+
+cat(paste("Extracted", nrow(sig_peaks_df), "peaks with P.Value < 0.05\n"))
+
+# 3. Convert to GRanges object
+sig_peaks_GR <- GRanges(
+  seqnames = sig_peaks_df$seqnames,
+  ranges   = IRanges(start = sig_peaks_df$start, end = sig_peaks_df$end),
+  strand   = sig_peaks_df$strand
+)
+
+# Attach statistical metadata columns
+mcols(sig_peaks_GR) <- sig_peaks_df %>% dplyr::select(-seqnames, -start, -end, -strand)
+
+# 4. Extract ~19,442 protein-coding genes from EnsDb
+edb <- EnsDb.Hsapiens.v86
+protein_coding_entrez <- genes(edb, filter = ~ gene_biotype == "protein_coding")$entrezid
+protein_coding_entrez <- unlist(protein_coding_entrez[!is.na(protein_coding_entrez)])
+
+# 5. Annotate peaks with nearest genes using ChIPseeker
+txdb <- TxDb.Hsapiens.UCSC.hg38.knownGene
+
+peak_annotation <- annotatePeak(
+  sig_peaks_GR,
+  TxDb = txdb,
+  annoDb = "org.Hs.eg.db",
+  tssRegion = c(-3000, 3000),  # Region Range of TSS  
+  verbose = FALSE
+)
+
+# 6. Convert annotation output to Data Frame and apply distance & biotype filters
+annotated_df <- as.data.frame(peak_annotation)
+
+final_mapped_peaks <- annotated_df %>%
+  # Filter (1): Only keep peaks in [-500kb, -1kb] OR [4kb, 500kb] relative to TSS
+  dplyr::filter(
+    (distanceToTSS >= -500000 & distanceToTSS <= -1000) |
+    (distanceToTSS >= 4000     & distanceToTSS <= 500000)
+  ) %>%
+  # Filter (2): Only keep peaks mapped to protein-coding genes
+  dplyr::filter(geneId %in% protein_coding_entrez) %>%
+  # Select final columns
+  dplyr::select(
+    seqnames, start, end, width, logFC, AveExpr, P.Value,
+    annotation,
+    geneId,
+    SYMBOL,
+    GENENAME,
+    distanceToTSS
+  )
+
+cat(paste("Filtered down to", nrow(final_mapped_peaks), "peaks within TSS windows mapped to protein-coding genes.\n"))
+#write.csv(final_mapped_peaks, "significant_peaks_mapped_to_genes.csv", row.names = FALSE)
+```
+
+
+
+
 
 
 
 ```{r, message=F, warning=F}
 protein_coding_peaks <- final_mapped_peaks %>%
-  filter(!is.na(SYMBOL)) %>%
+  dplyr::filter(!is.na(SYMBOL)) %>%
   # Remove LOCs, LINCs, MicroRNAs, antisense, and pseudogene-style symbols
-  filter(!grepl("^LOC[0-9]|^LINC[0-9]|^MIR|^SNOR|^RNU|^RPS[0-9]+P|-AS[0-9]*$", SYMBOL)) %>% 
+  dplyr::filter(!grepl("^LOC[0-9]|^LINC[0-9]|^MIR|^SNOR|^RNU|^RPS[0-9]+P|-AS[0-9]*$", SYMBOL)) %>% 
   # remove peaks within 2kb promoters 
-  filter(annotation!="Promoter (<=1kb)") %>% filter(annotation!="Promoter (1-2kb)")
+  dplyr::filter(annotation!="Promoter (<=1kb)") %>% dplyr::filter(annotation!="Promoter (1-2kb)")
 
 protein_coding_peaks$logFC=round(protein_coding_peaks$logFC,4)
 protein_coding_peaks$AveExpr=round(protein_coding_peaks$AveExpr,4)
@@ -708,13 +798,13 @@ protein_coding_peaks%>%
 cat("number of unique genes:", length(unique(protein_coding_peaks$SYMBOL)), "\n")
 
 #write.csv(protein_coding_peaks, paste0(peak_dir, "significant_peaks_mapped_to_genes.csv"))
-cat("Weakened windows:", protein_coding_peaks %>% filter(logFC<0) %>% nrow(), "\n")
+cat("Weakened windows:", protein_coding_peaks %>% dplyr::filter(logFC<0) %>% nrow(), "\n")
 
-protein_coding_lost_peaks=protein_coding_peaks %>% filter(logFC<0) %>% arrange(logFC)
+protein_coding_lost_peaks=protein_coding_peaks %>% dplyr::filter(logFC<0) %>% arrange(logFC)
 
-cat("Strengthened windows:", protein_coding_peaks %>% filter(logFC>0) %>% nrow())
+cat("Strengthened windows:", protein_coding_peaks %>% dplyr::filter(logFC>0) %>% nrow())
 
-protein_coding_gain_peaks=protein_coding_peaks %>% filter(logFC>0) %>% arrange(desc(logFC))
+protein_coding_gain_peaks=protein_coding_peaks %>% dplyr::filter(logFC>0) %>% arrange(desc(logFC))
 
 #write.csv(protein_coding_lost_peaks, paste0(peak_dir, "significant_lost_peaks_mapped_to_genes.csv"))
 #write.csv(protein_coding_gain_peaks, paste0(peak_dir, "significant_gain_peaks_mapped_to_genes.csv"))
@@ -739,7 +829,7 @@ load(file.path(root, "..\\h3k27ac\\intermediate_data\\protein_coding_peaks.RData
 
 # 1. Identify top 10 most extreme genes to label on the plot
 top_genes_strengthened <- protein_coding_peaks %>%
-  filter(!is.na(SYMBOL)) %>%
+  dplyr::filter(!is.na(SYMBOL)) %>%
   arrange(desc(logFC)) %>%   # rank by absolute values 
   head(10)
 
@@ -784,7 +874,7 @@ load(file.path(root, "..\\h3k27ac\\intermediate_data\\protein_coding_peaks.RData
 
 # 1. Identify top 10 most extreme genes to label on the plot
 top_genes_weakened <- protein_coding_peaks %>%
-  filter(!is.na(SYMBOL)) %>%
+  dplyr::filter(!is.na(SYMBOL)) %>%
   arrange(logFC) %>%  
   head(10)
 
@@ -959,7 +1049,7 @@ parsed_samples <- top_genes_annotated %>%
     names_to = "Group",
     values_to = "Samples"
   ) %>%
-  filter(!is.na(Samples) & Samples != "<NA>") %>%
+  dplyr::filter(!is.na(Samples) & Samples != "<NA>") %>%
   separate_rows(Samples, sep = ",\\s*") %>%
   mutate(
     Sample_ID = trimws(Samples),
@@ -1132,7 +1222,7 @@ parsed_samples <- top_genes_annotated %>%
     names_to = "Group",
     values_to = "Samples"
   ) %>%
-  filter(!is.na(Samples) & Samples != "<NA>") %>%
+  dplyr::filter(!is.na(Samples) & Samples != "<NA>") %>%
   separate_rows(Samples, sep = ",\\s*") %>%
   mutate(
     Sample_ID = trimws(Samples),
@@ -1173,7 +1263,7 @@ ggplot(heatmap_grid, aes(x = Sample_ID, y = reorder(SYMBOL, SYMBOL))) +
     breaks = c("Baseline", "Follow-up")
   ) +
   labs(
-    title = "Sample Contribution to Top  Weakened Genes",
+    title = "Sample Contribution to Top 10 Weakened Genes",
     x = "Individual Patient Samples",
     y = "Gene Symbol",
     fill = "Contributing Timepoint"
@@ -1241,7 +1331,7 @@ categories <- unique(plot_data$Category)
 # 3. Loop through categories and print individual plots
 for (cat in categories) {
   
-  sub_data <- plot_data %>% filter(Category == cat)
+  sub_data <- plot_data %>% dplyr::filter(Category == cat)
   
   p <- ggplot(sub_data, aes(x = logP, y = reorder(Term, logP))) +
     geom_point(aes(size = Count, color = `Fold Enrichment`), alpha = 0.85) +
