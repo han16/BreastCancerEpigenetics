@@ -885,7 +885,7 @@ ggplot(protein_coding_peaks, aes(x = logFC, y = -log10(P.Value))) +
   scale_color_manual(
     values = c("TRUE" = "#2E8B57", "FALSE" = "#D95F02"),
     labels = c("TRUE" = "Strengthened", "FALSE" = "Weakened"),
-    name = "Peak Change"
+    name = ""
   )+ 
   # Add labels for top 10 genes
   geom_text_repel(
@@ -1266,7 +1266,7 @@ ggplot(heatmap_grid, aes(x = Sample_ID, y = reorder(SYMBOL, SYMBOL))) +
     title = "Sample Contribution to Top 10 Weakened Genes",
     x = "Individual Patient Samples",
     y = "Gene Symbol",
-    fill = "Contributing Timepoint"
+    fill = ""
   ) +
   theme_minimal(base_size = 13) +
   theme(
