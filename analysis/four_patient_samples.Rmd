@@ -816,7 +816,131 @@ protein_coding_gain_peaks=protein_coding_peaks %>% dplyr::filter(logFC>0) %>% ar
 
 
 
+### enichment analysis of weakened peaks 
 
+
+```{r, message=F, warning=F}
+library(clusterProfiler)
+
+#if (!requireNamespace("BiocManager", quietly = TRUE)) {
+#  install.packages("BiocManager")
+#}
+
+#BiocManager::install("ReactomePA")
+library(ReactomePA)
+
+library(org.Hs.eg.db)
+library(dplyr)
+library(ggplot2)
+library(stringr)
+
+# 1. Extract Entrez IDs from your input dataframe
+genes_entrez <- unique(as.character(protein_coding_lost_peaks$geneId))
+genes_entrez <- genes_entrez[!is.na(genes_entrez) & genes_entrez != ""]
+
+# -------------------------------------------------------------------------
+# A. Run Enrichment Analyses
+# -------------------------------------------------------------------------
+
+# 1. KEGG Pathway
+kegg_res <- enrichKEGG(
+  gene = genes_entrez,
+  organism = 'hsa',
+  pvalueCutoff = 0.05
+)
+
+# 2. Reactome Pathway
+reactome_res <- enrichPathway(
+  gene = genes_entrez,
+  organism = 'human',
+  pvalueCutoff = 0.05
+)
+
+# 3. WikiPathways
+wikipathways_res <- enrichWP(
+  gene = genes_entrez,
+  organism = 'Homo sapiens',
+  pvalueCutoff = 0.05
+)
+
+# -------------------------------------------------------------------------
+# B. Process Results into Combined Plotting Dataframe
+# -------------------------------------------------------------------------
+
+format_enrich_res <- function(enrich_obj, category_name) {
+  if (is.null(enrich_obj) || nrow(enrich_obj@result) == 0) return(NULL)
+  
+  enrich_obj@result %>%
+    filter(p.adjust < 0.05) %>%
+    mutate(
+      Category = category_name,
+      # Calculate GeneRatio as decimal
+      GeneRatio_num = sapply(GeneRatio, function(x) eval(parse(text = x))),
+      BgRatio_num   = sapply(BgRatio, function(x) eval(parse(text = x))),
+      # Calculate Fold Enrichment
+      `Fold Enrichment` = GeneRatio_num / BgRatio_num,
+      logP = -log10(pvalue),
+      Term = Description
+    ) %>%
+    dplyr::select(Category, Term, Count, `Fold Enrichment`, pvalue, logP)
+}
+
+df_kegg     <- format_enrich_res(kegg_res, "KEGG_PATHWAY")
+df_reactome <- format_enrich_res(reactome_res, "REACTOME_PATHWAY")
+df_wiki     <- format_enrich_res(wikipathways_res, "WIKIPATHWAYS")
+
+# Combine all pathways
+lost_peak_pathway <- bind_rows(df_kegg, df_reactome, df_wiki)
+
+# -------------------------------------------------------------------------
+# C. Generate Individual Bubble Plots (No Faceting)
+# -------------------------------------------------------------------------
+
+categories <- unique(lost_peak_pathway$Category)
+plot_list <- list()
+
+for (cat in categories) {
+  
+  # Select top 10 most significant pathways for each category
+  sub_data <- lost_peak_pathway %>%
+    filter(Category == cat) %>%
+    arrange(pvalue) %>%
+    head(10) %>%
+    mutate(Term = str_wrap(Term, width = 35))
+  
+  p <- ggplot(sub_data, aes(x = logP, y = reorder(Term, logP))) +
+    geom_point(aes(size = Count, color = `Fold Enrichment`), alpha = 0.85) +
+    scale_color_gradient(low = "#3182bd", high = "#de2d26") +
+    scale_size_continuous(range = c(3, 8)) +
+    labs(
+      title = paste("Pathway Enrichment Analysis -", cat),
+      subtitle = "Weakened genes",
+      x = expression(-log[10] ~ "(" * italic(P) * "-Value)"),
+      y = NULL,
+      size = "Count",
+      color = "Fold Enrichment"
+    ) +
+    theme_bw(base_size = 12) +
+    theme(
+      plot.title = element_text(hjust = 0.5, face = "bold", size = 14),
+      plot.subtitle = element_text(hjust = 0.5, size = 11, color = "gray30"),
+      axis.text.y = element_text(size = 9, color = "black"),
+      axis.text.x = element_text(color = "black"),
+      panel.grid.minor = element_blank()
+    )
+  
+  plot_list[[cat]] <- p
+}
+
+# Display plots individually
+plot_list[["KEGG_PATHWAY"]]
+plot_list[["WIKIPATHWAYS"]]
+plot_list[["REACTOME_PATHWAY"]]
+```
+
+
+
+## 
 
 
 
@@ -1282,10 +1406,10 @@ ggplot(heatmap_grid, aes(x = Sample_ID, y = reorder(SYMBOL, SYMBOL))) +
 
 
 
-### enichment analysis of weakened peaks 
 
 
-```{r, message=F, warning=F}
+```{r, message=F, warning=F, eval=F}
+###################### this spreadsheet is from victor ######################
 library(readxl)
 lost_peak_pathway=read_xlsx(file.path(root, "..\\h3k27ac\\Lost_Peaks_Pathway_Proc.xlsx"))
 
