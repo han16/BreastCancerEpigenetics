@@ -816,7 +816,7 @@ protein_coding_gain_peaks=protein_coding_peaks %>% dplyr::filter(logFC>0) %>% ar
 
 
 
-### enichment analysis of weakened peaks 
+### enichment analysis of weakened peaks (genes)
 
 
 ```{r, message=F, warning=F}
@@ -938,10 +938,11 @@ plot_list[["WIKIPATHWAYS"]]
 plot_list[["REACTOME_PATHWAY"]]
 ```
 
+* among significant terms (p value less than 5%), the top 10 are shown in the figure. 
 
 
-## 
 
+### Volcano Plot of significant peaks 
 
 
 ```{r, message=F, warning=F}
